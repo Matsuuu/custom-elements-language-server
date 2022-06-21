@@ -5,8 +5,8 @@
   "main": "dist/index.js",
   "type": "module",
   "scripts": {
-    "start:server": "npm run build:server && node ./lib/server/dist/index.js",
-    "build:server": "tsc --project lib/server/tsconfig.json"
+    "start": "npm run build && node ./dist/index.js",
+    "build": "tsc"
   },
   "repository": {
     "type": "git",
