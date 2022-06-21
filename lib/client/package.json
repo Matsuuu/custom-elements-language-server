@@ -2,11 +2,11 @@
   "name": "custom-elements-language-service-client",
   "version": "0.0.1",
   "description": "",
-  "main": "dist/index.js",
-  "type": "module",
+  "main": "dist/extension.js",
   "scripts": {
-    "start": "npm run build && node ./dist/index.js",
-    "build": "tsc"
+    "start": "npm run build && node ./dist/extension.js",
+    "build": "tsc",
+    "watch": "tsc --watch"
   },
   "repository": {
     "type": "git",
@@ -29,5 +29,8 @@
   },
   "engines": {
       "vscode": "^1.63.0"
-  }
+  },
+  "activationEvents": [
+		"onLanguage:plaintext"
+	]
 }
