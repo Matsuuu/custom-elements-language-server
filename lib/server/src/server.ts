@@ -93,6 +93,7 @@ connection.listen();
 function onInitialize(params: InitializeParams) {
     let capabilities = params.capabilities;
 
+    console.log("Initialized");
     // Does the client support the `workspace/configuration` request?
     // If not, we fall back using global settings.
     hasConfigurationCapability = !!(

@@ -12,7 +12,8 @@ let client: LanguageClient;
 
 export function activate(context: ExtensionContext) {
   // The server is implemented in node
-    let serverModule = context.asAbsolutePath(path.join('lib', 'server', 'dist', 'server.js'));
+    console.log("Initializing LS")  
+  let serverModule = context.asAbsolutePath(path.join('lib', 'server', 'dist', 'server.js'));
     // The debug options for the server
     // --inspect=6009: runs the server in Node's Inspector mode so VS Code can attach to the server for debugging
     let debugOptions = { execArgv: ['--nolazy', '--inspect=6009'] };
@@ -47,7 +48,8 @@ export function activate(context: ExtensionContext) {
     );
 
     // Start the client. This will also launch the server
-    client.start();
+    client.start(); 
+    console.log("Client started");
 }
 
 export function deactivate(): Thenable<void> | undefined {

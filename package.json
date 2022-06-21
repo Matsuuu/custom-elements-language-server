@@ -1,5 +1,5 @@
 {
-	"name": "lsp-sample",
+	"name": "custom-elements-language-services",
 	"description": "A language server example",
 	"author": "Microsoft Corporation",
 	"license": "MIT",
@@ -35,7 +35,7 @@
 						"messages",
 						"verbose"
 					],
-					"default": "off",
+					"default": "verbose",
 					"description": "Traces the communication between VS Code and the language server."
 				}
 			}
