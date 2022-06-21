@@ -1,0 +1,28 @@
+{
+  "name": "custom-elements-language-server",
+  "version": "0.0.1",
+  "description": "",
+  "main": "dist/index.js",
+  "type": "module",
+  "scripts": {
+      "build": "tsc",
+      "start": "tsc && node ./dist/index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Matsuuu/custom-elements-language-server.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Matsuuu/custom-elements-language-server/issues"
+  },
+  "homepage": "https://github.com/Matsuuu/custom-elements-language-server#readme",
+  "dependencies": {
+    "vscode-languageserver": "^8.0.1"
+  },
+  "devDependencies": {
+    "typescript": "^4.7.4"
+  }
+}
