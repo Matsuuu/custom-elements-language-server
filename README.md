@@ -1,7 +1,11 @@
 # custom-elements-language-server
 
+> **Warning**
+> This repository / project is still extremely Work In Progress. Rapid changes and refactors are going to happen
 
-Helpful Sources:
+
+
+Helpful Development Sources:
 
 - https://code.visualstudio.com/api/language-extensions/language-server-extension-guide
 
