@@ -6,12 +6,15 @@ import {
     DiagnosticSeverity,
     DidChangeConfigurationNotification,
     DidChangeConfigurationParams,
+    DidChangeTextDocumentParams,
     InitializeParams,
     InitializeResult,
     ProposedFeatures,
+    TextDocumentItem,
     TextDocumentPositionParams,
     TextDocuments,
     TextDocumentSyncKind,
+    VersionedTextDocumentIdentifier,
 } from "vscode-languageserver/node.js";
 
 import { TextDocument } from "vscode-languageserver-textdocument";
@@ -97,7 +100,7 @@ connection.listen();
 function onInitialize(params: InitializeParams) {
     let capabilities = params.capabilities;
 
-    console.log("Initialized");
+    console.log("Initialize start");
     // Does the client support the `workspace/configuration` request?
     // If not, we fall back using global settings.
     hasConfigurationCapability = !!(
@@ -132,6 +135,7 @@ function onInitialize(params: InitializeParams) {
 }
 
 function onInitialized() {
+    console.log("Initialized");
     if (hasConfigurationCapability) {
         // Register for all configuration changes.
         connection.client.register(
@@ -144,6 +148,7 @@ function onInitialized() {
             connection.console.log("Workspace folder change event received.");
         });
     }
+    
 }
 
 function onDidChangeConfiguration(change: DidChangeConfigurationParams) {
@@ -179,24 +184,26 @@ async function getDocumentSettings(
 }
 
 async function validateTextDocument(textDocument: TextDocument): Promise<void> {
+    console.log("ValidateTextDocument");
     // In this simple example we get the settings for every validate run.
     let settings = await getDocumentSettings(textDocument.uri);
 
     // The validator creates diagnostics for all uppercase words length 2 and more
     let text = textDocument.getText();
-    let pattern = /\b[A-Z]{2,}\b/g;
+    let pattern = /<[^\/].*?-.*?>/g; // Starting html tag with dash
     let m: RegExpExecArray | null;
 
     let diagnostics: Diagnostic[] = [];
     while ((m = pattern.exec(text))) {
+        console.log("Mathes: ", m);
         let diagnostic: Diagnostic = {
             severity: DiagnosticSeverity.Warning,
             range: {
                 start: textDocument.positionAt(m.index),
                 end: textDocument.positionAt(m.index + m[0].length),
             },
-            message: `${m[0]} is all uppercase.`,
-            source: "ex",
+            message: `${m[0]} is a Custom Element!`,
+            source: "Custom Elements Language Service",
         };
         if (hasDiagnosticRelatedInformationCapability) {
             diagnostic.relatedInformation = [
@@ -205,14 +212,14 @@ async function validateTextDocument(textDocument: TextDocument): Promise<void> {
                         uri: textDocument.uri,
                         range: Object.assign({}, diagnostic.range),
                     },
-                    message: "Spelling matters",
+                    message: "This is pretty neat",
                 },
                 {
                     location: {
                         uri: textDocument.uri,
                         range: Object.assign({}, diagnostic.range),
                     },
-                    message: "Particularly for names",
+                    message: "2022 year of Custom Element LSP",
                 },
             ];
         }
@@ -222,3 +229,32 @@ async function validateTextDocument(textDocument: TextDocument): Promise<void> {
     // Send the computed diagnostics to VS Code.
     connection.sendDiagnostics({ uri: textDocument.uri, diagnostics });
 }
+
+/*connection.onDidOpenTextDocument((params) => {
+    console.log("OnDidOpenTextDocument");
+    console.log(params);
+    const textDocItem: TextDocumentItem = params.textDocument;
+
+    const textDoc = TextDocument.create(
+        textDocItem.uri, 
+        textDocItem.languageId,
+        textDocItem.version,
+        textDocItem.text
+    );
+
+    validateTextDocument(textDoc);
+});*/
+
+connection.onDidChangeTextDocument((params: DidChangeTextDocumentParams) => {
+    console.log("OnDidChangeTextDocument");
+    const docRef = params.textDocument;
+    const changes = params.contentChanges;
+    const textDoc = documents.get(docRef.uri);
+    if (!textDoc) return;
+    
+    console.log("Found text doc: ", textDoc);
+    const updatedDoc = TextDocument.update(textDoc, changes, textDoc?.version ?? 0 + 1);
+    console.log("Updated doc", updatedDoc);
+
+    validateTextDocument(textDoc);
+});
