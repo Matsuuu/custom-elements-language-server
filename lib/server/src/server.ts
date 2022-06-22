@@ -47,12 +47,16 @@ connection.onInitialize(onInitialize);
 connection.onInitialized(onInitialized);
 connection.onDidChangeConfiguration(onDidChangeConfiguration);
 connection.onDidChangeWatchedFiles((_change) => {
+    console.log("File changed");
     // Monitored files have change in VS Code
     connection.console.log("We received a file change event");
 });
 // This handler provides the initial list of the completion items.
 connection.onCompletion(
     (_textDocumentPosition: TextDocumentPositionParams): CompletionItem[] => {
+        // TODO: If in HTML context, enumerate valid custom elements into the 
+        // search results
+        console.log("On Completion");
         // The pass parameter contains the position of the text document in
         // which code complete got requested. For the example we ignore this
         // info and always provide the same completion items.
@@ -143,6 +147,7 @@ function onInitialized() {
 }
 
 function onDidChangeConfiguration(change: DidChangeConfigurationParams) {
+    console.log("onDidChangeConfiguration");
     if (hasConfigurationCapability) {
         // Reset all cached document settings
         documentSettings.clear();

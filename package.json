@@ -15,7 +15,7 @@
 	"activationEvents": [
 		"onLanguage:plaintext"
 	],
-	"main": "./lib/client/dist/extension",
+	"main": "./lib/client/vscode/dist/extension",
 	"contributes": {
 		"configuration": {
 			"type": "object",
