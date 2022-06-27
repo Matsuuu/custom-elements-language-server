@@ -18,6 +18,7 @@ import {
 } from "vscode-languageserver/node.js";
 
 import { TextDocument } from "vscode-languageserver-textdocument";
+import { getCompletionItemInfo, getCompletionItems } from "./completion";
 
 interface LanguageServerSettings { }
 
@@ -55,40 +56,10 @@ connection.onDidChangeWatchedFiles((_change) => {
     connection.console.log("We received a file change event");
 });
 // This handler provides the initial list of the completion items.
-connection.onCompletion(
-    (_textDocumentPosition: TextDocumentPositionParams): CompletionItem[] => {
-        // TODO: If in HTML context, enumerate valid custom elements into the 
-        // search results
-        console.log("On Completion");
-        // The pass parameter contains the position of the text document in
-        // which code complete got requested. For the example we ignore this
-        // info and always provide the same completion items.
-        return [
-            {
-                label: "TypeScript",
-                kind: CompletionItemKind.Text,
-                data: 1,
-            },
-            {
-                label: "JavaScript",
-                kind: CompletionItemKind.Text,
-                data: 2,
-            },
-        ];
-    }
-);
+connection.onCompletion(getCompletionItems);
 // This handler resolves additional information for the item selected in
 // the completion list.
-connection.onCompletionResolve((item: CompletionItem): CompletionItem => {
-    if (item.data === 1) {
-        item.detail = "TypeScript details";
-        item.documentation = "TypeScript documentation";
-    } else if (item.data === 2) {
-        item.detail = "JavaScript details";
-        item.documentation = "JavaScript documentation";
-    }
-    return item;
-});
+connection.onCompletionResolve(getCompletionItemInfo);
 
 // Make the text document manager listen on the connection
 // for open, change and close text document events
@@ -148,7 +119,7 @@ function onInitialized() {
             connection.console.log("Workspace folder change event received.");
         });
     }
-    
+
 }
 
 function onDidChangeConfiguration(change: DidChangeConfigurationParams) {
@@ -251,7 +222,7 @@ connection.onDidChangeTextDocument((params: DidChangeTextDocumentParams) => {
     const changes = params.contentChanges;
     const textDoc = documents.get(docRef.uri);
     if (!textDoc) return;
-    
+
     console.log("Found text doc: ", textDoc);
     const updatedDoc = TextDocument.update(textDoc, changes, textDoc?.version ?? 0 + 1);
     console.log("Updated doc", updatedDoc);
