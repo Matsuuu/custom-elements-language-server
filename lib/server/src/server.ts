@@ -1,26 +1,19 @@
 import {
-    CompletionItem,
-    CompletionItemKind,
     createConnection,
-    Diagnostic,
-    DiagnosticSeverity,
     DidChangeConfigurationNotification,
     DidChangeConfigurationParams,
     DidChangeTextDocumentParams,
     InitializeParams,
     InitializeResult,
     ProposedFeatures,
-    TextDocumentItem,
-    TextDocumentPositionParams,
     TextDocuments,
     TextDocumentSyncKind,
-    VersionedTextDocumentIdentifier,
 } from "vscode-languageserver/node.js";
 
 import { TextDocument } from "vscode-languageserver-textdocument";
 import { getCompletionItemInfo, getCompletionItems } from "./completion";
-
-interface LanguageServerSettings { }
+import { validateTextDocument } from "./analyzer";
+import { DEFAULT_SETTINGS, documentSettings, LanguageServerSettings, setCapabilities, setGlobalSettings } from "./settings";
 
 /**
  * ==============================================================================================0
@@ -34,10 +27,6 @@ interface LanguageServerSettings { }
 const connection = createConnection(ProposedFeatures.all);
 const documents: TextDocuments<TextDocument> = new TextDocuments(TextDocument);
 
-let defaultSettings: LanguageServerSettings = {};
-let globalSettings: LanguageServerSettings = defaultSettings;
-
-const documentSettings = new Map<string, LanguageServerSettings>();
 // Only keep settings for open documents
 documents.onDidClose((e) => {
     documentSettings.delete(e.document.uri);
@@ -72,6 +61,7 @@ function onInitialize(params: InitializeParams) {
     let capabilities = params.capabilities;
 
     console.log("Initialize start");
+    // TODO: Figure out these
     // Does the client support the `workspace/configuration` request?
     // If not, we fall back using global settings.
     hasConfigurationCapability = !!(
@@ -85,6 +75,12 @@ function onInitialize(params: InitializeParams) {
         capabilities.textDocument.publishDiagnostics &&
         capabilities.textDocument.publishDiagnostics.relatedInformation
     );
+
+    setCapabilities({
+        hasConfigurationCapability,
+        hasWorkspaceFolderCapability,
+        hasDiagnosticRelatedInformationCapability
+    })
 
     const result: InitializeResult = {
         capabilities: {
@@ -128,78 +124,15 @@ function onDidChangeConfiguration(change: DidChangeConfigurationParams) {
         // Reset all cached document settings
         documentSettings.clear();
     } else {
-        globalSettings = <LanguageServerSettings>(
-            (change.settings.languageServerExample || defaultSettings)
-        );
+        setGlobalSettings(<LanguageServerSettings>(
+            (change.settings.languageServerExample || DEFAULT_SETTINGS)
+        ));
     }
 
     // Revalidate all open text documents
-    documents.all().forEach(validateTextDocument);
+    documents.all().forEach(textDocument => validateTextDocument(connection, textDocument, documentSettings));
 }
 
-async function getDocumentSettings(
-    resource: string
-): Promise<LanguageServerSettings> {
-    if (!hasConfigurationCapability) {
-        return Promise.resolve(globalSettings);
-    }
-    let result = documentSettings.get(resource);
-    if (!result) {
-        result = connection.workspace.getConfiguration({
-            scopeUri: resource,
-            section: "customElementsLanguageServer",
-        });
-        documentSettings.set(resource, result);
-    }
-    return result;
-}
-
-async function validateTextDocument(textDocument: TextDocument): Promise<void> {
-    console.log("ValidateTextDocument");
-    // In this simple example we get the settings for every validate run.
-    let settings = await getDocumentSettings(textDocument.uri);
-
-    // The validator creates diagnostics for all uppercase words length 2 and more
-    let text = textDocument.getText();
-    let pattern = /<[^\/].*?-.*?>/g; // Starting html tag with dash
-    let m: RegExpExecArray | null;
-
-    let diagnostics: Diagnostic[] = [];
-    while ((m = pattern.exec(text))) {
-        console.log("Mathes: ", m);
-        let diagnostic: Diagnostic = {
-            severity: DiagnosticSeverity.Warning,
-            range: {
-                start: textDocument.positionAt(m.index),
-                end: textDocument.positionAt(m.index + m[0].length),
-            },
-            message: `${m[0]} is a Custom Element!`,
-            source: "Custom Elements Language Service",
-        };
-        if (hasDiagnosticRelatedInformationCapability) {
-            diagnostic.relatedInformation = [
-                {
-                    location: {
-                        uri: textDocument.uri,
-                        range: Object.assign({}, diagnostic.range),
-                    },
-                    message: "This is pretty neat",
-                },
-                {
-                    location: {
-                        uri: textDocument.uri,
-                        range: Object.assign({}, diagnostic.range),
-                    },
-                    message: "2022 year of Custom Element LSP",
-                },
-            ];
-        }
-        diagnostics.push(diagnostic);
-    }
-
-    // Send the computed diagnostics to VS Code.
-    connection.sendDiagnostics({ uri: textDocument.uri, diagnostics });
-}
 
 /*connection.onDidOpenTextDocument((params) => {
     console.log("OnDidOpenTextDocument");
@@ -227,5 +160,5 @@ connection.onDidChangeTextDocument((params: DidChangeTextDocumentParams) => {
     const updatedDoc = TextDocument.update(textDoc, changes, textDoc?.version ?? 0 + 1);
     console.log("Updated doc", updatedDoc);
 
-    validateTextDocument(textDoc);
+    validateTextDocument(connection, textDoc, documentSettings);
 });
