@@ -13,7 +13,7 @@ import {
 import { TextDocument } from "vscode-languageserver-textdocument";
 import { getCompletionItemInfo, getCompletionItems } from "./completion";
 import { validateTextDocument } from "./analyzer";
-import { DEFAULT_SETTINGS, documentSettings, LanguageServerSettings, setCapabilities, setGlobalSettings } from "./settings";
+import { DEFAULT_SETTINGS, documents, documentSettings, LanguageServerSettings, setCapabilities, setGlobalSettings } from "./settings";
 
 /**
  * ==============================================================================================0
@@ -25,7 +25,6 @@ import { DEFAULT_SETTINGS, documentSettings, LanguageServerSettings, setCapabili
  */
 
 const connection = createConnection(ProposedFeatures.all);
-const documents: TextDocuments<TextDocument> = new TextDocuments(TextDocument);
 
 // Only keep settings for open documents
 documents.onDidClose((e) => {
@@ -156,9 +155,7 @@ connection.onDidChangeTextDocument((params: DidChangeTextDocumentParams) => {
     const textDoc = documents.get(docRef.uri);
     if (!textDoc) return;
 
-    console.log("Found text doc: ", textDoc);
     const updatedDoc = TextDocument.update(textDoc, changes, textDoc?.version ?? 0 + 1);
-    console.log("Updated doc", updatedDoc);
 
     validateTextDocument(connection, textDoc, documentSettings);
 });

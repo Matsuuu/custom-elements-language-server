@@ -1,10 +1,19 @@
 import { CompletionItem, CompletionItemKind, TextDocumentPositionParams } from "vscode-languageserver/node";
+import { cursorIsInsideCustomElementTag } from "./checkers";
+import { documents } from "./settings";
 
-export function getCompletionItems(_textDocumentPosition: TextDocumentPositionParams): CompletionItem[] {
+export function getCompletionItems(textDocumentPosition: TextDocumentPositionParams): CompletionItem[] {
+    console.log("On Completion");
+    const doc = documents.get(textDocumentPosition.textDocument.uri);
+    if (!doc) return [];
+
+    const offset = doc.offsetAt(textDocumentPosition.position);
+
+    const isInsideCustomElementTag = cursorIsInsideCustomElementTag(doc, offset);
+    console.log("Is inside", isInsideCustomElementTag);
 
     // TODO: If in HTML context, enumerate valid custom elements into the 
     // search results
-    console.log("On Completion");
     // The pass parameter contains the position of the text document in
     // which code complete got requested. For the example we ignore this
     // info and always provide the same completion items.

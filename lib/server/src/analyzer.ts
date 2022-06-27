@@ -14,7 +14,6 @@ export async function validateTextDocument(connection: _Connection, textDocument
 
     let diagnostics: Diagnostic[] = [];
     while ((m = pattern.exec(text))) {
-        console.log("Mathes: ", m);
         let diagnostic: Diagnostic = {
             severity: DiagnosticSeverity.Warning,
             range: {
@@ -64,3 +63,7 @@ export async function getDocumentSettings(connection: _Connection, resource: str
     return result;
 }
 
+
+export function getHtmlElementPositions() {
+
+}
