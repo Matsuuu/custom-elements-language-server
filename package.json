@@ -23,12 +23,6 @@
 			"type": "object",
 			"title": "Example configuration",
 			"properties": {
-				"languageServerExample.maxNumberOfProblems": {
-					"scope": "resource",
-					"type": "number",
-					"default": 100,
-					"description": "Controls the maximum number of problems produced by the server."
-				},
 				"languageServerExample.trace.server": {
 					"scope": "window",
 					"type": "string",
@@ -41,7 +35,41 @@
 					"description": "Traces the communication between VS Code and the language server."
 				}
 			}
-		}
+		},
+        "grammars": [
+            {
+				"injectTo": [
+					"source.js",
+					"source.js.jsx",
+					"source.jsx",
+					"source.ts",
+					"source.tsx",
+					"text.html.basic"
+				],
+				"scopeName": "inline.lit-html",
+				"path": "./syntaxes/vscode-lit-html/lit-html.json",
+				"embeddedLanguages": {
+					"meta.embedded.block.html": "html",
+					"meta.embedded.block.css": "css",
+					"source.css": "css"
+				}
+			},
+            {
+				"injectTo": [
+					"source.js",
+					"source.js.jsx",
+					"source.jsx",
+					"source.ts",
+					"source.tsx",
+					"text.html.basic"
+				],
+				"scopeName": "inline.lit-html.string.injection",
+				"path": "./syntaxes/vscode-lit-html/lit-html-string-injection.json",
+				"embeddedLanguages": {
+					"meta.template.expression.ts": "typescript"
+				}
+			}
+        ]
 	},
 	"scripts": {
 	},

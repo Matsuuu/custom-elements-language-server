@@ -11,7 +11,6 @@ export function getCompletionItems(textDocumentPosition: TextDocumentPositionPar
     const offset = doc.offsetAt(textDocumentPosition.position);
 
     const isInsideCustomElementTag = cursorIsInsideCustomElementTag(doc, offset);
-    console.log("Is inside", isInsideCustomElementTag);
 
     const mode = languageModes.getModeAtPosition(doc, textDocumentPosition.position);
     if (!mode || !mode.doComplete) {
