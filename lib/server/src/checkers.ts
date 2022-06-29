@@ -77,7 +77,7 @@ function getMatchRange(matchedTag: string, matchIndex: number): OffsetRange {
 export function cursorIsInsideCustomElementTag(textDocument: TextDocument, offset: number) {
 
     const elems = findCustomElementsInFile(textDocument);
-    console.log("FOUND ELEMS ", elems);
+    //console.log("FOUND ELEMS ", elems);
     // TODO: Figure out if we are inside an element, and in the area in which attributes etc. can be filled into
 
     return true;

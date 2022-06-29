@@ -13,7 +13,9 @@
 		"vscode": "^1.63.0"
 	},
 	"activationEvents": [
-		"onLanguage:plaintext"
+		"onLanguage:javascript",
+		"onLanguage:typescript",
+        "onLanguage:html"
 	],
 	"main": "./lib/client/vscode/dist/extension",
 	"contributes": {

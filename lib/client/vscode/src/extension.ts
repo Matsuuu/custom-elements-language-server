@@ -34,7 +34,8 @@ export function activate(context: ExtensionContext) {
         documentSelector: [
             { scheme: 'file', language: 'html' },
             { scheme: 'file', language: 'typescript' },
-            { scheme: 'file', language: 'javascript' }
+            { scheme: 'file', language: 'javascript' },
+            { scheme: 'file', language: 'html1' }
         ],
         synchronize: {
             // Notify the server about file changes to '.clientrc files contained in the workspace

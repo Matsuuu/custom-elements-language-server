@@ -14,6 +14,7 @@ import { TextDocument } from "vscode-languageserver-textdocument";
 import { getCompletionItemInfo, getCompletionItems } from "./completion";
 import { validateTextDocument } from "./analyzer";
 import { DEFAULT_SETTINGS, documents, documentSettings, LanguageServerSettings, setCapabilities, setGlobalSettings } from "./settings";
+import { getLanguageModes, initLanguageModes, languageModes } from "./embedded-support/language-modes";
 
 /**
  * ==============================================================================================0
@@ -27,10 +28,6 @@ import { DEFAULT_SETTINGS, documents, documentSettings, LanguageServerSettings, 
 const connection = createConnection(ProposedFeatures.all);
 
 // Only keep settings for open documents
-documents.onDidClose((e) => {
-    documentSettings.delete(e.document.uri);
-});
-
 let hasConfigurationCapability: boolean = false;
 let hasWorkspaceFolderCapability: boolean = false;
 let hasDiagnosticRelatedInformationCapability: boolean = false;
@@ -81,9 +78,20 @@ function onInitialize(params: InitializeParams) {
         hasDiagnosticRelatedInformationCapability
     })
 
+    const langModes = getLanguageModes();
+    initLanguageModes(langModes);
+
+    documents.onDidClose((e) => {
+        documentSettings.delete(e.document.uri);
+    });
+
+    connection.onShutdown(() => {
+        languageModes.dispose();
+    })
+
     const result: InitializeResult = {
         capabilities: {
-            textDocumentSync: TextDocumentSyncKind.Incremental,
+            textDocumentSync: TextDocumentSyncKind.Full,
             // Tell the client that this server supports code completion.
             completionProvider: {
                 resolveProvider: true,
