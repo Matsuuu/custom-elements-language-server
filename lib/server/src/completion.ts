@@ -1,9 +1,17 @@
-import { CompletionItem, CompletionItemKind, CompletionList, TextDocumentPositionParams } from "vscode-languageserver/node";
-import { cursorIsInsideCustomElementTag } from "./checkers";
+import { getLanguageService } from "vscode-html-languageservice";
+import { CompletionItem, CompletionItemKind, CompletionList, Position, Range, TextDocumentPositionParams } from "vscode-languageserver/node";
+import { cursorIsInsideCustomElementTag, getAllLinesAsText, getLineText } from "./checkers";
+import { getDocumentRegions } from "./embedded-support/embedded-tools";
 import { languageModes } from "./embedded-support/language-modes";
 import { documents } from "./settings";
+import { TextDocument } from "vscode-languageserver-textdocument";
 
-export function getCompletionItems(textDocumentPosition: TextDocumentPositionParams): CompletionList {
+function wait(ms = 100) {
+    return new Promise(resolve => setTimeout(resolve, ms));
+}
+
+export async function getCompletionItems(textDocumentPosition: TextDocumentPositionParams): Promise<CompletionList> {
+    await wait(50); // Wait for the documents to update
     console.log("On Completion");
     const doc = documents.get(textDocumentPosition.textDocument.uri);
     if (!doc) return CompletionList.create();
@@ -16,8 +24,31 @@ export function getCompletionItems(textDocumentPosition: TextDocumentPositionPar
     if (!mode || !mode.doComplete) {
         return CompletionList.create();
     }
+    const textContent = doc.getText();
 
-    return mode?.doComplete(doc, textDocumentPosition.position) ?? [];
+    let htmlContentDoc = doc;
+    // TODO: Try to find a way to attach to the native HTML completions results
+    if (doc.languageId !== "html") {
+        const htmlTemplateMatches = Array.from(textContent.matchAll(/(?:html`)(?<htmlcontent>.*?)(?:`)/gs));
+        if (!htmlTemplateMatches || htmlTemplateMatches.length <= 0) {
+            return CompletionList.create();
+        }
+
+        let htmlContent = "";
+        for (const match of htmlTemplateMatches) {
+            htmlContent += match.groups?.["htmlcontent"] ?? "";
+        }
+        htmlContentDoc = TextDocument.create(doc.uri.replace("test-lit.js", "test-html.html"), "html", doc.version, htmlContent);
+    }
+
+    const cursorLineText = getLineText(doc, offset);
+    const codeLines = getAllLinesAsText(htmlContentDoc);
+    const correspondingLineIndex = codeLines.findIndex(line => line === cursorLineText);
+
+    const reAdjustedPosition = Position.create(correspondingLineIndex, textDocumentPosition.position.character);
+
+    const completions = mode?.doComplete(htmlContentDoc, reAdjustedPosition) ?? [];
+    return completions;
 
     // TODO: If in HTML context, enumerate valid custom elements into the 
     // search results

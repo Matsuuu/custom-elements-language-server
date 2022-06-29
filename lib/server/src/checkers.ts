@@ -41,12 +41,31 @@ export function getLineLength(textDocument: TextDocument, line: number) {
 
 export function getLineText(textDocument: TextDocument, offset: number) {
     const pos = textDocument.positionAt(offset);
-    const start = Position.create(pos.line, 0);
+    const line = pos.line;
+    const start = Position.create(line, 0);
     const lineLength = getLineLength(textDocument, pos.line);
 
-    const end = Position.create(pos.line, lineLength);
+    const end = Position.create(line, lineLength);
 
     return textDocument.getText(Range.create(start, end));
+}
+
+export function getLineTextByLine(textDocument: TextDocument, lineNum: number) {
+    const start = Position.create(lineNum, 0);
+    const lineLength = getLineLength(textDocument, lineNum);
+    const end = Position.create(lineNum, lineLength);
+    return textDocument.getText(Range.create(start, end));
+}
+
+export function getAllLinesAsText(textDocument: TextDocument) {
+    const lines = textDocument.lineCount;
+    const lineArray = [];
+    let lineCount = 0;
+    while (lineCount < lines) {
+        lineArray.push(getLineTextByLine(textDocument, lineCount));
+        lineCount++;
+    }
+    return lineArray;
 }
 
 export function findCustomElementsInFile(textDocument: TextDocument) {
