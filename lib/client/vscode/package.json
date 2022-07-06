@@ -31,6 +31,9 @@
       "vscode": "^1.63.0"
   },
   "activationEvents": [
-		"onLanguage:plaintext"
+		"onLanguage:plaintext",
+		"onLanguage:javascript",
+		"onLanguage:typescript",
+		"onLanguage:html"
 	]
 }

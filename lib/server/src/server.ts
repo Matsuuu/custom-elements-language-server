@@ -14,7 +14,6 @@ import { TextDocument } from "vscode-languageserver-textdocument";
 import { getCompletionItemInfo, getCompletionItems } from "./completion";
 import { validateTextDocument } from "./analyzer";
 import { DEFAULT_SETTINGS, documents, documentSettings, LanguageServerSettings, setCapabilities, setGlobalSettings } from "./settings";
-import { getLanguageModes, initLanguageModes, languageModes } from "./embedded-support/language-modes";
 
 /**
  * ==============================================================================================0
@@ -78,15 +77,11 @@ function onInitialize(params: InitializeParams) {
         hasDiagnosticRelatedInformationCapability
     })
 
-    const langModes = getLanguageModes();
-    initLanguageModes(langModes);
-
     documents.onDidClose((e) => {
         documentSettings.delete(e.document.uri);
     });
 
     connection.onShutdown(() => {
-        languageModes.dispose();
     })
 
     const result: InitializeResult = {

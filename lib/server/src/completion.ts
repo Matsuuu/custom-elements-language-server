@@ -1,8 +1,5 @@
-import { getLanguageService } from "vscode-html-languageservice";
 import { CompletionItem, CompletionItemKind, CompletionList, Position, Range, TextDocumentPositionParams } from "vscode-languageserver/node";
 import { cursorIsInsideCustomElementTag, getAllLinesAsText, getLineText } from "./checkers";
-import { getDocumentRegions } from "./embedded-support/embedded-tools";
-import { languageModes } from "./embedded-support/language-modes";
 import { documents } from "./settings";
 import { TextDocument } from "vscode-languageserver-textdocument";
 
@@ -20,10 +17,6 @@ export async function getCompletionItems(textDocumentPosition: TextDocumentPosit
 
     const isInsideCustomElementTag = cursorIsInsideCustomElementTag(doc, offset);
 
-    const mode = languageModes.getModeAtPosition(doc, textDocumentPosition.position);
-    if (!mode || !mode.doComplete) {
-        return CompletionList.create();
-    }
     const textContent = doc.getText();
 
     let htmlContentDoc = doc;
@@ -47,7 +40,7 @@ export async function getCompletionItems(textDocumentPosition: TextDocumentPosit
 
     const reAdjustedPosition = Position.create(correspondingLineIndex, textDocumentPosition.position.character);
 
-    const completions = mode?.doComplete(htmlContentDoc, reAdjustedPosition) ?? [];
+    const completions = CompletionList.create();
     return completions;
 
     // TODO: If in HTML context, enumerate valid custom elements into the 
