@@ -6,6 +6,8 @@ import { documents } from "./settings.js";
 
 
 let parser: Parser;
+let JavaScriptTreeSitter: Parser.Language | null | undefined;
+let HTMLTreeSitter: Parser.Language | null | undefined;
 
 function wait(ms = 100) {
     return new Promise(resolve => setTimeout(resolve, ms));
@@ -19,12 +21,20 @@ async function initializeTreeSitter() {
     // properly functioning version with node 18 / vscode / anything really
     await Parser.init();
     parser = new Parser();
-    console.log(__dirname);
-    const Javascript = await Parser.Language.load(__dirname + '/../tree-sitter-javascript.wasm');
-    parser.setLanguage(Javascript);
 
-    const tree = parser.parse('let x = 1;');
-    console.log(tree.rootNode.toString());
+    JavaScriptTreeSitter = await Parser.Language.load(__dirname + '/../tree-sitter-javascript.wasm');
+    HTMLTreeSitter = await Parser.Language.load(__dirname + '/../tree-sitter-html.wasm');
+
+    parser.setLanguage(JavaScriptTreeSitter);
+}
+
+function setParserLanguage(languageId: string) {
+    switch (languageId) {
+        case "html":
+            parser.setLanguage(HTMLTreeSitter);
+        case "javascript":
+            parser.setLanguage(JavaScriptTreeSitter);
+    }
 }
 
 export async function getCompletionItems(textDocumentPosition: TextDocumentPositionParams): Promise<CompletionList> {
@@ -34,6 +44,7 @@ export async function getCompletionItems(textDocumentPosition: TextDocumentPosit
     const doc = documents.get(textDocumentPosition.textDocument.uri);
     if (!doc) return CompletionList.create();
 
+    setParserLanguage(doc.languageId)
     const offset = doc.offsetAt(textDocumentPosition.position);
     const wordUnderCursor = getWordUnderCursor(doc, textDocumentPosition.position);
 
