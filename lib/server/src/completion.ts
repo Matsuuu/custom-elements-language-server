@@ -1,7 +1,7 @@
-import { CompletionItem, CompletionItemKind, CompletionList, Position, Range, TextDocumentPositionParams } from "vscode-languageserver/node";
-import { cursorIsInsideCustomElementTag, getAllLinesAsText, getLineText } from "./checkers";
-import { documents } from "./settings";
-import { TextDocument } from "vscode-languageserver-textdocument";
+import { CompletionItem, CompletionItemKind, CompletionList, TextDocumentPositionParams } from "vscode-languageserver/node";
+import { cursorIsCreatingAttribute, cursorIsCreatingHtmlTag, cursorIsInsideHtmlTag } from "./checkers.js";
+import { getWordUnderCursor } from "./lsp-util.js";
+import { documents } from "./settings.js";
 
 function wait(ms = 100) {
     return new Promise(resolve => setTimeout(resolve, ms));
@@ -14,36 +14,45 @@ export async function getCompletionItems(textDocumentPosition: TextDocumentPosit
     if (!doc) return CompletionList.create();
 
     const offset = doc.offsetAt(textDocumentPosition.position);
+    const wordUnderCursor = getWordUnderCursor(doc, textDocumentPosition.position);
 
     console.log("Lang ID: ", doc.languageId);
-    const isInsideCustomElementTag = cursorIsInsideCustomElementTag(doc, offset);
+    const isCreatingAttribute = cursorIsCreatingAttribute(doc, offset);
+    const isCreatingHtmlTag = cursorIsCreatingHtmlTag(wordUnderCursor);
+    const isInsideHtmlTag = cursorIsInsideHtmlTag(doc, offset);
 
-    const textContent = doc.getText();
-
-    let htmlContentDoc = doc;
     // TODO: Try to find a way to attach to the native HTML completions results
-    if (doc.languageId !== "html") {
-        // Map the HTML Content areas with a named matching group 'htmlcontent'
-        const htmlTemplateMatches = Array.from(textContent.matchAll(/(?:html`)(?<htmlcontent>.*?)(?:`)/gs));
-        if (!htmlTemplateMatches || htmlTemplateMatches.length <= 0) {
-            return CompletionList.create();
-        }
 
-        let htmlContent = "";
-        for (const match of htmlTemplateMatches) {
-            htmlContent += match.groups?.["htmlcontent"] ?? "";
-        }
-        htmlContentDoc = TextDocument.create(doc.uri.replace("test-lit.js", "test-html.html"), "html", doc.version, htmlContent);
+    if (isCreatingHtmlTag) {
+        console.log("Returning default values: ");
+        return CompletionList.create([
+            {
+                label: "my-element",
+                kind: CompletionItemKind.Text,
+                data: 1,
+            },
+            {
+                label: "my-list",
+                kind: CompletionItemKind.Text,
+                data: 2,
+            },
+            {
+                label: "other-list",
+                kind: CompletionItemKind.Text,
+                data: 3,
+            },
+        ]);
     }
 
-    const cursorLineText = getLineText(doc, offset);
-    const codeLines = getAllLinesAsText(htmlContentDoc);
-    const correspondingLineIndex = codeLines.findIndex(line => line === cursorLineText);
-
-    const reAdjustedPosition = Position.create(correspondingLineIndex, textDocumentPosition.position.character);
-
-    const completions = CompletionList.create();
-    return completions;
+    if (isCreatingAttribute) {
+        return CompletionList.create([
+            {
+                label: "attri-bute",
+                kind: CompletionItemKind.Text,
+                data: 1,
+            },
+        ])
+    }
 
     // TODO: If in HTML context, enumerate valid custom elements into the 
     // search results

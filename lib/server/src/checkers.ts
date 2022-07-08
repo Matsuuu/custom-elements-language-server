@@ -1,4 +1,4 @@
-import { ClientCapabilities, Position, Range } from "vscode-languageserver";
+import { ClientCapabilities } from "vscode-languageserver";
 import { TextDocument } from "vscode-languageserver-textdocument";
 
 const CUSTOM_ELEMENT_STARTER_TAG_REGEX = /<[^\/]*\w*-\w*[^>]*>/g;
@@ -29,44 +29,6 @@ export function checkIfHasDiagnosticRelatedInformationCapability(capabilities: C
     );
 }
 
-export function getLineLength(textDocument: TextDocument, line: number) {
-    const start = Position.create(line, 0);
-    const nextLineStart = Position.create(line + 1, 0);
-
-    const startOffset = textDocument.offsetAt(start);
-    const nextLineStartOffset = textDocument.offsetAt(nextLineStart);
-
-    return nextLineStartOffset - startOffset - 1;
-}
-
-export function getLineText(textDocument: TextDocument, offset: number) {
-    const pos = textDocument.positionAt(offset);
-    const line = pos.line;
-    const start = Position.create(line, 0);
-    const lineLength = getLineLength(textDocument, pos.line);
-
-    const end = Position.create(line, lineLength);
-
-    return textDocument.getText(Range.create(start, end));
-}
-
-export function getLineTextByLine(textDocument: TextDocument, lineNum: number) {
-    const start = Position.create(lineNum, 0);
-    const lineLength = getLineLength(textDocument, lineNum);
-    const end = Position.create(lineNum, lineLength);
-    return textDocument.getText(Range.create(start, end));
-}
-
-export function getAllLinesAsText(textDocument: TextDocument) {
-    const lines = textDocument.lineCount;
-    const lineArray = [];
-    let lineCount = 0;
-    while (lineCount < lines) {
-        lineArray.push(getLineTextByLine(textDocument, lineCount));
-        lineCount++;
-    }
-    return lineArray;
-}
 
 export function findCustomElementsInFile(textDocument: TextDocument) {
     const text = textDocument.getText();
@@ -93,11 +55,16 @@ function getMatchRange(matchedTag: string, matchIndex: number): OffsetRange {
     }
 }
 
-export function cursorIsInsideCustomElementTag(textDocument: TextDocument, offset: number) {
+export function cursorIsCreatingHtmlTag(wordUnderCursor: string) {
+    return wordUnderCursor.match(new RegExp(/<[A-Za-z].-{0,1}[A-Za-z]{0,}/));
+}
 
-    const elems = findCustomElementsInFile(textDocument);
-    //console.log("FOUND ELEMS ", elems);
-    // TODO: Figure out if we are inside an element, and in the area in which attributes etc. can be filled into
+export function cursorIsCreatingAttribute(textDocument: TextDocument, offset: number) {
+
+    return false;
+}
+
+export function cursorIsInsideHtmlTag(textDocument: TextDocument, offset: number) {
 
     return true;
 }

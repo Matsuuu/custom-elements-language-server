@@ -3,7 +3,7 @@ import { Diagnostic, DiagnosticSeverity, _Connection } from "vscode-languageserv
 import { documentSettings, getCapabilities, getGlobalSettings, LanguageServerSettings } from "./settings";
 
 export async function validateTextDocument(connection: _Connection, textDocument: TextDocument, documentSettings: Map<string, LanguageServerSettings>): Promise<void> {
-    console.log("ValidateTextDocument");
+    //console.log("ValidateTextDocument");
     // In this simple example we get the settings for every validate run.
     let settings = await getDocumentSettings(connection, textDocument.uri);
 
@@ -63,7 +63,3 @@ export async function getDocumentSettings(connection: _Connection, resource: str
     return result;
 }
 
-
-export function getHtmlElementPositions() {
-
-}

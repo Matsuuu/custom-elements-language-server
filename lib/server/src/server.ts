@@ -121,7 +121,7 @@ function onInitialized() {
 }
 
 function onDidChangeConfiguration(change: DidChangeConfigurationParams) {
-    console.log("onDidChangeConfiguration");
+    // console.log("onDidChangeConfiguration");
     if (hasConfigurationCapability) {
         // Reset all cached document settings
         documentSettings.clear();
