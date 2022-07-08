@@ -10,6 +10,8 @@ import {
     TextDocumentSyncKind,
 } from "vscode-languageserver/node.js";
 
+console.log("NODE VERSION: ", process.version)
+
 import { TextDocument } from "vscode-languageserver-textdocument";
 import { getCompletionItemInfo, getCompletionItems } from "./completion";
 import { validateTextDocument } from "./analyzer";
