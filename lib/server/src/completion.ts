@@ -15,6 +15,7 @@ export async function getCompletionItems(textDocumentPosition: TextDocumentPosit
 
     const offset = doc.offsetAt(textDocumentPosition.position);
 
+    console.log("Lang ID: ", doc.languageId);
     const isInsideCustomElementTag = cursorIsInsideCustomElementTag(doc, offset);
 
     const textContent = doc.getText();
@@ -22,6 +23,7 @@ export async function getCompletionItems(textDocumentPosition: TextDocumentPosit
     let htmlContentDoc = doc;
     // TODO: Try to find a way to attach to the native HTML completions results
     if (doc.languageId !== "html") {
+        // Map the HTML Content areas with a named matching group 'htmlcontent'
         const htmlTemplateMatches = Array.from(textContent.matchAll(/(?:html`)(?<htmlcontent>.*?)(?:`)/gs));
         if (!htmlTemplateMatches || htmlTemplateMatches.length <= 0) {
             return CompletionList.create();
