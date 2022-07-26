@@ -44,8 +44,29 @@ export async function getCompletionItems(textDocumentPosition: TextDocumentPosit
     const doc = documents.get(textDocumentPosition.textDocument.uri);
     if (!doc) return CompletionList.create();
 
-    setParserLanguage(doc.languageId)
+    const position = textDocumentPosition.position;
     const offset = doc.offsetAt(textDocumentPosition.position);
+
+
+    setParserLanguage(doc.languageId)
+    // TODO: Instead of re-parsing, we should store trees and use parser.edit to apply edits.
+    const tree = parser.parse(doc.getText());
+    const cursor = tree.walk();
+
+    // Okay so this is what we are going to do:
+    //
+    // If we are in a HTML file, we will
+    // - Find the current node by walking the tree and matching positions
+    //  - Or possibly we could query for start_tags and attribute_name tags
+    // - Check if the tree node is the one under the cursor
+    // - Contextually check for html elements/attributes/events matching the word under cursor
+    console.log(tree);
+    console.log(tree.rootNode.toString());
+
+    const curr = cursor.currentNode().firstChild;
+    console.log("curr", curr)
+    console.log(curr?.toString())
+
     const wordUnderCursor = getWordUnderCursor(doc, textDocumentPosition.position);
 
     console.log("Lang ID: ", doc.languageId);
