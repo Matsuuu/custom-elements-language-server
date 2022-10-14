@@ -1,45 +1,14 @@
 import { CompletionItem, CompletionItemKind, CompletionList, TextDocumentPositionParams } from "vscode-languageserver/node";
-import Parser = require("web-tree-sitter");
 import { cursorIsCreatingAttribute, cursorIsCreatingHtmlTag, cursorIsInsideHtmlTag } from "./checkers.js";
 import { getWordUnderCursor } from "./lsp-util.js";
 import { documents } from "./settings.js";
-
-
-let parser: Parser;
-let JavaScriptTreeSitter: Parser.Language | null | undefined;
-let HTMLTreeSitter: Parser.Language | null | undefined;
 
 function wait(ms = 100) {
     return new Promise(resolve => setTimeout(resolve, ms));
 }
 
-async function initializeTreeSitter() {
-    if (parser) return;
-
-    // We are going to have to deal with the tree sitter javascript wasm for now
-    // since the node bindings seem to be in deep a development hell of not having a 
-    // properly functioning version with node 18 / vscode / anything really
-    await Parser.init();
-    parser = new Parser();
-
-    JavaScriptTreeSitter = await Parser.Language.load(__dirname + '/../tree-sitter-javascript.wasm');
-    HTMLTreeSitter = await Parser.Language.load(__dirname + '/../tree-sitter-html.wasm');
-
-    parser.setLanguage(JavaScriptTreeSitter);
-}
-
-function setParserLanguage(languageId: string) {
-    switch (languageId) {
-        case "html":
-            parser.setLanguage(HTMLTreeSitter);
-        case "javascript":
-            parser.setLanguage(JavaScriptTreeSitter);
-    }
-}
-
 export async function getCompletionItems(textDocumentPosition: TextDocumentPositionParams): Promise<CompletionList> {
     await wait(50); // Wait for the documents to update
-    await initializeTreeSitter();
     console.log("On Completion");
     const doc = documents.get(textDocumentPosition.textDocument.uri);
     if (!doc) return CompletionList.create();
@@ -48,10 +17,6 @@ export async function getCompletionItems(textDocumentPosition: TextDocumentPosit
     const offset = doc.offsetAt(textDocumentPosition.position);
 
 
-    setParserLanguage(doc.languageId)
-    // TODO: Instead of re-parsing, we should store trees and use parser.edit to apply edits.
-    const tree = parser.parse(doc.getText());
-    const cursor = tree.walk();
 
     // Okay so this is what we are going to do:
     //
@@ -60,12 +25,7 @@ export async function getCompletionItems(textDocumentPosition: TextDocumentPosit
     //  - Or possibly we could query for start_tags and attribute_name tags
     // - Check if the tree node is the one under the cursor
     // - Contextually check for html elements/attributes/events matching the word under cursor
-    console.log(tree);
-    console.log(tree.rootNode.toString());
 
-    const curr = cursor.currentNode().firstChild;
-    console.log("curr", curr)
-    console.log(curr?.toString())
 
     const wordUnderCursor = getWordUnderCursor(doc, textDocumentPosition.position);
 
