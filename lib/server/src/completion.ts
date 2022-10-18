@@ -13,7 +13,20 @@ export async function getCompletionItems(textDocumentPosition: TextDocumentPosit
     const doc = documents.get(textDocumentPosition.textDocument.uri);
     if (!doc) return CompletionList.create();
 
+    const position = textDocumentPosition.position;
     const offset = doc.offsetAt(textDocumentPosition.position);
+
+
+
+    // Okay so this is what we are going to do:
+    //
+    // If we are in a HTML file, we will
+    // - Find the current node by walking the tree and matching positions
+    //  - Or possibly we could query for start_tags and attribute_name tags
+    // - Check if the tree node is the one under the cursor
+    // - Contextually check for html elements/attributes/events matching the word under cursor
+
+
     const wordUnderCursor = getWordUnderCursor(doc, textDocumentPosition.position);
 
     console.log("Lang ID: ", doc.languageId);
