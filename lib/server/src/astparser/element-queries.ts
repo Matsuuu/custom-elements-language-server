@@ -26,6 +26,7 @@ async function test() {
 
     console.log("Nodes:");
     nodes.forEach(node => console.log(node.kind + "\n"))
+    // TODO: Map nodes on file to a position range -> node map so we can find nodes by their position
 
     const parseOutput = "";
 
