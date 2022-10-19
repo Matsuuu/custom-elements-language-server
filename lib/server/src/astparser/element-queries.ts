@@ -1,18 +1,14 @@
 import * as ts from "typescript";
+import { initParser } from "./parser";
 
 async function test() {
 
     // Boiler
     const fileNames = ["test-project/src/TestProject.ts"];
-    const options: ts.CompilerOptions = {};
 
-    const createdFiles: Record<string, string> = {}
-    const host = ts.createCompilerHost(options);
-    host.writeFile = (fileName: string, contents: string) => createdFiles[fileName] = contents
+    const parser = initParser(fileNames);
 
-    const program = ts.createProgram(fileNames, options);
-
-    const sourceFile = program.getSourceFile(fileNames[0]);
+    const sourceFile = parser.getSourceFile(fileNames[0]);
 
     const nodes: ts.Node[] = [];
 
