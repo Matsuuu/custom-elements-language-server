@@ -7,14 +7,13 @@ import './my-footer.js';
 
 @customElement('my-page')
 class MyPage extends LitElement {
-  
-  firstUpdated() {
-    
-  }
 
-    render() {  
-      return html`
-      <m
+    firstUpdated() {
+
+    }
+
+    render() {
+        return html`
       <my-header></my-header>
       <my-article></my-article>
       <my-footer></my-footer>
