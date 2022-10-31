@@ -1,52 +1,37 @@
-import * as acorn from "acorn";
+import * as ts from "typescript";
 
 async function test() {
-    acorn.Parser.extend(
-        require("acorn-jsx"),
-        require("acorn-es7-plugin")
-    );
 
-    const parseOutput = acorn.parse(code, { ecmaVersion: 2022, sourceType: "module" });
+    // Boiler
+    const fileNames = ["test-project/src/TestProject.ts"];
+    const options: ts.CompilerOptions = {};
 
-    console.log(parseOutput);
-}
+    const createdFiles: Record<string, string> = {}
+    const host = ts.createCompilerHost(options);
+    host.writeFile = (fileName: string, contents: string) => createdFiles[fileName] = contents
 
-let code = `
-import { LitElement, html } from 'lit';
-import { customElement } from 'lit/decorators.js';
+    const program = ts.createProgram(fileNames, options);
 
-import './my-header.js';
-import './my-article.js';
-import './my-footer.js';
+    const sourceFile = program.getSourceFile(fileNames[0]);
 
-@customElement('my-page')
-class MyPage extends LitElement {
+    const nodes: ts.Node[] = [];
 
-    firstUpdated() {
-
+    function visitAndAddNode(node: ts.Node) {
+        nodes.push(node);
+        node.forEachChild(visitAndAddNode);
     }
 
-    render() {
-        return html\`
-      <my-header></my-header>
-      <my-article></my-article>
-      <my-footer></my-footer>
-		<my-multi-row
-		  foo="bar"
-		></my-multi-row>
-      <
-		my-janky-row>
-		</my-janky-row>
-		<
-		my-other-janky-row
-		>
-		</my-other-janky-row>
-    \`;
-    }
+    sourceFile?.forEachChild(visitAndAddNode);
+
+
+    console.log("Nodes:");
+    nodes.forEach(node => console.log(node.kind + "\n"))
+    // TODO: Map nodes on file to a position range -> node map so we can find nodes by their position
+
+    const parseOutput = "";
+
+    console.log("Parser output: ", parseOutput);
 }
-
-
-`;
 
 test();
 
