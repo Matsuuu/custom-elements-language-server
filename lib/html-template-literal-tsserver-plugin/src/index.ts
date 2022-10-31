@@ -16,7 +16,7 @@ class HTMLTemplateLiteralPlugin {
             "Starting up HTML Template Literal TSServer Plugin"
         );
 
-        const htmlTemplateLiteralLanguageService = new HTMLTemplateLiteralLanguageService()
+        const htmlTemplateLiteralLanguageService = new HTMLTemplateLiteralLanguageService(this._typescript, this.htmlLanguageService)
 
         const languageService = decorateWithTemplateLanguageService(
             this._typescript,
@@ -38,7 +38,7 @@ class HTMLTemplateLiteralPlugin {
 
     private getTemplateSettings() {
         return {
-            get tags() { return ["html"] },
+            get tags() { return ["html", "htm"] },
             enableForStringWithSubstitutions: true,
             getSubstitutions: (templateString: any, spans: any): string => {
                 return "";
