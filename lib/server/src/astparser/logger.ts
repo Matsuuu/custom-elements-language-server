@@ -5,6 +5,10 @@ export class Logger implements tss.server.Logger {
     // TODO: Actually care about level
     private level: tss.server.LogLevel = tss.server.LogLevel.normal;
 
+    constructor() {
+
+    }
+
     hasLevel(level: tss.server.LogLevel): boolean {
         return level >= tss.server.LogLevel.terse && level <= tss.server.LogLevel.verbose;
     }
