@@ -1,13 +1,16 @@
 import * as ts from "typescript";
 import * as tss from "typescript/lib/tsserverlibrary";
 import { createProjectService } from "./project-service";
+import { ServerHost } from "./server-host";
+// @ts-ignore
+import * as LangServerConfig from "html-template-literal-tsserver-plugin";
 
 const COMPILER_OPTIONS: ts.CompilerOptions = {};
 
+const TEST_INPUT_FILE = "test-project/src/test.ts";
+
 export class ASTParser {
     program: ts.Program = ts.createProgram([], {});
-    languageService?: ts.LanguageService;
-    languageServiceHost?: LanguageServiceHost;
 
     private nodes: Map<string, Array<ts.Node>> =
         new Map(); // Preliminary base structure for queryable nodes, improve as
@@ -28,21 +31,49 @@ export class ASTParser {
         // TODO: Figure out how we could build these. This would allow us to 
         // augment the language service with out plugin IF I'M READING INTO THIS RIGHT
         // Could we use tss.server.ConfiguredProject ?
-        const project: tss.server.Project = {} as tss.server.Project;
         const serverHost = new ServerHost();
 
+        const conf = LangServerConfig({ typescript: ts });
         const projectService = createProjectService(serverHost);
+
+        // TODO: CONTINUE HERE: Somehow try to either open a client file, generating a ConfiguredProject or 
+        // try and open a externalProject from a tsconfig/jsconfig file.
+        // ... Maybe better to use the file if there is not tsconfig/jsconfig and it might not work.
+        const result = projectService.openClientFile(TEST_INPUT_FILE);
+        const configuredProjects = projectService.configuredProjects;
+
+        console.log("==================");
+        console.log("RESULT ", result);
+        console.log("CONFIGURED ", configuredProjects);
+        console.log("==================");
+
+        const projectNamesIterator = projectService.configuredProjects.keys();
+        const projectNames: string[] = [];
+        let round = undefined;
+        while (!(round = projectNamesIterator.next()).done) {
+            projectNames.push(round.value);
+        }
+
+        const project = configuredProjects.get(projectNames[0]);
+        if (!project) {
+            return;
+        }
 
         // ===== THIS IS JUST SOME SCAFFOLDING CODE TO TEST STUFF
         // CLASSIFY LATER
 
         const pluginCreateInfo: tss.server.PluginCreateInfo = {
             project: project,
-            languageService: undefined,
-            languageServiceHost: this.languageServiceHost,
+            languageService: project.getLanguageService(),
+            languageServiceHost: project,
             serverHost: serverHost,
             config: {}
         }
+
+        const languageService = conf.create(pluginCreateInfo);
+
+        console.log("FUCK YEAH, WE DID IT!")
+        console.log(languageService);
 
         // this.languageService = conf.create();
 

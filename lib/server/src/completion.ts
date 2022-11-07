@@ -20,11 +20,7 @@ export async function getCompletionItems(textDocumentPosition: TextDocumentPosit
     console.log("Parsed nodes");
     const map = new Map<string, string>();
     map.set(doc.uri, doc.getText());
-    parser.languageServiceHost?.sync(map)
 
-    const completionsOpts: ts.GetCompletionsAtPositionOptions = {};
-    const completions = parser.languageService?.getCompletionsAtPosition(doc.uri, doc.offsetAt(textDocumentPosition.position), completionsOpts);
-    console.log("Completions ", completions);
 
     return CompletionList.create();
 }
