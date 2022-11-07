@@ -1,4 +1,4 @@
-import ts from "typescript";
+import * as ts from "typescript";
 import { CompletionItem, CompletionItemKind } from "vscode-languageserver-types";
 
 export function completionItemToCompletionEntry(completionItem: CompletionItem): ts.CompletionEntry {

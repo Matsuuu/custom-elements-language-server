@@ -2,7 +2,6 @@ import * as ts from "typescript";
 import * as tss from "typescript/lib/tsserverlibrary";
 import { createProjectService } from "./project-service";
 import { ServerHost } from "./server-host";
-// @ts-ignore
 import * as LangServerConfig from "html-template-literal-tsserver-plugin";
 
 const COMPILER_OPTIONS: ts.CompilerOptions = {};
@@ -11,6 +10,7 @@ const TEST_INPUT_FILE = "test-project/src/test.ts";
 
 export class ASTParser {
     program: ts.Program = ts.createProgram([], {});
+    languageService: ts.LanguageService | undefined;
 
     private nodes: Map<string, Array<ts.Node>> =
         new Map(); // Preliminary base structure for queryable nodes, improve as
@@ -20,7 +20,8 @@ export class ASTParser {
         this.program = ts.createProgram(fileNames, COMPILER_OPTIONS);
     }
 
-    public parseNodes(fileName: string) {
+    public parseFile(fileName: string) {
+        fileName = fileName.replace("file://", "");
         const sourceFile = this.getSourceFile(fileName);
 
         const files: ts.MapLike<{ version: number }> = { [fileName]: { version: 0 } };
@@ -33,13 +34,13 @@ export class ASTParser {
         // Could we use tss.server.ConfiguredProject ?
         const serverHost = new ServerHost();
 
-        const conf = LangServerConfig({ typescript: ts });
+        const conf = LangServerConfig({ typescript: tss });
         const projectService = createProjectService(serverHost);
 
         // TODO: CONTINUE HERE: Somehow try to either open a client file, generating a ConfiguredProject or 
         // try and open a externalProject from a tsconfig/jsconfig file.
         // ... Maybe better to use the file if there is not tsconfig/jsconfig and it might not work.
-        const result = projectService.openClientFile(TEST_INPUT_FILE);
+        const result = projectService.openClientFile(fileName);
         const configuredProjects = projectService.configuredProjects;
 
         console.log("==================");
@@ -53,6 +54,7 @@ export class ASTParser {
         while (!(round = projectNamesIterator.next()).done) {
             projectNames.push(round.value);
         }
+        console.log("Project names: ", projectNames);
 
         const project = configuredProjects.get(projectNames[0]);
         if (!project) {
@@ -70,12 +72,10 @@ export class ASTParser {
             config: {}
         }
 
-        const languageService = conf.create(pluginCreateInfo);
+        this.languageService = conf.create(pluginCreateInfo);
 
         console.log("FUCK YEAH, WE DID IT!")
-        console.log(languageService);
-
-        // this.languageService = conf.create();
+        console.log(this.languageService);
 
         // ============
     }

@@ -1,5 +1,5 @@
 import { decorateWithTemplateLanguageService } from "typescript-template-language-service-decorator";
-import ts from "typescript/lib/tsserverlibrary";
+import * as tss from "typescript/lib/tsserverlibrary";
 import { getLanguageService, LanguageService as HtmlLanguageService } from "vscode-html-languageservice";
 import { HTMLTemplateLiteralLanguageService } from "./html-template-literal-language-service";
 
@@ -7,11 +7,11 @@ class HTMLTemplateLiteralPlugin {
     private _htmlLanguageService?: HtmlLanguageService;
     private _config = {};
 
-    public constructor(private readonly _typescript: typeof ts) {
+    public constructor(private readonly _typescript: typeof tss) {
 
     }
 
-    public create(info: ts.server.PluginCreateInfo): ts.LanguageService {
+    public create(info: tss.server.PluginCreateInfo): tss.LanguageService {
         info.project.projectService.logger.info(
             "Starting up HTML Template Literal TSServer Plugin"
         );
@@ -47,4 +47,4 @@ class HTMLTemplateLiteralPlugin {
     }
 }
 
-export = (mod: { typescript: typeof ts }) => new HTMLTemplateLiteralPlugin(mod.typescript);
+export = (mod: { typescript: typeof tss }) => new HTMLTemplateLiteralPlugin(mod.typescript);

@@ -1,5 +1,5 @@
 import { ScriptElementKind } from "typescript";
-import ts from "typescript/lib/tsserverlibrary";
+import * as tss from "typescript/lib/tsserverlibrary";
 import { TemplateContext, TemplateLanguageService } from "typescript-template-language-service-decorator";
 import { LanguageService as HtmlLanguageService } from "vscode-html-languageservice";
 import { getDocumentRegions } from "./embedded-support";
@@ -9,7 +9,7 @@ import { completionItemToCompletionEntry } from "./interop";
 export class HTMLTemplateLiteralLanguageService implements TemplateLanguageService {
 
     constructor(
-        private readonly typescript: typeof ts,
+        private readonly typescript: typeof tss,
         private readonly htmlLanguageService: HtmlLanguageService
     ) {
 
@@ -17,8 +17,8 @@ export class HTMLTemplateLiteralLanguageService implements TemplateLanguageServi
 
     public getCompletionsAtPosition(
         context: TemplateContext,
-        position: ts.LineAndCharacter
-    ): ts.CompletionInfo {
+        position: tss.LineAndCharacter
+    ): tss.CompletionInfo {
 
         const htmlLSCompletions = this.getCompletionItems(context, position);
         const defaultCompletionItems = htmlLSCompletions.items.map(completionItemToCompletionEntry);
@@ -31,7 +31,7 @@ export class HTMLTemplateLiteralLanguageService implements TemplateLanguageServi
 
     }
 
-    private getCompletionItems(context: TemplateContext, position: ts.LineAndCharacter) {
+    private getCompletionItems(context: TemplateContext, position: tss.LineAndCharacter) {
         const document = createTextDocumentFromContext(context);
         const documentRegions = getDocumentRegions(this.htmlLanguageService, document);
         const languageId = documentRegions.getLanguageAtPosition(position);

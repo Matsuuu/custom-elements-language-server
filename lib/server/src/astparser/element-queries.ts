@@ -7,7 +7,7 @@ async function test() {
     const fileNames = ["test-project/src/test.ts"];
 
     const parser = initParser(fileNames);
-    parser.parseNodes(fileNames[0])
+    parser.parseFile(fileNames[0])
 
     const parseOutput = "";
 
