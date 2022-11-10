@@ -1,5 +1,4 @@
 import { CompletionItem, CompletionItemKind, CompletionList, TextDocumentPositionParams } from "vscode-languageserver/node";
-import { initParser } from "./astparser/parser.js";
 import { documents } from "./settings.js";
 import * as ts from "typescript";
 import { getLanguageServiceInstance } from "./language-services/language-services.js";
@@ -16,8 +15,6 @@ export async function getCompletionItems(textDocumentPosition: TextDocumentPosit
 
     // This code is butchered just to test out some of the plugin stuff. Nothing here should be saved
     const files = documents.all().map(d => d.uri);
-    const parser = initParser(files);
-    parser.parseFile(doc.uri);
     console.log("Parsed nodes");
     const map = new Map<string, string>();
     map.set(doc.uri, doc.getText());
@@ -26,7 +23,7 @@ export async function getCompletionItems(textDocumentPosition: TextDocumentPosit
     const langService = getLanguageServiceInstance();
 
     const completionsOpts: ts.GetCompletionsAtPositionOptions = {};
-    const completions = parser.languageService?.getCompletionsAtPosition(fileName, doc.offsetAt(textDocumentPosition.position), completionsOpts);
+    const completions = langService.languageService?.getCompletionsAtPosition(fileName, doc.offsetAt(textDocumentPosition.position), completionsOpts);
 
 
     return completionsToList(completions);

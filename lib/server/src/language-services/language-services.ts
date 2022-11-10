@@ -22,6 +22,10 @@ export class LanguageServices {
 
     private _languageService?: tss.LanguageService;
 
+    public get languageService() {
+        return this._languageService;
+    }
+
     constructor() {
         const serverHost = new ServerHost();
 
@@ -48,6 +52,7 @@ export class LanguageServices {
         const project = configuredProjects.get(TEST_INPUT_FILE);
 
         if (!project) {
+            console.error("No project found");
             return;
         }
 
