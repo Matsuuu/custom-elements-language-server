@@ -2,6 +2,7 @@ import { CompletionItem, CompletionItemKind, CompletionList, TextDocumentPositio
 import { initParser } from "./astparser/parser.js";
 import { documents } from "./settings.js";
 import * as ts from "typescript";
+import { getLanguageServiceInstance } from "./language-services/language-services.js";
 
 function wait(ms = 100) {
     return new Promise(resolve => setTimeout(resolve, ms));
@@ -21,6 +22,8 @@ export async function getCompletionItems(textDocumentPosition: TextDocumentPosit
     const map = new Map<string, string>();
     map.set(doc.uri, doc.getText());
     const fileName = doc.uri.replace("file://", "");
+
+    const langService = getLanguageServiceInstance();
 
     const completionsOpts: ts.GetCompletionsAtPositionOptions = {};
     const completions = parser.languageService?.getCompletionsAtPosition(fileName, doc.offsetAt(textDocumentPosition.position), completionsOpts);
