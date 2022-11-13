@@ -8,16 +8,12 @@ function wait(ms = 100) {
 }
 
 export async function getCompletionItems(textDocumentPosition: TextDocumentPositionParams): Promise<CompletionList> {
+    // TODO: Get rid of this wait
     await wait(50); // Wait for the documents to update
     console.log("On Completion");
     const doc = documents.get(textDocumentPosition.textDocument.uri);
     if (!doc) return CompletionList.create();
 
-    // This code is butchered just to test out some of the plugin stuff. Nothing here should be saved
-    const files = documents.all().map(d => d.uri);
-    console.log("Parsed nodes");
-    const map = new Map<string, string>();
-    map.set(doc.uri, doc.getText());
     const fileName = doc.uri.replace("file://", "");
 
     const languageServiceManager = getLanguageServiceManagerInstance();

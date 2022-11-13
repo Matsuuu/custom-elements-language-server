@@ -15,6 +15,11 @@ export class HTMLTemplateLiteralLanguageService implements TemplateLanguageServi
 
     }
 
+    getDefinitionAtPosition(context: TemplateContext, position: ts.LineAndCharacter): ts.DefinitionInfo[] {
+        console.log("Get definition");
+        return [];
+    }
+
     public getCompletionsAtPosition(
         context: TemplateContext,
         position: tss.LineAndCharacter

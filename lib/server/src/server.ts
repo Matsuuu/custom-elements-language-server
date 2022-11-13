@@ -3,9 +3,12 @@ import {
     DidChangeConfigurationNotification,
     DidChangeConfigurationParams,
     DidChangeTextDocumentParams,
+    Hover,
+    HoverParams,
     InitializeParams,
     InitializeResult,
     ProposedFeatures,
+    ServerRequestHandler,
     TextDocuments,
     TextDocumentSyncKind,
 } from "vscode-languageserver/node.js";
@@ -41,6 +44,7 @@ connection.onDidChangeWatchedFiles((_change) => {
     // Monitored files have change in VS Code
     connection.console.log("We received a file change event");
 });
+
 // This handler provides the initial list of the completion items.
 connection.onCompletion(getCompletionItems);
 // This handler resolves additional information for the item selected in

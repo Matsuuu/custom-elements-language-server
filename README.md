@@ -3,6 +3,12 @@
 > **Warning**
 > This repository / project is still extremely Work In Progress. Rapid changes and refactors are going to happen
 
+## TODO
+
+- Scan CEM manifest and feed it into the html-template-literal-tssserver-plugin
+- Find a way to get declaration / references working with html literaly stuff
+- ?
+
 
 ## The Goal
 

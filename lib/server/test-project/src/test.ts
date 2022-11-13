@@ -5,16 +5,20 @@ import './my-header.js';
 import './my-article.js';
 import './my-footer.js';
 
+function foo() {
+    return "bar";
+}
+
 @customElement('my-page')
 class MyPage extends LitElement {
 
     firstUpdated() {
-
+        foo();
     }
 
     render() {
         return html`
-        
+        ${foo()}
       <my-header></my-header>
       <my-article></my-article>
       <my-footer></my-footer>
@@ -31,5 +35,6 @@ class MyPage extends LitElement {
     `;
     }
 }
+
 
 
