@@ -3,6 +3,7 @@ import * as tss from "typescript/lib/tsserverlibrary";
 import { ServerHost } from "./server-host";
 import * as HTMLTemplateLiteralTSServerPlugin from "html-template-literal-tsserver-plugin";
 import { getProjectService } from "./project-service";
+import { getPluginCreateInfo } from "./plugin-creation";
 
 
 // TODO: Parse nodes and map them to this.nodes
@@ -33,48 +34,22 @@ export class LanguageServices {
         const projectService = getProjectService(serverHost);
 
         const result = projectService.openClientFile(TEST_INPUT_FILE);
-        // =============================
-        // This part is in plugin-creation.ts and should be abstracted there.
-        // However it requires some kind of a file or folder to find the typescript project
-        //
-        // TODO: Next steps: Find a good medium to pass to the LanguageServices instance to 
-        // be able to create a plugincreateinfo 
 
-        const projectNamesIterator = projectService.configuredProjects.keys();
-        const projectNames: string[] = [];
-        let round = undefined;
-        while (!(round = projectNamesIterator.next()).done) {
-            projectNames.push(round.value);
-        }
-        console.log("Project names: ", projectNames);
-
-        const configuredProjects = projectService.configuredProjects;
-        const project = configuredProjects.get(TEST_INPUT_FILE);
-
-        if (!project) {
-            console.error("No project found");
-            return;
-        }
-
-        const pluginCreateInfo: tss.server.PluginCreateInfo = {
-            project: project,
-            languageService: project.getLanguageService(),
-            languageServiceHost: project,
-            serverHost: serverHost,
-            config: {}
-        }
-
-        // ======================
         // TODO: Do we need a cached map of Map<Project, tss.LanguageService> ?
         // Should the key be a simple like Map<String, tss.LanguageService> where String is 
         // the file passed to `openClientFile`. Maybe it could be the tsconfig/jsconfig file?
         // As the TS completions won't work without one either. I think?
+        //
+        const pluginCreateInfo = getPluginCreateInfo(projectService);
+        if (!pluginCreateInfo) {
+            throw new Error("Failed to initialize Plugin Creation Info");
+        }
 
         this._languageService = templateLiteralTSServerPlugin.create(pluginCreateInfo);
 
         if (this._languageService) {
-            console.log("Init successful");
             console.log(this._languageService);
+            console.log("Init successful");
         } else {
             console.log("Init failed");
         }

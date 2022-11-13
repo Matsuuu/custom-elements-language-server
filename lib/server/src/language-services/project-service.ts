@@ -1,5 +1,6 @@
 import { Logger } from "./logger";
 import * as tss from "typescript/lib/tsserverlibrary";
+import { tssIteratorToArray } from "./transformers";
 
 const logger = new Logger();
 
@@ -31,5 +32,9 @@ export class ProjectService extends tss.server.ProjectService {
 
     constructor(options: tss.server.ProjectServiceOptions) {
         super(options);
+    }
+
+    public getConfiguredProjects(): Array<string> {
+        return tssIteratorToArray(this.configuredProjects.keys());
     }
 }

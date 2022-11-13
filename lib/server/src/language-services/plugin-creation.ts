@@ -4,14 +4,8 @@ import { ServerHost } from "../language-services/server-host";
 
 export function getPluginCreateInfo(projectService: ProjectService): tss.server.PluginCreateInfo | undefined {
 
-    const projectNamesIterator = projectService.configuredProjects.keys();
-    const projectNames: string[] = [];
-    let round = undefined;
-    while (!(round = projectNamesIterator.next()).done) {
-        projectNames.push(round.value);
-    }
-    const configuredProjects = projectService.configuredProjects;
-    const project = configuredProjects.get(projectNames[0]);
+    const projectNames = projectService.getConfiguredProjects();
+    const project = projectService.configuredProjects.get(projectNames[0]);
 
     const serverHost = new ServerHost();
     if (!project) {
