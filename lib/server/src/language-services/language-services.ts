@@ -1,65 +1,78 @@
+import * as HTMLTemplateLiteralTSServerPlugin from "html-template-literal-tsserver-plugin";
 import * as ts from "typescript";
 import * as tss from "typescript/lib/tsserverlibrary";
-import { ServerHost } from "./server-host";
-import * as HTMLTemplateLiteralTSServerPlugin from "html-template-literal-tsserver-plugin";
-import { getProjectService } from "./project-service";
+
 import { getPluginCreateInfo } from "./plugin-creation";
+import { getProjectService } from "./project-service";
+import { ServerHost } from "./server-host";
 
+const serverHost = new ServerHost();
+const projectService = getProjectService(serverHost);
 
-// TODO: Parse nodes and map them to this.nodes
-// Could we just save the 'pos' of every node and sort them by it, getting
-// the pos that is closest to the cursor position, while not going over it?
+export class LanguageServiceManager {
 
-// TODO: Figure out how we could build these. This would allow us to 
-// augment the language service with out plugin IF I'M READING INTO THIS RIGHT
-// Could we use tss.server.ConfiguredProject ?
-
-
-const TEST_INPUT_FILE = "test-project/src/test.ts";
-
-export class LanguageServices {
-
-    static _instance?: LanguageServices;
+    static _instance?: LanguageServiceManager;
 
     private _languageService?: tss.LanguageService;
 
-    public get languageService() {
-        return this._languageService;
-    }
+    private _languageServiceCache: Map<string, tss.LanguageService> = new Map();
 
-    constructor() {
-        const serverHost = new ServerHost();
+    public get languageService() { return this._languageService; }
 
-        const templateLiteralTSServerPlugin = HTMLTemplateLiteralTSServerPlugin({ typescript: tss });
-        const projectService = getProjectService(serverHost);
+    /**
+     * Try to get the plugged in language service instance of project
+     * using the config file path (e.g. /home/matsu/Project/foo/tsconfig.json).
+     * */
+    private getOrCreateLanguageService(projectConfigFilePath: string) {
+        if (this._languageServiceCache.has(projectConfigFilePath)) {
+            return this._languageServiceCache.get(projectConfigFilePath);
+        }
 
-        const result = projectService.openClientFile(TEST_INPUT_FILE);
-
-        // TODO: Do we need a cached map of Map<Project, tss.LanguageService> ?
-        // Should the key be a simple like Map<String, tss.LanguageService> where String is 
-        // the file passed to `openClientFile`. Maybe it could be the tsconfig/jsconfig file?
-        // As the TS completions won't work without one either. I think?
-        //
         const pluginCreateInfo = getPluginCreateInfo(projectService);
         if (!pluginCreateInfo) {
             throw new Error("Failed to initialize Plugin Creation Info");
         }
 
-        this._languageService = templateLiteralTSServerPlugin.create(pluginCreateInfo);
+        const templateLiteralTSServerPlugin = HTMLTemplateLiteralTSServerPlugin({ typescript: tss });
+        const languageService = templateLiteralTSServerPlugin.create(pluginCreateInfo);
 
-        if (this._languageService) {
-            console.log(this._languageService);
-            console.log("Init successful");
-        } else {
-            console.log("Init failed");
+        if (!languageService) {
+            // TODO: Throw error?
+            console.error("Language service init failed");
+            return undefined;
         }
+
+        this._languageServiceCache.set(projectConfigFilePath, languageService);
+        return languageService;
     }
 
+    public getLanguageServiceForCurrentFile(fileName: string): tss.LanguageService | undefined {
+
+        const project = projectService.openAndGetProjectForFile(fileName);
+        if (!project) {
+            return undefined;
+        }
+
+        const resolvedProjectIsConfiguredProject = isConfiguredProject(project);
+        if (!resolvedProjectIsConfiguredProject) {
+            // TODO: Can we do anything with a project that's not configured?
+            return undefined;
+        }
+
+        const configFilePath = project.canonicalConfigFilePath;
+
+        return this.getOrCreateLanguageService(configFilePath);
+    }
 }
 
-export function getLanguageServiceInstance() {
-    if (!LanguageServices._instance) {
-        LanguageServices._instance = new LanguageServices();
+export function getLanguageServiceManagerInstance() {
+    if (!LanguageServiceManager._instance) {
+        LanguageServiceManager._instance = new LanguageServiceManager();
     }
-    return LanguageServices._instance;
+    return LanguageServiceManager._instance;
+}
+
+export function isConfiguredProject(project: tss.server.Project):
+    project is tss.server.ConfiguredProject {
+    return project instanceof tss.server.ConfiguredProject;
 }

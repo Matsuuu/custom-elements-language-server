@@ -37,4 +37,13 @@ export class ProjectService extends tss.server.ProjectService {
     public getConfiguredProjects(): Array<string> {
         return tssIteratorToArray(this.configuredProjects.keys());
     }
+
+    public openAndGetProjectForFile(fileName: string) {
+        const fileOpenResult = this.openClientFile(fileName);
+        // TODO: Handle openresult errors?
+        //
+        // @ts-ignore I don't know why the typing here is so scuffed
+        const scriptInfo = this.getScriptInfoForNormalizedPath(fileName);
+        return scriptInfo?.containingProjects[0];
+    }
 }
