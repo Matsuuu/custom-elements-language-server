@@ -19,6 +19,7 @@ class MyPage extends LitElement {
     render() {
         return html`
         ${foo()}
+        <button></button>
       <my-header></my-header>
       <my-article></my-article>
       <my-footer></my-footer>

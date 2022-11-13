@@ -72,6 +72,14 @@ export function getLanguageServiceManagerInstance() {
     return LanguageServiceManager._instance;
 }
 
+export function initializeLanguageServiceForFile(fileName: string) {
+    getLanguageServiceManagerInstance().getLanguageServiceForCurrentFile(fileName);
+}
+
+export function getLanguageServiceForCurrentFile(fileName: string) {
+    return getLanguageServiceManagerInstance().getLanguageServiceForCurrentFile(fileName);
+}
+
 export function isConfiguredProject(project: tss.server.Project):
     project is tss.server.ConfiguredProject {
     return project instanceof tss.server.ConfiguredProject;

@@ -3,11 +3,14 @@ import {
     DidChangeConfigurationNotification,
     DidChangeConfigurationParams,
     DidChangeTextDocumentParams,
+    Disposable,
     Hover,
     HoverParams,
     InitializeParams,
     InitializeResult,
+    Position,
     ProposedFeatures,
+    Range,
     ServerRequestHandler,
     TextDocuments,
     TextDocumentSyncKind,
@@ -19,6 +22,8 @@ import { TextDocument } from "vscode-languageserver-textdocument";
 import { getCompletionItemInfo, getCompletionItems } from "./completion";
 import { validateTextDocument } from "./analyzer";
 import { DEFAULT_SETTINGS, documents, documentSettings, LanguageServerSettings, setCapabilities, setGlobalSettings } from "./settings";
+import { getLanguageServiceForCurrentFile, initializeLanguageServiceForFile } from "./language-services/language-services";
+import { definitionInfoToDefinition, textDocumentDataToUsableData, uriToFileName } from "./transformers";
 
 /**
  * ==============================================================================================0
@@ -50,6 +55,14 @@ connection.onCompletion(getCompletionItems);
 // This handler resolves additional information for the item selected in
 // the completion list.
 connection.onCompletionResolve(getCompletionItemInfo);
+
+connection.onDefinition((definitionEvent) => {
+
+    const usableData = textDocumentDataToUsableData(documents, definitionEvent);
+    const currentFileDef = getLanguageServiceForCurrentFile(usableData.fileName)?.getDefinitionAtPosition(usableData.fileName, usableData.position);
+
+    return currentFileDef?.map(def => definitionInfoToDefinition(def, documents)) ?? [];
+});
 
 // Make the text document manager listen on the connection
 // for open, change and close text document events
@@ -87,6 +100,13 @@ function onInitialize(params: InitializeParams) {
         documentSettings.delete(e.document.uri);
     });
 
+    documents.onDidOpen((e) => {
+        console.log("Opened text doc");
+
+        const fileName = e.document.uri.replace("file://", "");
+        initializeLanguageServiceForFile(fileName);
+    })
+
     connection.onShutdown(() => {
     })
 
@@ -97,6 +117,8 @@ function onInitialize(params: InitializeParams) {
             completionProvider: {
                 resolveProvider: true,
             },
+            declarationProvider: true,
+            definitionProvider: true
         },
     };
     if (hasWorkspaceFolderCapability) {

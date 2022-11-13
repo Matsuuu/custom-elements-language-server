@@ -16,8 +16,7 @@ export async function getCompletionItems(textDocumentPosition: TextDocumentPosit
 
     const fileName = doc.uri.replace("file://", "");
 
-    const languageServiceManager = getLanguageServiceManagerInstance();
-    const languageService = languageServiceManager.getLanguageServiceForCurrentFile(fileName);
+    const languageService = getLanguageServiceManagerInstance().getLanguageServiceForCurrentFile(fileName);
 
     const completionsOpts: ts.GetCompletionsAtPositionOptions = {};
     const completions = languageService?.getCompletionsAtPosition(fileName, doc.offsetAt(textDocumentPosition.position), completionsOpts);

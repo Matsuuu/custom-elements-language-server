@@ -9,6 +9,8 @@
 - Find a way to get declaration / references working with html literaly stuff
 - ?
 
+When we need to add a new "feature", make sure the providers in server.ts match
+
 
 ## The Goal
 
