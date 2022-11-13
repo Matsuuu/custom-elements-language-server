@@ -1,10 +1,11 @@
 import { Logger } from "./logger";
 import * as tss from "typescript/lib/tsserverlibrary";
 
+const logger = new Logger();
 
-export function createProjectService(host: tss.server.ServerHost) {
-    const logger = new Logger();
-    return new ProjectService({
+// TODO: Is it okay that this is a singleton?
+export function getProjectService(host: tss.server.ServerHost) {
+    return ProjectService.getInstance({
         host,
         logger,
         cancellationToken: tss.server.nullCancellationToken, // TODO: Figure out
@@ -19,8 +20,16 @@ export function createProjectService(host: tss.server.ServerHost) {
 
 export class ProjectService extends tss.server.ProjectService {
 
+    private static _instance: ProjectService | undefined;
+
+    public static getInstance(options: tss.server.ProjectServiceOptions) {
+        if (!this._instance) {
+            this._instance = new ProjectService(options);
+        }
+        return this._instance;
+    }
+
     constructor(options: tss.server.ProjectServiceOptions) {
         super(options);
-
     }
 }

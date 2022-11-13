@@ -2,7 +2,7 @@ import * as ts from "typescript";
 import * as tss from "typescript/lib/tsserverlibrary";
 import { ServerHost } from "./server-host";
 import * as HTMLTemplateLiteralTSServerPlugin from "html-template-literal-tsserver-plugin";
-import { createProjectService } from "./project-service";
+import { getProjectService } from "./project-service";
 
 
 // TODO: Parse nodes and map them to this.nodes
@@ -30,9 +30,9 @@ export class LanguageServices {
         const serverHost = new ServerHost();
 
         const templateLiteralTSServerPlugin = HTMLTemplateLiteralTSServerPlugin({ typescript: tss });
-        const projectService = createProjectService(serverHost);
+        const projectService = getProjectService(serverHost);
 
-        //const result = projectService.openClientFile(fileName);
+        const result = projectService.openClientFile(TEST_INPUT_FILE);
         // =============================
         // This part is in plugin-creation.ts and should be abstracted there.
         // However it requires some kind of a file or folder to find the typescript project
