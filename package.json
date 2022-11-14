@@ -1,78 +1,92 @@
 {
-	"name": "custom-elements-language-services",
-	"description": "A language server example",
-	"author": "Microsoft Corporation",
-	"license": "MIT",
-	"version": "1.0.0",
-	"publisher": "vscode-samples",
-	"categories": [],
-	"keywords": [
-		"multi-root ready"
-	],
-	"engines": {
-		"vscode": "^1.63.0"
-	},
-	"activationEvents": [
-		"onLanguage:javascript",
-		"onLanguage:typescript",
-        "onLanguage:html"
-	],
-	"main": "./lib/client/vscode/dist/extension",
-	"contributes": {
-		"configuration": {
-			"type": "object",
-			"title": "Example configuration",
-			"properties": {
-				"languageServerExample.trace.server": {
-					"scope": "window",
-					"type": "string",
-					"enum": [
-						"off",
-						"messages",
-						"verbose"
-					],
-					"default": "verbose",
-					"description": "Traces the communication between VS Code and the language server."
-				}
-			}
-		},
-        "grammars": [
-            {
-				"injectTo": [
-					"source.js",
-					"source.js.jsx",
-					"source.jsx",
-					"source.ts",
-					"source.tsx",
-					"text.html.basic"
-				],
-				"scopeName": "inline.lit-html",
-				"path": "./syntaxes/vscode-lit-html/lit-html.json",
-				"embeddedLanguages": {
-					"meta.embedded.block.html": "html",
-					"meta.embedded.block.css": "css",
-					"source.css": "css"
-				}
-			},
-            {
-				"injectTo": [
-					"source.js",
-					"source.js.jsx",
-					"source.jsx",
-					"source.ts",
-					"source.tsx",
-					"text.html.basic"
-				],
-				"scopeName": "inline.lit-html.string.injection",
-				"path": "./syntaxes/vscode-lit-html/lit-html-string-injection.json",
-				"embeddedLanguages": {
-					"meta.template.expression.ts": "typescript"
-				}
-			}
-        ]
-	},
-	"scripts": {
-	},
-	"devDependencies": {
-	}
+  "name": "custom-elements-language-services",
+  "description": "A language server example",
+  "author": "Microsoft Corporation",
+  "license": "MIT",
+  "version": "1.0.0",
+  "publisher": "vscode-samples",
+  "categories": [],
+  "keywords": [
+    "multi-root ready"
+  ],
+  "engines": {
+    "vscode": "^1.63.0"
+  },
+  "activationEvents": [
+    "onLanguage:javascript",
+    "onLanguage:typescript",
+    "onLanguage:html"
+  ],
+  "main": "./lib/client/vscode/dist/extension",
+  "contributes": {
+    "configuration": {
+      "type": "object",
+      "title": "Example configuration",
+      "properties": {
+        "languageServerExample.trace.server": {
+          "scope": "window",
+          "type": "string",
+          "enum": [
+            "off",
+            "messages",
+            "verbose"
+          ],
+          "default": "verbose",
+          "description": "Traces the communication between VS Code and the language server."
+        }
+      }
+    },
+    "grammars": [
+      {
+        "injectTo": [
+          "source.js",
+          "source.js.jsx",
+          "source.jsx",
+          "source.ts",
+          "source.tsx",
+          "text.html.basic"
+        ],
+        "scopeName": "inline.lit-html",
+        "path": "./syntaxes/vscode-lit-html/lit-html.json",
+        "embeddedLanguages": {
+          "meta.embedded.block.html": "html",
+          "meta.embedded.block.css": "css",
+          "source.css": "css"
+        }
+      },
+      {
+        "injectTo": [
+          "source.js",
+          "source.js.jsx",
+          "source.jsx",
+          "source.ts",
+          "source.tsx",
+          "text.html.basic"
+        ],
+        "scopeName": "inline.lit-html.string.injection",
+        "path": "./syntaxes/vscode-lit-html/lit-html-string-injection.json",
+        "embeddedLanguages": {
+          "meta.template.expression.ts": "typescript"
+        }
+      }
+    ]
+  },
+  "scripts": {
+      "dev": "concurrently \"cd lib/server && npm start\" \"cd lib/html-template-literal-tsserver-plugin && npm start\""
+  },
+  "devDependencies": {
+    "concurrently": "^7.5.0"
+  },
+  "types": "./lib/client/vscode/dist/extension.d.ts",
+  "directories": {
+    "lib": "lib"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Matsuuu/custom-elements-language-server.git"
+  },
+  "bugs": {
+    "url": "https://github.com/Matsuuu/custom-elements-language-server/issues"
+  },
+  "homepage": "https://github.com/Matsuuu/custom-elements-language-server#readme"
 }

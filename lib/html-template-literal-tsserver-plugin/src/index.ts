@@ -6,15 +6,20 @@ import { HTMLTemplateLiteralLanguageService } from "./html-template-literal-lang
 class HTMLTemplateLiteralPlugin {
     private _htmlLanguageService?: HtmlLanguageService;
     private _config = {};
+    private _logger: tss.server.Logger | undefined;
+    private _consumerInfo: tss.server.PluginCreateInfo | undefined;
+    private _projectDirectory: string = "";
 
     public constructor(private readonly _typescript: typeof tss) {
 
     }
 
     public create(info: tss.server.PluginCreateInfo): tss.LanguageService {
-        info.project.projectService.logger.info(
-            "Starting up HTML Template Literal TSServer Plugin"
-        );
+        this._consumerInfo = info;
+        this._logger = info.project.projectService.logger;
+        this._projectDirectory = this._consumerInfo.project.getCurrentDirectory();
+
+        this._logger?.info("Starting up HTML Template Literal TSServer Plugin");
 
         const htmlTemplateLiteralLanguageService = new HTMLTemplateLiteralLanguageService(this._typescript, this.htmlLanguageService)
 
@@ -25,6 +30,8 @@ class HTMLTemplateLiteralPlugin {
             htmlTemplateLiteralLanguageService,
             this.getTemplateSettings()
         );
+
+        debugger;
 
         return languageService;
     }
