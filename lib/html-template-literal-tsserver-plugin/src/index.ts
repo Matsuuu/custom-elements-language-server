@@ -29,6 +29,9 @@ class HTMLTemplateLiteralPlugin {
             this.getTemplateSettings()
         );
 
+        const analyzedCEM = this.analyzeCEM();
+        debugger;
+
         return languageService;
     }
 
@@ -39,7 +42,7 @@ class HTMLTemplateLiteralPlugin {
     }
 
     private analyzeCEM() {
-        generateManifest([])
+        return generateManifest([])
     }
 
     private get htmlLanguageService(): HtmlLanguageService {
