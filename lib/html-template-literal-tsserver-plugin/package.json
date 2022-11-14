@@ -13,5 +13,9 @@
         "build": "tsc",
         "start": "tsc --watch",
         "enable-logs": "export TSS_LOG=\"-logToFile true -file /home/matsu/Projects/custom-elements-language-server/lib/html-template-literal-tsserver-plugin/logs -level verbose\""
+    },
+    "devDependencies": {
+        "@types/node": "^18.11.9",
+        "custom-elements-manifest": "^2.0.0"
     }
 }

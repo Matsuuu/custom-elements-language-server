@@ -2,6 +2,8 @@ import { decorateWithTemplateLanguageService } from "typescript-template-languag
 import tss from "typescript/lib/tsserverlibrary.js";
 import { getLanguageService, LanguageService as HtmlLanguageService } from "vscode-html-languageservice";
 import { HTMLTemplateLiteralLanguageService } from "./html-template-literal-language-service.js";
+import * as fs from "fs";
+import { Package } from "custom-elements-manifest";
 
 class HTMLTemplateLiteralPlugin {
     private _htmlLanguageService?: HtmlLanguageService;
@@ -41,6 +43,19 @@ class HTMLTemplateLiteralPlugin {
     }
 
     private analyzeCEM() {
+        const packagePath = this._projectDirectory + "/package.json";
+        if (!fs.existsSync(packagePath)) return;
+
+        const packageJsonFile = fs.readFileSync(packagePath, "utf8");
+
+        const packageJson = JSON.parse(packageJsonFile);
+        if (!packageJson.customElements) return;
+
+        const cemFilePath = this._projectDirectory + "/" + packageJson.customElements;
+        const cemFile = fs.readFileSync(cemFilePath, "utf8");
+
+        const cem: Package = JSON.parse(cemFile);
+        debugger;
     }
 
     private get htmlLanguageService(): HtmlLanguageService {
