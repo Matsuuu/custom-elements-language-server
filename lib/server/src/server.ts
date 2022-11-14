@@ -3,16 +3,9 @@ import {
     DidChangeConfigurationNotification,
     DidChangeConfigurationParams,
     DidChangeTextDocumentParams,
-    Disposable,
-    Hover,
-    HoverParams,
     InitializeParams,
     InitializeResult,
-    Position,
     ProposedFeatures,
-    Range,
-    ServerRequestHandler,
-    TextDocuments,
     TextDocumentSyncKind,
 } from "vscode-languageserver/node.js";
 

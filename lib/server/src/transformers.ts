@@ -1,5 +1,5 @@
 import * as ts from "typescript";
-import { Definition, Location, Position, Range, TextDocumentPositionParams } from "vscode-languageserver";
+import { Location, Position, Range, TextDocumentPositionParams } from "vscode-languageserver";
 import { TextDocument } from "vscode-languageserver-textdocument";
 import { TextDocuments } from "vscode-languageserver/node";
 
