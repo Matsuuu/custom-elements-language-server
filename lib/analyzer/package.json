@@ -2,14 +2,22 @@
   "name": "analyzer",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "type": "module",
+  "main": "out/index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "tsc && node ./out/index.js"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@custom-elements-manifest/analyzer": "^0.6.6"
+    "@custom-elements-manifest/analyzer": "^0.6.6",
+    "typescript": "^4.8.4"
+  },
+  "devDependencies": {
+    "@types/node": "^18.11.9"
+  },
+  "engines": {
+    "node": "*"
   }
 }

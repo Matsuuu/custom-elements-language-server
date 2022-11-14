@@ -6,7 +6,5 @@
     "compilerOptions": {
         "outDir": "./dist"
     },
-    "plugins": [{
-        "name": "html-template-literal-tsserver-plugin"
-    }],
+    "plugins": [],
 }

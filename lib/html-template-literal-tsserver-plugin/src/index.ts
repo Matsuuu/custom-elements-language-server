@@ -15,10 +15,7 @@ class HTMLTemplateLiteralPlugin {
     }
 
     public create(info: tss.server.PluginCreateInfo): tss.LanguageService {
-        this._consumerInfo = info;
-        this._logger = info.project.projectService.logger;
-        this._projectDirectory = this._consumerInfo.project.getCurrentDirectory();
-
+        this.initialize(info);
         this._logger?.info("Starting up HTML Template Literal TSServer Plugin");
 
         const htmlTemplateLiteralLanguageService = new HTMLTemplateLiteralLanguageService(this._typescript, this.htmlLanguageService)
@@ -31,9 +28,17 @@ class HTMLTemplateLiteralPlugin {
             this.getTemplateSettings()
         );
 
-        debugger;
-
         return languageService;
+    }
+
+    private initialize(info: tss.server.PluginCreateInfo) {
+        this._consumerInfo = info;
+        this._logger = info.project.projectService.logger;
+        this._projectDirectory = this._consumerInfo.project.getCurrentDirectory();
+    }
+
+    private analyzeCEM() {
+
     }
 
     private get htmlLanguageService(): HtmlLanguageService {
