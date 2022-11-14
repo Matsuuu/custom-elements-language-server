@@ -7,7 +7,7 @@
 			"name": "Launch Client",
 			"runtimeExecutable": "${execPath}",
 			"args": ["--extensionDevelopmentPath=${workspaceRoot}"],
-			"outFiles": ["${workspaceRoot}/client/vscode/dist/**/*.js"],
+			"outFiles": ["${workspaceRoot}/client/vscode/out/**/*.js"],
 			"preLaunchTask": {
 				"type": "npm",
 				"script": "watch"
@@ -19,8 +19,8 @@
 			"name": "Attach to Server",
 			"port": 6009,
 			"restart": true,
-			"outFiles": ["${workspaceRoot}/server/dist/**/*.js"]
-		},
+			"outFiles": ["${workspaceRoot}/server/out/**/*.js"]
+		}
 	],
 	"compounds": [
 		{

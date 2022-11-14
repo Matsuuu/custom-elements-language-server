@@ -2,9 +2,9 @@
   "name": "custom-elements-language-service-client",
   "version": "0.0.1",
   "description": "",
-  "main": "dist/extension.js",
+  "main": "out/extension.js",
   "scripts": {
-    "start": "npm run build && node ./dist/extension.js",
+    "start": "npm run build && node ./out/extension.js",
     "build": "tsc",
     "watch": "tsc --watch"
   },

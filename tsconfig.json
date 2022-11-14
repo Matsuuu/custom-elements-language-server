@@ -1,20 +1,15 @@
 {
+  "paths": ["lib/**"],
+  "exclude": ["example", "./lib/html-template-literal-tsserver-plugin/example", "./lib/server/test-project"],
   "compilerOptions": {
-    "incremental": true,
-    "target": "es2020",
-    "experimentalDecorators": true,
-
-    "lib": ["es2020"],
-    "module": "commonjs",
-    "moduleResolution": "node",
-    "resolveJsonModule": true,
-
-    "allowJs": true,
-    "checkJs": true,
-
+    "target": "ESNext",                                     /* Set the JavaScript language version for emitted JavaScript and include compatible library declarations. */
+    "module": "ESNext",                                /* Specify what module code is generated. */
+    "moduleResolution": "nodenext",
+    "outDir": "./out",                                   /* Specify an output folder for all emitted files. */
+    "skipLibCheck": true,                                 /* Skip type checking all .d.ts files. */
     "declaration": true,
-    "importHelpers": true,
 
+    "experimentalDecorators": true,
     "forceConsistentCasingInFileNames": true,
     "strict": true,
     "noImplicitAny": true,
@@ -26,11 +21,9 @@
     "noImplicitReturns": true,
     "allowUnreachableCode": true,
     "sourceMap": true,
-
-    "outDir": "dist"
   },
 
-    "include": [
-        "./lib"
-    ]
+  "include": [
+    "./lib"
+  ]
 }

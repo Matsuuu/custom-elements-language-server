@@ -1,6 +1,6 @@
 import { TextDocument } from "vscode-languageserver-textdocument";
-import { Diagnostic, DiagnosticSeverity, _Connection } from "vscode-languageserver/node";
-import { documentSettings, getCapabilities, getGlobalSettings, LanguageServerSettings } from "./settings";
+import { Diagnostic, DiagnosticSeverity, _Connection } from "vscode-languageserver/node.js";
+import { documentSettings, getCapabilities, getGlobalSettings, LanguageServerSettings } from "./settings.js";
 
 export async function validateTextDocument(connection: _Connection, textDocument: TextDocument, documentSettings: Map<string, LanguageServerSettings>): Promise<void> {
     // In this simple example we get the settings for every validate run.

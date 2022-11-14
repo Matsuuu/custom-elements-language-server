@@ -1,5 +1,5 @@
 import { TextDocument } from "vscode-languageserver-textdocument";
-import { TextDocuments } from "vscode-languageserver/node";
+import { TextDocuments } from "vscode-languageserver/node.js";
 
 const DEFAULT_CAPABILITIES: LanguageServerCapabilities = {
     hasConfigurationCapability: false,

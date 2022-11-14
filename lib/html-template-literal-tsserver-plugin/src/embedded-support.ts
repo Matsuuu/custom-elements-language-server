@@ -8,9 +8,10 @@ import {
     TextDocument,
     Position,
     LanguageService,
-    TokenType,
     Range
 } from 'vscode-html-languageservice';
+import pkg from 'vscode-html-languageservice';
+const { TextDocument: TextDocumentImpl, TokenType } = pkg;
 
 export interface LanguageRange extends Range {
     languageId: string | undefined;
@@ -203,7 +204,7 @@ function getEmbeddedDocument(
         lastSuffix,
         ''
     );
-    return TextDocument.create(
+    return TextDocumentImpl.create(
         document.uri,
         languageId,
         document.version,

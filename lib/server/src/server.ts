@@ -12,11 +12,11 @@ import {
 console.log("NODE VERSION: ", process.version)
 
 import { TextDocument } from "vscode-languageserver-textdocument";
-import { getCompletionItemInfo, getCompletionItems } from "./completion";
-import { validateTextDocument } from "./analyzer";
-import { DEFAULT_SETTINGS, documents, documentSettings, LanguageServerSettings, setCapabilities, setGlobalSettings } from "./settings";
-import { getLanguageServiceForCurrentFile, initializeLanguageServiceForFile } from "./language-services/language-services";
-import { definitionInfoToDefinition, textDocumentDataToUsableData, uriToFileName } from "./transformers";
+import { getCompletionItemInfo, getCompletionItems } from "./completion.js";
+import { validateTextDocument } from "./analyzer.js";
+import { DEFAULT_SETTINGS, documents, documentSettings, LanguageServerSettings, setCapabilities, setGlobalSettings } from "./settings.js";
+import { getLanguageServiceForCurrentFile, initializeLanguageServiceForFile } from "./language-services/language-services.js";
+import { definitionInfoToDefinition, textDocumentDataToUsableData, uriToFileName } from "./transformers.js";
 
 /**
  * ==============================================================================================0

@@ -1,10 +1,9 @@
-import { ScriptElementKind } from "typescript";
-import * as tss from "typescript/lib/tsserverlibrary";
+import tss from "typescript/lib/tsserverlibrary.js";
 import { TemplateContext, TemplateLanguageService } from "typescript-template-language-service-decorator";
 import { LanguageService as HtmlLanguageService } from "vscode-html-languageservice";
-import { getDocumentRegions } from "./embedded-support";
-import { createTextDocumentFromContext } from "./text-document";
-import { completionItemToCompletionEntry } from "./interop";
+import { getDocumentRegions } from "./embedded-support.js";
+import { createTextDocumentFromContext } from "./text-document.js";
+import { completionItemToCompletionEntry } from "./interop.js";
 
 export class HTMLTemplateLiteralLanguageService implements TemplateLanguageService {
 
@@ -47,7 +46,7 @@ export class HTMLTemplateLiteralLanguageService implements TemplateLanguageServi
             isGlobalCompletion: false,
             isMemberCompletion: false,
             isNewIdentifierLocation: false,
-            entries: [{ name: "This is a custom completion", kind: ScriptElementKind.string, sortText: "This is a custom completion" }, ...defaultCompletionItems]
+            entries: [{ name: "This is a custom completion", kind: tss.ScriptElementKind.string, sortText: "This is a custom completion" }, ...defaultCompletionItems]
         };
 
     }

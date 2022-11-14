@@ -1,4 +1,4 @@
-import { getLanguageServiceManagerInstance } from "./language-services";
+import { getLanguageServiceManagerInstance } from "./language-services.js";
 
 
 const TEST_INPUT_FILE = "/home/matsu/Projects/custom-elements-language-server/lib/server/test-project/src/test.ts";

@@ -1,7 +1,7 @@
-import * as ts from "typescript";
+import ts from "typescript";
 import { Location, Position, Range, TextDocumentPositionParams } from "vscode-languageserver";
 import { TextDocument } from "vscode-languageserver-textdocument";
-import { TextDocuments } from "vscode-languageserver/node";
+import { TextDocuments } from "vscode-languageserver/node.js";
 
 export interface UsableTextDocumentData {
     fileName: string;

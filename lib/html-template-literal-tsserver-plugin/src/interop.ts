@@ -1,4 +1,4 @@
-import * as ts from "typescript";
+import tss from "typescript/lib/tsserverlibrary.js";
 import { CompletionItem, CompletionItemKind } from "vscode-languageserver-types";
 
 export function completionItemToCompletionEntry(completionItem: CompletionItem): ts.CompletionEntry {
@@ -6,33 +6,33 @@ export function completionItemToCompletionEntry(completionItem: CompletionItem):
         name: completionItem.label,
         sortText: completionItem.label,
         kindModifiers: "declare",
-        kind: completionItem.kind ? completionKindToScriptElementKind(completionItem.kind) : ts.ScriptElementKind.unknown,
+        kind: completionItem.kind ? completionKindToScriptElementKind(completionItem.kind) : tss.ScriptElementKind.unknown,
     }
 }
 
 function completionKindToScriptElementKind(
     kind: CompletionItemKind
-): ts.ScriptElementKind {
+): tss.ScriptElementKind {
     return completionItemKindMappings[kind];
 }
 
-const completionItemKindMappings: { [index: number]: ts.ScriptElementKind } = {
-    [CompletionItemKind.Method]: ts.ScriptElementKind.memberFunctionElement,
-    [CompletionItemKind.Function]: ts.ScriptElementKind.functionElement,
-    [CompletionItemKind.Constructor]: ts.ScriptElementKind.constructorImplementationElement,
-    [CompletionItemKind.Field]: ts.ScriptElementKind.variableElement,
-    [CompletionItemKind.Variable]: ts.ScriptElementKind.variableElement,
-    [CompletionItemKind.Class]: ts.ScriptElementKind.classElement,
-    [CompletionItemKind.Interface]: ts.ScriptElementKind.interfaceElement,
-    [CompletionItemKind.Module]: ts.ScriptElementKind.moduleElement,
-    [CompletionItemKind.Property]: ts.ScriptElementKind.memberVariableElement,
-    [CompletionItemKind.Unit]: ts.ScriptElementKind.constElement,
-    [CompletionItemKind.Value]: ts.ScriptElementKind.constElement,
-    [CompletionItemKind.Enum]: ts.ScriptElementKind.enumElement,
-    [CompletionItemKind.Keyword]: ts.ScriptElementKind.keyword,
-    [CompletionItemKind.Color]: ts.ScriptElementKind.constElement,
-    [CompletionItemKind.Reference]: ts.ScriptElementKind.alias,
-    [CompletionItemKind.File]: ts.ScriptElementKind.moduleElement,
-    [CompletionItemKind.Snippet]: ts.ScriptElementKind.unknown,
-    [CompletionItemKind.Text]: ts.ScriptElementKind.unknown,
+const completionItemKindMappings: { [index: number]: tss.ScriptElementKind } = {
+    [CompletionItemKind.Method]: tss.ScriptElementKind.memberFunctionElement,
+    [CompletionItemKind.Function]: tss.ScriptElementKind.functionElement,
+    [CompletionItemKind.Constructor]: tss.ScriptElementKind.constructorImplementationElement,
+    [CompletionItemKind.Field]: tss.ScriptElementKind.variableElement,
+    [CompletionItemKind.Variable]: tss.ScriptElementKind.variableElement,
+    [CompletionItemKind.Class]: tss.ScriptElementKind.classElement,
+    [CompletionItemKind.Interface]: tss.ScriptElementKind.interfaceElement,
+    [CompletionItemKind.Module]: tss.ScriptElementKind.moduleElement,
+    [CompletionItemKind.Property]: tss.ScriptElementKind.memberVariableElement,
+    [CompletionItemKind.Unit]: tss.ScriptElementKind.constElement,
+    [CompletionItemKind.Value]: tss.ScriptElementKind.constElement,
+    [CompletionItemKind.Enum]: tss.ScriptElementKind.enumElement,
+    [CompletionItemKind.Keyword]: tss.ScriptElementKind.keyword,
+    [CompletionItemKind.Color]: tss.ScriptElementKind.constElement,
+    [CompletionItemKind.Reference]: tss.ScriptElementKind.alias,
+    [CompletionItemKind.File]: tss.ScriptElementKind.moduleElement,
+    [CompletionItemKind.Snippet]: tss.ScriptElementKind.unknown,
+    [CompletionItemKind.Text]: tss.ScriptElementKind.unknown,
 }

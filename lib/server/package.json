@@ -2,14 +2,15 @@
   "name": "custom-elements-language-server",
   "version": "0.0.1",
   "description": "",
-  "main": "dist/server.js",
+  "type": "module",
+  "main": "out/server.js",
   "scripts": {
     "start": "npm run watch",
-    "start-old": "npm run build && node ./dist/server.js",
+    "start-old": "npm run build && node ./out/server.js",
     "build": "tsc",
     "watch": "tsc --watch",
-    "lsp-test": "npm run build && node ./dist/language-services/lsp-tester.js",
-    "lsp-test:debug": "npm run build && node --inspect ./dist/language-services/lsp-tester.js"
+    "lsp-test": "npm run build && node ./out/language-services/lsp-tester.js",
+    "lsp-test:debug": "npm run build && node --inspect ./out/language-services/lsp-tester.js"
   },
   "repository": {
     "type": "git",

@@ -5,7 +5,8 @@
   "type": "module",
   "main": "out/index.js",
   "scripts": {
-    "start": "tsc && node ./out/index.js"
+    "start": "npm run build && node ./out/index.js",
+    "build": "tsc"
   },
   "keywords": [],
   "author": "",

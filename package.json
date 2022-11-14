@@ -3,6 +3,7 @@
   "description": "A language server example",
   "author": "Microsoft Corporation",
   "license": "MIT",
+  "type": "module",
   "version": "1.0.0",
   "publisher": "vscode-samples",
   "categories": [],
@@ -17,7 +18,7 @@
     "onLanguage:typescript",
     "onLanguage:html"
   ],
-  "main": "./lib/client/vscode/dist/extension",
+  "main": "./lib/client/vscode/out/extension",
   "contributes": {
     "configuration": {
       "type": "object",
@@ -77,7 +78,7 @@
   "devDependencies": {
     "concurrently": "^7.5.0"
   },
-  "types": "./lib/client/vscode/dist/extension.d.ts",
+  "types": "./lib/client/vscode/out/extension.d.ts",
   "directories": {
     "lib": "lib"
   },

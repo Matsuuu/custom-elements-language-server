@@ -2,8 +2,10 @@
     "name": "html-template-literal-tsserver-plugin",
     "version": "0.0.1",
     "license": "MIT",
-    "main": "./out",
+    "type": "module",
+    "main": "out/server.js",
     "dependencies": {
+        "analyzer": "file:../analyzer",
         "typescript": "^4.8.4",
         "typescript-template-language-service-decorator": "^2.3.1",
         "vscode-html-languageservice": "^5.0.2"
