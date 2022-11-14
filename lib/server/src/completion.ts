@@ -1,4 +1,4 @@
-import { CompletionItem, CompletionItemKind, CompletionList, TextDocumentPositionParams } from "vscode-languageserver/node";
+import { CompletionItem, CompletionItemKind, CompletionList, TextDocumentPositionParams } from "vscode-languageserver/node.js";
 import { documents } from "./settings.js";
 import * as ts from "typescript";
 import { getLanguageServiceManagerInstance } from "./language-services/language-services.js";

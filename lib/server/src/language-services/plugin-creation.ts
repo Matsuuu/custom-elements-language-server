@@ -1,6 +1,6 @@
-import * as tss from "typescript/lib/tsserverlibrary";
-import { ProjectService } from "../language-services/project-service";
-import { ServerHost } from "../language-services/server-host";
+import * as tss from "typescript/lib/tsserverlibrary.js";
+import { ProjectService } from "../language-services/project-service.js";
+import { ServerHost } from "../language-services/server-host.js";
 
 export function getPluginCreateInfo(projectService: ProjectService): tss.server.PluginCreateInfo | undefined {
 

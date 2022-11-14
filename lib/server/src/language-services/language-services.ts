@@ -1,10 +1,10 @@
-import * as HTMLTemplateLiteralTSServerPlugin from "html-template-literal-tsserver-plugin";
+import HTMLTemplateLiteralTSServerPlugin from "html-template-literal-tsserver-plugin";
 import * as ts from "typescript";
-import * as tss from "typescript/lib/tsserverlibrary";
+import * as tss from "typescript/lib/tsserverlibrary.js";
 
-import { getPluginCreateInfo } from "./plugin-creation";
-import { getProjectService } from "./project-service";
-import { ServerHost } from "./server-host";
+import { getPluginCreateInfo } from "./plugin-creation.js";
+import { getProjectService } from "./project-service.js";
+import { ServerHost } from "./server-host.js";
 
 const serverHost = new ServerHost();
 const projectService = getProjectService(serverHost);
