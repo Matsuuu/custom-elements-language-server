@@ -1,4 +1,4 @@
-import * as tss from "typescript/lib/tsserverlibrary.js";
+import tss from "typescript/lib/tsserverlibrary.js";
 import { ProjectService } from "../language-services/project-service.js";
 import { ServerHost } from "../language-services/server-host.js";
 

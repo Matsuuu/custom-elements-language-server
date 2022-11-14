@@ -1,4 +1,4 @@
-import * as tss from "typescript/lib/tsserverlibrary.js";
+import tss from "typescript/lib/tsserverlibrary.js";
 
 export function tssIteratorToArray<T>(iterator: tss.Iterator<T>): Array<T> {
     const outputArray: Array<T> = [];

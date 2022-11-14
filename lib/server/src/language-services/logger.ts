@@ -1,4 +1,4 @@
-import * as tss from "typescript/lib/tsserverlibrary.js";
+import tss from "typescript/lib/tsserverlibrary.js";
 
 export class Logger implements tss.server.Logger {
 

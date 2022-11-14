@@ -1,4 +1,4 @@
-import * as tss from "typescript/lib/tsserverlibrary.js";
+import tss from "typescript/lib/tsserverlibrary.js";
 
 // TODO: Are these things actually undefined at some time?
 // TODO TODO: Implement some of these methods ourselves

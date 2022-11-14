@@ -1,6 +1,6 @@
-import HTMLTemplateLiteralTSServerPlugin from "html-template-literal-tsserver-plugin";
-import * as ts from "typescript";
-import * as tss from "typescript/lib/tsserverlibrary.js";
+import HTMLTemplateLiteralTSServerPlugin from "html-template-literal-tsserver-plugin/out/index.js";
+import ts from "typescript";
+import tss from "typescript/lib/tsserverlibrary.js";
 
 import { getPluginCreateInfo } from "./plugin-creation.js";
 import { getProjectService } from "./project-service.js";

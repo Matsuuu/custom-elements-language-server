@@ -1,5 +1,5 @@
 import { Logger } from "./logger.js";
-import * as tss from "typescript/lib/tsserverlibrary.js";
+import tss from "typescript/lib/tsserverlibrary.js";
 import { tssIteratorToArray } from "./transformers.js";
 
 const logger = new Logger();

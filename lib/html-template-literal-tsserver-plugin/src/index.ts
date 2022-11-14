@@ -1,7 +1,8 @@
+import { generateManifest } from "analyzer";
 import { decorateWithTemplateLanguageService } from "typescript-template-language-service-decorator";
-import * as tss from "typescript/lib/tsserverlibrary";
+import tss from "typescript/lib/tsserverlibrary.js";
 import { getLanguageService, LanguageService as HtmlLanguageService } from "vscode-html-languageservice";
-import { HTMLTemplateLiteralLanguageService } from "./html-template-literal-language-service";
+import { HTMLTemplateLiteralLanguageService } from "./html-template-literal-language-service.js";
 
 class HTMLTemplateLiteralPlugin {
     private _htmlLanguageService?: HtmlLanguageService;
@@ -38,7 +39,7 @@ class HTMLTemplateLiteralPlugin {
     }
 
     private analyzeCEM() {
-
+        generateManifest([])
     }
 
     private get htmlLanguageService(): HtmlLanguageService {
@@ -59,4 +60,4 @@ class HTMLTemplateLiteralPlugin {
     }
 }
 
-export = (mod: { typescript: typeof tss }) => new HTMLTemplateLiteralPlugin(mod.typescript);
+export default (mod: { typescript: typeof tss }) => new HTMLTemplateLiteralPlugin(mod.typescript);
