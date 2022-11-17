@@ -1,7 +1,21 @@
 {
-    "name": "example-tsc-codebase",
-    "dependencies": {
-        "html-template-literal-tsserver-plugin": "file:..",
-        "typescript": "^4.4.3"
-    }
+  "name": "example-project",
+  "description": "Webcomponent example-project following open-wc recommendations",
+  "license": "MIT",
+  "author": "example-project",
+  "version": "0.0.0",
+  "scripts": {
+    "start": "tsc && concurrently -k -r \"tsc --watch --preserveWatchOutput\" \"wds\"",
+    "analyze": "cem analyze"
+  },
+  "dependencies": {
+    "lit": "^2.0.0-rc.2"
+  },
+  "devDependencies": {
+    "@custom-elements-manifest/analyzer": "^0.6.6",
+    "@web/dev-server": "^0.1.21",
+    "concurrently": "^5.3.0",
+    "tslib": "^2.3.1",
+    "typescript": "^4.3.5"
+  }
 }

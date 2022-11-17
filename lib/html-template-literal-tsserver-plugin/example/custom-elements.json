@@ -1,0 +1,68 @@
+{
+  "schemaVersion": "1.0.0",
+  "readme": "",
+  "modules": [
+    {
+      "kind": "javascript-module",
+      "path": "src/ExampleProject.ts",
+      "declarations": [
+        {
+          "kind": "class",
+          "description": "",
+          "name": "ExampleProject",
+          "members": [
+            {
+              "kind": "field",
+              "name": "title",
+              "type": {
+                "text": "string"
+              },
+              "default": "'My app'"
+            },
+            {
+              "kind": "field",
+              "name": "styles",
+              "static": true,
+              "default": "css`\n    :host {\n      min-height: 100vh;\n      display: flex;\n      flex-direction: column;\n      align-items: center;\n      justify-content: flex-start;\n      font-size: calc(10px + 2vmin);\n      color: #1a2b42;\n      max-width: 960px;\n      margin: 0 auto;\n      text-align: center;\n      background-color: var(--example-project-background-color);\n    }\n\n    main {\n      flex-grow: 1;\n    }\n\n    .logo {\n      margin-top: 36px;\n      animation: app-logo-spin infinite 20s linear;\n    }\n\n    @keyframes app-logo-spin {\n      from {\n        transform: rotate(0deg);\n      }\n      to {\n        transform: rotate(360deg);\n      }\n    }\n\n    .app-footer {\n      font-size: calc(12px + 0.5vmin);\n      align-items: center;\n    }\n\n    .app-footer a {\n      margin-left: 5px;\n    }\n  `"
+            },
+            {
+              "kind": "method",
+              "name": "render"
+            }
+          ],
+          "superclass": {
+            "name": "LitElement",
+            "package": "lit"
+          },
+          "tagName": "example-project",
+          "customElement": true
+        }
+      ],
+      "exports": [
+        {
+          "kind": "js",
+          "name": "ExampleProject",
+          "declaration": {
+            "name": "ExampleProject",
+            "module": "src/ExampleProject.ts"
+          }
+        }
+      ]
+    },
+    {
+      "kind": "javascript-module",
+      "path": "src/example-project.ts",
+      "declarations": [],
+      "exports": [
+        {
+          "kind": "custom-element-definition",
+          "name": "example-project",
+          "declaration": {
+            "name": "ExampleProject",
+            "module": "/src/ExampleProject.js"
+          }
+        }
+      ]
+    }
+  ]
+}
