@@ -26,10 +26,19 @@ export class CEMInstantiator {
         const packageJsonFile = fs.readFileSync(packagePath, "utf8");
 
         const packageJson = JSON.parse(packageJsonFile);
-        if (!packageJson.customElements) return;
+        // if (!packageJson.customElements) return;
+        // TODO: Give a warning of missing entry, ask to add
 
-        const cemFilePath = this._projectDirectory + "/" + packageJson.customElements;
+        let cemFilePath = this._projectDirectory + "/" + packageJson.customElements;
+        if (!fs.existsSync(cemFilePath)) {
+            cemFilePath = this._projectDirectory + "/" + "custom-elements.json";
+        }
         const cemFile = fs.readFileSync(cemFilePath, "utf8");
+
+        if (!cemFile) {
+            // TODO: Logger.
+            console.log("Could not find custom-elements.json file");
+        }
 
         return JSON.parse(cemFile);
     }

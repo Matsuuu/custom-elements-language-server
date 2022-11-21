@@ -5,6 +5,7 @@ const CEMCache: Map<string, Module> = new Map();
 
 
 export function findClassForTagName(manifest: Package, tagName: string) {
+    debugger;
     const declarationModule = manifest.modules.find(mod => moduleHasCustomElementExportByName(mod, tagName));
     if (!declarationModule) return undefined;
 
@@ -36,5 +37,13 @@ export function findModuleByPath(manifest: Package, path: string) {
 }
 
 export function modulePathEquals(mod: Module, path: string) {
-    return mod.path === path;
+    const modulePath = mod.path;
+    const modulePathAsJs = modulePath.replace(".ts", ".js");
+    const withTrailingSlash = modulePath.startsWith("/") ? modulePath : "/" + modulePath;
+    const withTrailingSlashAsJs = withTrailingSlash.replace(".ts", ".js");
+    // TODO: Ugly
+    return path === modulePath
+        || path === modulePathAsJs
+        || path === withTrailingSlash
+        || path === withTrailingSlashAsJs;
 }
