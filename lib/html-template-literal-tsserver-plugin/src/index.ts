@@ -3,7 +3,6 @@ import tss from "typescript/lib/tsserverlibrary.js";
 import { getLanguageService, LanguageService as HtmlLanguageService } from "vscode-html-languageservice";
 import { HTMLTemplateLiteralLanguageService } from "./html-template-literal-language-service.js";
 import * as fs from "fs";
-import { Package } from "custom-elements-manifest";
 import { CEMInstantiator } from "./cem/cem-instance.js";
 
 class HTMLTemplateLiteralPlugin {
@@ -12,7 +11,6 @@ class HTMLTemplateLiteralPlugin {
     private _logger: tss.server.Logger | undefined;
     private _consumerInfo: tss.server.PluginCreateInfo | undefined;
     private _projectDirectory: string = "";
-    private _cem: Package | undefined;
 
     public constructor(private readonly _typescript: typeof tss) {
 
@@ -25,9 +23,6 @@ class HTMLTemplateLiteralPlugin {
 
         const htmlTemplateLiteralLanguageService = new HTMLTemplateLiteralLanguageService(this._typescript, this.htmlLanguageService)
 
-        // TODO: When CEM updates, refresh this
-        this._cem = this.analyzeCEM();
-
         const languageService = decorateWithTemplateLanguageService(
             this._typescript,
             info.languageService,
@@ -36,6 +31,7 @@ class HTMLTemplateLiteralPlugin {
             this.getTemplateSettings()
         );
 
+        this._logger?.info("Finalized HTML Template Literal TSServer Plugin setup");
         return languageService;
     }
 
@@ -43,21 +39,6 @@ class HTMLTemplateLiteralPlugin {
         this._consumerInfo = info;
         this._logger = info.project.projectService.logger;
         this._projectDirectory = this._consumerInfo.project.getCurrentDirectory();
-    }
-
-    private analyzeCEM() {
-        const packagePath = this._projectDirectory + "/package.json";
-        if (!fs.existsSync(packagePath)) return;
-
-        const packageJsonFile = fs.readFileSync(packagePath, "utf8");
-
-        const packageJson = JSON.parse(packageJsonFile);
-        if (!packageJson.customElements) return;
-
-        const cemFilePath = this._projectDirectory + "/" + packageJson.customElements;
-        const cemFile = fs.readFileSync(cemFilePath, "utf8");
-
-        return JSON.parse(cemFile);
     }
 
     private get htmlLanguageService(): HtmlLanguageService {

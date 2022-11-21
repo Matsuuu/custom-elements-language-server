@@ -4,6 +4,8 @@ import { LanguageService as HtmlLanguageService } from "vscode-html-languageserv
 import { getDocumentRegions } from "./embedded-support.js";
 import { createTextDocumentFromContext } from "./text-document.js";
 import { completionItemToCompletionEntry } from "./interop.js";
+import { getLatestCEM } from "./cem/cem-instance.js";
+import { findClassForTagName } from "./cem/cem-helpers.js";
 
 export class HTMLTemplateLiteralLanguageService implements TemplateLanguageService {
 
@@ -39,9 +41,17 @@ export class HTMLTemplateLiteralLanguageService implements TemplateLanguageServi
         context: TemplateContext,
         position: tss.LineAndCharacter
     ): tss.CompletionInfo {
+        console.log("On completions");
 
         const htmlLSCompletions = this.getCompletionItems(context, position);
         const defaultCompletionItems = htmlLSCompletions.items.map(completionItemToCompletionEntry);
+        const cem = getLatestCEM();
+        let cemCompletions = [];
+        if (cem) {
+            const tagClass = findClassForTagName(cem, "example-project");
+            debugger;
+        }
+        debugger;
         return {
             isGlobalCompletion: false,
             isMemberCompletion: false,
