@@ -4,6 +4,7 @@ import { getLanguageService, LanguageService as HtmlLanguageService } from "vsco
 import { HTMLTemplateLiteralLanguageService } from "./html-template-literal-language-service.js";
 import * as fs from "fs";
 import { Package } from "custom-elements-manifest";
+import { CEMInstantiator } from "./cem/cem-instance.js";
 
 class HTMLTemplateLiteralPlugin {
     private _htmlLanguageService?: HtmlLanguageService;
@@ -11,6 +12,7 @@ class HTMLTemplateLiteralPlugin {
     private _logger: tss.server.Logger | undefined;
     private _consumerInfo: tss.server.PluginCreateInfo | undefined;
     private _projectDirectory: string = "";
+    private _cem: Package | undefined;
 
     public constructor(private readonly _typescript: typeof tss) {
 
@@ -18,9 +20,13 @@ class HTMLTemplateLiteralPlugin {
 
     public create(info: tss.server.PluginCreateInfo): tss.LanguageService {
         this.initialize(info);
+        CEMInstantiator.init(info);
         this._logger?.info("Starting up HTML Template Literal TSServer Plugin");
 
         const htmlTemplateLiteralLanguageService = new HTMLTemplateLiteralLanguageService(this._typescript, this.htmlLanguageService)
+
+        // TODO: When CEM updates, refresh this
+        this._cem = this.analyzeCEM();
 
         const languageService = decorateWithTemplateLanguageService(
             this._typescript,
@@ -29,9 +35,6 @@ class HTMLTemplateLiteralPlugin {
             htmlTemplateLiteralLanguageService,
             this.getTemplateSettings()
         );
-
-        const analyzedCEM = this.analyzeCEM();
-        debugger;
 
         return languageService;
     }
@@ -54,8 +57,7 @@ class HTMLTemplateLiteralPlugin {
         const cemFilePath = this._projectDirectory + "/" + packageJson.customElements;
         const cemFile = fs.readFileSync(cemFilePath, "utf8");
 
-        const cem: Package = JSON.parse(cemFile);
-        debugger;
+        return JSON.parse(cemFile);
     }
 
     private get htmlLanguageService(): HtmlLanguageService {

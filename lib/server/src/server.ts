@@ -16,7 +16,7 @@ import { getCompletionItemInfo, getCompletionItems } from "./completion.js";
 import { validateTextDocument } from "./analyzer.js";
 import { DEFAULT_SETTINGS, documents, documentSettings, LanguageServerSettings, setCapabilities, setGlobalSettings } from "./settings.js";
 import { getLanguageServiceForCurrentFile, initializeLanguageServiceForFile } from "./language-services/language-services.js";
-import { definitionInfoToDefinition, textDocumentDataToUsableData, uriToFileName } from "./transformers.js";
+import { definitionInfoToDefinition, textDocumentDataToUsableData } from "./transformers.js";
 
 /**
  * ==============================================================================================0
@@ -155,22 +155,6 @@ function onDidChangeConfiguration(change: DidChangeConfigurationParams) {
     // Revalidate all open text documents
     documents.all().forEach(textDocument => validateTextDocument(connection, textDocument, documentSettings));
 }
-
-
-/*connection.onDidOpenTextDocument((params) => {
-    console.log("OnDidOpenTextDocument");
-    console.log(params);
-    const textDocItem: TextDocumentItem = params.textDocument;
-
-    const textDoc = TextDocument.create(
-        textDocItem.uri, 
-        textDocItem.languageId,
-        textDocItem.version,
-        textDocItem.text
-    );
-
-    validateTextDocument(textDoc);
-});*/
 
 connection.onDidChangeTextDocument((params: DidChangeTextDocumentParams) => {
     console.log("OnDidChangeTextDocument");

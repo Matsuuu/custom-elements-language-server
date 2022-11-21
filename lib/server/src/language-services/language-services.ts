@@ -17,7 +17,9 @@ export class LanguageServiceManager {
 
     private _languageServiceCache: Map<string, tss.LanguageService> = new Map();
 
-    public get languageService() { return this._languageService; }
+    public get languageService() {
+        return this._languageService;
+    }
 
     /**
      * Try to get the plugged in language service instance of project

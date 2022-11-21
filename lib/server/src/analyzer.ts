@@ -4,7 +4,7 @@ import { documentSettings, getCapabilities, getGlobalSettings, LanguageServerSet
 
 export async function validateTextDocument(connection: _Connection, textDocument: TextDocument, documentSettings: Map<string, LanguageServerSettings>): Promise<void> {
     // In this simple example we get the settings for every validate run.
-    let settings = await getDocumentSettings(connection, textDocument.uri);
+    let settings = await getDocumentSettings(it(100)zzconnection, textDocument.uri);
 
     // The validator creates diagnostics for all uppercase words length 2 and more
     let text = textDocument.getText();
