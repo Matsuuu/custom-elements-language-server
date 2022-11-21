@@ -6,7 +6,7 @@
   "version": "0.0.0",
   "scripts": {
     "start": "tsc && concurrently -k -r \"tsc --watch --preserveWatchOutput\" \"wds\"",
-    "analyze": "cem analyze"
+    "analyze": "cem analyze --litelement"
   },
   "dependencies": {
     "lit": "^2.0.0-rc.2"

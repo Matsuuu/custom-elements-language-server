@@ -17,17 +17,54 @@
               "type": {
                 "text": "string"
               },
-              "default": "'My app'"
+              "default": "'My app'",
+              "attribute": "title"
             },
             {
               "kind": "field",
-              "name": "styles",
-              "static": true,
-              "default": "css`\n    :host {\n      min-height: 100vh;\n      display: flex;\n      flex-direction: column;\n      align-items: center;\n      justify-content: flex-start;\n      font-size: calc(10px + 2vmin);\n      color: #1a2b42;\n      max-width: 960px;\n      margin: 0 auto;\n      text-align: center;\n      background-color: var(--example-project-background-color);\n    }\n\n    main {\n      flex-grow: 1;\n    }\n\n    .logo {\n      margin-top: 36px;\n      animation: app-logo-spin infinite 20s linear;\n    }\n\n    @keyframes app-logo-spin {\n      from {\n        transform: rotate(0deg);\n      }\n      to {\n        transform: rotate(360deg);\n      }\n    }\n\n    .app-footer {\n      font-size: calc(12px + 0.5vmin);\n      align-items: center;\n    }\n\n    .app-footer a {\n      margin-left: 5px;\n    }\n  `"
+              "name": "projectName",
+              "type": {
+                "text": "string"
+              },
+              "default": "\"Example Project\"",
+              "attribute": "project-name",
+              "reflects": true
             },
             {
-              "kind": "method",
-              "name": "render"
+              "kind": "field",
+              "name": "color",
+              "type": {
+                "text": "string"
+              },
+              "default": "\"#000000\"",
+              "attribute": "color",
+              "reflects": true
+            }
+          ],
+          "attributes": [
+            {
+              "name": "title",
+              "type": {
+                "text": "string"
+              },
+              "default": "'My app'",
+              "fieldName": "title"
+            },
+            {
+              "name": "project-name",
+              "type": {
+                "text": "string"
+              },
+              "default": "\"Example Project\"",
+              "fieldName": "projectName"
+            },
+            {
+              "name": "color",
+              "type": {
+                "text": "string"
+              },
+              "default": "\"#000000\"",
+              "fieldName": "color"
             }
           ],
           "superclass": {
@@ -60,6 +97,27 @@
           "declaration": {
             "name": "ExampleProject",
             "module": "/src/ExampleProject.js"
+          }
+        }
+      ]
+    },
+    {
+      "kind": "javascript-module",
+      "path": "src/foo.ts",
+      "declarations": [
+        {
+          "kind": "variable",
+          "name": "temp",
+          "default": "html`\n    \n    <example-project></example-project>\n`"
+        }
+      ],
+      "exports": [
+        {
+          "kind": "js",
+          "name": "temp",
+          "declaration": {
+            "name": "temp",
+            "module": "src/foo.ts"
           }
         }
       ]

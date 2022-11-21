@@ -4,9 +4,16 @@ import { property } from 'lit/decorators.js';
 const logo = new URL('../../assets/open-wc-logo.svg', import.meta.url).href;
 
 export class ExampleProject extends LitElement {
-  @property({ type: String }) title = 'My app';
+    @property({ type: String })
+    title = 'My app';
 
-  static styles = css`
+    @property({ type: String, reflect: true, attribute: "project-name" })
+    projectName = "Example Project";
+
+    @property({ type: String, reflect: true })
+    color = "#000000";
+
+    static styles = css`
     :host {
       min-height: 100vh;
       display: flex;
@@ -49,8 +56,8 @@ export class ExampleProject extends LitElement {
     }
   `;
 
-  render() {
-    return html`
+    render() {
+        return html`
       <main>
         <div class="logo"><img alt="open-wc logo" src=${logo} /></div>
         <h1>${this.title}</h1>
@@ -76,5 +83,5 @@ export class ExampleProject extends LitElement {
         >.
       </p>
     `;
-  }
+    }
 }

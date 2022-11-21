@@ -5,7 +5,7 @@ import { getDocumentRegions } from "./embedded-support.js";
 import { createTextDocumentFromContext } from "./text-document.js";
 import { completionItemToCompletionEntry } from "./interop.js";
 import { getLatestCEM } from "./cem/cem-instance.js";
-import { findClassForTagName } from "./cem/cem-helpers.js";
+import { findClassForTagName, isCustomElementDeclaration } from "./cem/cem-helpers.js";
 
 export class HTMLTemplateLiteralLanguageService implements TemplateLanguageService {
 
@@ -46,17 +46,24 @@ export class HTMLTemplateLiteralLanguageService implements TemplateLanguageServi
         const htmlLSCompletions = this.getCompletionItems(context, position);
         const defaultCompletionItems = htmlLSCompletions.items.map(completionItemToCompletionEntry);
         const cem = getLatestCEM();
-        let cemCompletions = [];
+        let cemCompletions: tss.CompletionEntry[] = [];
         if (cem) {
+            // TODO: Move this elsewhere from the main method
             const tagClass = findClassForTagName(cem, "example-project");
-            debugger;
+            const declaration = tagClass?.declarations?.[0];
+            // TODO: Somehow tell if we're in a attribute context
+            if (declaration && isCustomElementDeclaration(declaration)) {
+                const attributes = declaration.attributes;
+                attributes?.forEach(attr => {
+                    cemCompletions.push({ name: attr.name, kind: tss.ScriptElementKind.memberVariableElement, sortText: attr.name });
+                });
+            }
         }
-        debugger;
         return {
             isGlobalCompletion: false,
             isMemberCompletion: false,
             isNewIdentifierLocation: false,
-            entries: [{ name: "This is a custom completion", kind: tss.ScriptElementKind.string, sortText: "This is a custom completion" }, ...defaultCompletionItems]
+            entries: [{ name: "This is a custom completion", kind: tss.ScriptElementKind.string, sortText: "This is a custom completion" }, ...defaultCompletionItems, ...cemCompletions]
         };
 
     }

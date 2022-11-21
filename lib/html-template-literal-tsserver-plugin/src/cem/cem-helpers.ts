@@ -1,11 +1,10 @@
-import { Export, Module, Package } from "custom-elements-manifest";
+import { CustomElementDeclaration, Declaration, Export, Module, Package } from "custom-elements-manifest";
 
 // Map<tagName, ClassModule>
 const CEMCache: Map<string, Module> = new Map();
 
 
 export function findClassForTagName(manifest: Package, tagName: string) {
-    debugger;
     const declarationModule = manifest.modules.find(mod => moduleHasCustomElementExportByName(mod, tagName));
     if (!declarationModule) return undefined;
 
@@ -46,4 +45,8 @@ export function modulePathEquals(mod: Module, path: string) {
         || path === modulePathAsJs
         || path === withTrailingSlash
         || path === withTrailingSlashAsJs;
+}
+
+export function isCustomElementDeclaration(dec: Declaration): dec is CustomElementDeclaration {
+    return (dec as CustomElementDeclaration).customElement !== undefined && (dec as CustomElementDeclaration).customElement;
 }
