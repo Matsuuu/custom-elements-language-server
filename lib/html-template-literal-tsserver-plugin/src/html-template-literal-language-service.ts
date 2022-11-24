@@ -1,4 +1,4 @@
-import tss from "typescript/lib/tsserverlibrary.js";
+import tss, { createScanner } from "typescript/lib/tsserverlibrary.js";
 import { TemplateContext, TemplateLanguageService } from "typescript-template-language-service-decorator";
 import { LanguageService as HtmlLanguageService } from "vscode-html-languageservice";
 import { getDocumentRegions } from "./embedded-support.js";
@@ -43,10 +43,21 @@ export class HTMLTemplateLiteralLanguageService implements TemplateLanguageServi
     ): tss.CompletionInfo {
         console.log("On completions");
 
+        const document = createTextDocumentFromContext(context);
+        const documentRegions = getDocumentRegions(this.htmlLanguageService, document);
+        const languageId = documentRegions.getLanguageAtPosition(position);
+        const htmlDoc = this.htmlLanguageService.parseHTMLDocument(document);
+        const offset = document.offsetAt(position);
+        const scanner = this.htmlLanguageService.createScanner(document.getText());
+        debugger;
+        const nodeUnderCursor = htmlDoc.findNodeAt(offset);
+
         const htmlLSCompletions = this.getCompletionItems(context, position);
         const defaultCompletionItems = htmlLSCompletions.items.map(completionItemToCompletionEntry);
         const cem = getLatestCEM();
         let cemCompletions: tss.CompletionEntry[] = [];
+
+        debugger;
         if (cem) {
             // TODO: Move this elsewhere from the main method
             const tagClass = findClassForTagName(cem, "example-project");
