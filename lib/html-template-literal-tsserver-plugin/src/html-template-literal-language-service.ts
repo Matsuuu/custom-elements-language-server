@@ -49,7 +49,6 @@ export class HTMLTemplateLiteralLanguageService implements TemplateLanguageServi
         const htmlDoc = this.htmlLanguageService.parseHTMLDocument(document);
         const offset = document.offsetAt(position);
         const scanner = this.htmlLanguageService.createScanner(document.getText());
-        debugger;
         const nodeUnderCursor = htmlDoc.findNodeAt(offset);
 
         const htmlLSCompletions = this.getCompletionItems(context, position);

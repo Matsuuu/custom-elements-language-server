@@ -133,6 +133,7 @@ export function getDocumentRegions(
         }
         token = scanner.scan();
     }
+    debugger;
     return {
         getEmbeddedDocument: (
             languageId: string,
