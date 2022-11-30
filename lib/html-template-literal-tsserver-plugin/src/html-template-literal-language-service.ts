@@ -43,12 +43,11 @@ export class HTMLTemplateLiteralLanguageService implements TemplateLanguageServi
     ): tss.CompletionInfo {
         console.log("On completions");
 
+        const content = context.text;
+        console.log(content);
         const document = createTextDocumentFromContext(context);
-        const documentRegions = getDocumentRegions(this.htmlLanguageService, document);
-        const languageId = documentRegions.getLanguageAtPosition(position);
         const htmlDoc = this.htmlLanguageService.parseHTMLDocument(document);
         const offset = document.offsetAt(position);
-        const scanner = this.htmlLanguageService.createScanner(document.getText());
         const nodeUnderCursor = htmlDoc.findNodeAt(offset);
 
         const htmlLSCompletions = this.getCompletionItems(context, position);
@@ -56,8 +55,8 @@ export class HTMLTemplateLiteralLanguageService implements TemplateLanguageServi
         const cem = getLatestCEM();
         let cemCompletions: tss.CompletionEntry[] = [];
 
-        debugger;
         if (cem) {
+            debugger;
             // TODO: Move this elsewhere from the main method
             const tagClass = findClassForTagName(cem, "example-project");
             const declaration = tagClass?.declarations?.[0];

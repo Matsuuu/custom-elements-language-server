@@ -14,6 +14,8 @@ export async function getCompletionItems(textDocumentPosition: TextDocumentPosit
     const doc = documents.get(textDocumentPosition.textDocument.uri);
     if (!doc) return CompletionList.create();
 
+    console.log(doc.getText());
+
     const fileName = doc.uri.replace("file://", "");
 
     const languageService = getLanguageServiceManagerInstance().getLanguageServiceForCurrentFile(fileName);

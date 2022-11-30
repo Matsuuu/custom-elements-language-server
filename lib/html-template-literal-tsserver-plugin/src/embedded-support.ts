@@ -56,8 +56,11 @@ export function getDocumentRegions(
     let languageIdFromType: string | undefined;
     const importedScripts: string[] = [];
 
+    const content = document.getText();
+    const tokens = [];
     let token = scanner.scan();
     while (token !== TokenType.EOS) {
+        tokens.push(token);
         switch (token) {
             case TokenType.StartTag:
                 lastTagName = scanner.getTokenText();
@@ -133,7 +136,6 @@ export function getDocumentRegions(
         }
         token = scanner.scan();
     }
-    debugger;
     return {
         getEmbeddedDocument: (
             languageId: string,
