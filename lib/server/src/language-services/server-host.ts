@@ -17,6 +17,9 @@ export class ServerHost implements tss.server.ServerHost {
 
     watchFile(path: string, callback: tss.FileWatcherCallback, pollingInterval?: number | undefined, options?: tss.WatchOptions | undefined): tss.FileWatcher {
         if (!tss.sys.watchFile) throw new Error("Could not start a filewatcher");
+        if (path.includes("foo")) {
+            debugger;
+        }
         return tss.sys.watchFile(path, callback, pollingInterval, options);
     }
     watchDirectory(path: string, callback: tss.DirectoryWatcherCallback, recursive?: boolean | undefined, options?: tss.WatchOptions | undefined): tss.FileWatcher {

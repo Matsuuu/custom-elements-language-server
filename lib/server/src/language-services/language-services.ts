@@ -13,13 +13,7 @@ export class LanguageServiceManager {
 
     static _instance?: LanguageServiceManager;
 
-    private _languageService?: tss.LanguageService;
-
     private _languageServiceCache: Map<string, tss.LanguageService> = new Map();
-
-    public get languageService() {
-        return this._languageService;
-    }
 
     /**
      * Try to get the plugged in language service instance of project
@@ -48,9 +42,10 @@ export class LanguageServiceManager {
         return languageService;
     }
 
-    public getLanguageServiceForCurrentFile(fileName: string): tss.LanguageService | undefined {
+    public getLanguageServiceForCurrentFile(fileName: string, content: string): tss.LanguageService | undefined {
 
         const project = projectService.openAndGetProjectForFile(fileName);
+        project?.writeFile(fileName, content);
         if (!project) {
             return undefined;
         }

@@ -15,7 +15,10 @@ export function getPluginCreateInfo(projectService: ProjectService):
     }
 
     return {
-        project: project, languageService: project.getLanguageService(),
-        languageServiceHost: project, serverHost: serverHost, config: {}
+        project: project,
+        languageService: project.getLanguageService(),
+        languageServiceHost: project,
+        serverHost: serverHost,
+        config: {}
     }
 }
