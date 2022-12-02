@@ -1,6 +1,7 @@
 import { Package } from "custom-elements-manifest";
 import * as tss from "typescript/lib/tsserverlibrary.js";
 import * as fs from "fs";
+import { scanCustomElementTagNames } from "./cem-helpers.js";
 
 export class CEMInstantiator {
 
@@ -58,7 +59,11 @@ export function getCEMInstantiator() {
 }
 
 export function getLatestCEM() {
-    return getCEMInstantiator()?.getCEM();
+    const cem = getCEMInstantiator()?.getCEM();
+    if (cem) {
+        scanCustomElementTagNames(cem);
+    }
+    return cem;
 }
 
 export function refreshCEM() {

@@ -1,7 +1,10 @@
 import { CustomElementDeclaration, Declaration, Export, Module, Package } from "custom-elements-manifest";
 
 // Map<tagName, ClassModule>
-const CEMCache: Map<string, Module> = new Map();
+const CEMClassCache: Map<string, Module> = new Map();
+// TODO: Make this a map with Map<string, CustomElementDeclaration> or something similiar 
+// if there's a perf benefit from it
+let CEMCustomElementTagCache: Array<string> = [];
 
 
 export function findClassForTagName(manifest: Package, tagName: string) {
@@ -19,8 +22,25 @@ export function findClassForTagName(manifest: Package, tagName: string) {
     const mod = findModuleByPath(manifest, classPath);
     if (!mod) return undefined;
 
-    CEMCache.set(tagName, mod);
+    CEMClassCache.set(tagName, mod);
     return mod;
+}
+
+export function scanCustomElementTagNames(manifest: Package) {
+    const customElementDeclarations = manifest.modules.filter(mod => moduleHasCustomElementExport(mod));
+    CEMCustomElementTagCache = customElementDeclarations.flatMap(decl => {
+        return decl.exports
+            ?.filter(exportHasCustomElementExport)
+            .map(exp => exp.name) ?? [];
+    });
+}
+
+export function moduleHasCustomElementExport(mod: Module) {
+    return mod.exports?.some(exp => exportHasCustomElementExport(exp));
+}
+
+export function exportHasCustomElementExport(modExport: Export) {
+    return modExport.kind === "custom-element-definition";
 }
 
 export function moduleHasCustomElementExportByName(mod: Module, tagName: string) {
