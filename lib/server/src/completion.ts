@@ -17,11 +17,16 @@ export async function getCompletionItems(textDocumentPosition: TextDocumentPosit
 
     const fileName = doc.uri.replace("file://", "");
 
-    const languageService = getLanguageService(fileName);
+    const languageServiceTools = getLanguageService(fileName, doc.getText());
+    const p = languageServiceTools?.project;
+    // @ts-ignore
+    const a = p?.getSourceFile(fileName);
+    const b = p?.readFile(fileName);
+
+    debugger;
 
     const completionsOpts: ts.GetCompletionsAtPositionOptions = {};
-    const completions = languageService?.getCompletionsAtPosition(fileName, doc.offsetAt(textDocumentPosition.position), completionsOpts);
-
+    const completions = languageServiceTools?.languageService?.getCompletionsAtPosition(fileName, doc.offsetAt(textDocumentPosition.position), completionsOpts);
 
     return completionsToList(completions);
 }

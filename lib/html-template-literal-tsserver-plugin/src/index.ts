@@ -23,6 +23,7 @@ class HTMLTemplateLiteralPlugin {
 
         const htmlTemplateLiteralLanguageService = new HTMLTemplateLiteralLanguageService(this._typescript, this.htmlLanguageService)
 
+        debugger;
         const languageService = decorateWithTemplateLanguageService(
             this._typescript,
             info.languageService,

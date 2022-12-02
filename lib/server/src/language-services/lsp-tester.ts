@@ -6,6 +6,6 @@ const TEST_INPUT_FILE = "/home/matsu/Projects/custom-elements-language-server/li
 const langService = getLanguageServiceManagerInstance();
 
 console.log("Loading file ");
-langService.getLanguageServiceForCurrentFile(TEST_INPUT_FILE)
+//langService.getLanguageServiceForCurrentFile(TEST_INPUT_FILE)
 console.log("Loading file again");
-langService.getLanguageServiceForCurrentFile(TEST_INPUT_FILE)
+//langService.getLanguageServiceForCurrentFile(TEST_INPUT_FILE)

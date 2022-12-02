@@ -9,6 +9,11 @@ import { ServerHost } from "./server-host.js";
 const serverHost = new ServerHost();
 const projectService = getProjectService(serverHost);
 
+interface LanguageServiceTools {
+    languageService: tss.LanguageService | undefined;
+    project: tss.server.Project;
+}
+
 export class LanguageServiceManager {
 
     static _instance?: LanguageServiceManager;
@@ -42,9 +47,9 @@ export class LanguageServiceManager {
         return languageService;
     }
 
-    public getLanguageServiceForCurrentFile(fileName: string): tss.LanguageService | undefined {
+    public getLanguageServiceForCurrentFile(fileName: string, fileContent: string): LanguageServiceTools | undefined {
 
-        const project = projectService.openAndGetProjectForFile(fileName);
+        const project = projectService.openAndGetProjectForFile(fileName, fileContent);
         if (!project) {
             return undefined;
         }
@@ -57,7 +62,10 @@ export class LanguageServiceManager {
 
         const configFilePath = project.canonicalConfigFilePath;
 
-        return this.getOrCreateLanguageService(configFilePath);
+        return {
+            languageService: this.getOrCreateLanguageService(configFilePath),
+            project
+        }
     }
 }
 
@@ -70,22 +78,16 @@ export function getLanguageServiceManagerInstance() {
     return LanguageServiceManager._instance;
 }
 
-export function getLanguageService(fileName: string) {
-    return getLanguageServiceManagerInstance().getLanguageServiceForCurrentFile(fileName);
+export function getLanguageService(fileName: string, fileContent: string) {
+    return getLanguageServiceManagerInstance().getLanguageServiceForCurrentFile(fileName, fileContent);
 }
 
-export function initializeLanguageServiceForFile(fileName: string) {
-    getLanguageServiceManagerInstance().getLanguageServiceForCurrentFile(fileName);
+export function initializeLanguageServiceForFile(fileName: string, fileContent: string) {
+    getLanguageServiceManagerInstance().getLanguageServiceForCurrentFile(fileName, fileContent);
 }
 
-export function getLanguageServiceForCurrentFile(fileName: string) {
-    return getLanguageServiceManagerInstance().getLanguageServiceForCurrentFile(fileName);
-}
-
-export function syncFile(filePath: string, fileContents: string) {
-    const languageService = getLanguageService(filePath);
-    // @ts-ignore
-    languageService?.getProgram().writeFile(filePath, fileContents);
+export function getLanguageServiceForCurrentFile(fileName: string, fileContent: string) {
+    return getLanguageServiceManagerInstance().getLanguageServiceForCurrentFile(fileName, fileContent);
 }
 
 export function isConfiguredProject(project: tss.server.Project): project is tss.server.ConfiguredProject {

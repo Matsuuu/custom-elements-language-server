@@ -38,8 +38,8 @@ export class ProjectService extends tss.server.ProjectService {
         return tssIteratorToArray(this.configuredProjects.keys());
     }
 
-    public openAndGetProjectForFile(fileName: string) {
-        const fileOpenResult = this.openClientFile(fileName);
+    public openAndGetProjectForFile(fileName: string, fileContent: string) {
+        const fileOpenResult = this.openClientFile(fileName, fileContent);
         // TODO: Handle openresult errors?
         //
         // @ts-ignore I don't know why the typing here is so scuffed

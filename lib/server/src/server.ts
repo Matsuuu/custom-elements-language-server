@@ -52,7 +52,7 @@ connection.onCompletionResolve(getCompletionItemInfo);
 connection.onDefinition((definitionEvent) => {
 
     const usableData = textDocumentDataToUsableData(documents, definitionEvent);
-    const currentFileDef = getLanguageServiceForCurrentFile(usableData.fileName)?.getDefinitionAtPosition(usableData.fileName, usableData.position);
+    const currentFileDef = getLanguageServiceForCurrentFile(usableData.fileName, usableData.fileContent)?.languageService?.getDefinitionAtPosition(usableData.fileName, usableData.position);
 
     return currentFileDef?.map(def => definitionInfoToDefinition(def, documents)) ?? [];
 });
@@ -97,7 +97,7 @@ function onInitialize(params: InitializeParams) {
         console.log("Opened text doc");
 
         const fileName = e.document.uri.replace("file://", "");
-        initializeLanguageServiceForFile(fileName);
+        initializeLanguageServiceForFile(fileName, e.document.getText());
     })
 
     connection.onShutdown(() => {

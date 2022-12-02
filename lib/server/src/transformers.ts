@@ -6,6 +6,7 @@ import { TextDocuments } from "vscode-languageserver/node.js";
 export interface UsableTextDocumentData {
     fileName: string;
     position: number;
+    fileContent: string;
 }
 
 export function uriToFileName(uri: string) {
@@ -24,7 +25,8 @@ export function textDocumentDataToUsableData(documents: TextDocuments<TextDocume
 
     return {
         fileName,
-        position: doc?.offsetAt(textDocumentData.position) ?? 0
+        position: doc?.offsetAt(textDocumentData.position) ?? 0,
+        fileContent: doc?.getText() ?? ''
     }
 }
 
