@@ -1,7 +1,8 @@
 import { CompletionItem, CompletionItemKind, CompletionList, TextDocumentPositionParams } from "vscode-languageserver/node.js";
 import { documents } from "./settings.js";
 import ts from "typescript";
-import { getLanguageServiceManagerInstance } from "./language-services/language-services.js";
+import tss from "typescript/lib/tsserverlibrary.js";
+import { getLanguageService } from "./language-services/language-services.js";
 
 function wait(ms = 100) {
     return new Promise(resolve => setTimeout(resolve, ms));
@@ -14,11 +15,9 @@ export async function getCompletionItems(textDocumentPosition: TextDocumentPosit
     const doc = documents.get(textDocumentPosition.textDocument.uri);
     if (!doc) return CompletionList.create();
 
-    console.log(doc.getText());
-
     const fileName = doc.uri.replace("file://", "");
 
-    const languageService = getLanguageServiceManagerInstance().getLanguageServiceForCurrentFile(fileName, doc.getText());
+    const languageService = getLanguageService(fileName);
 
     const completionsOpts: ts.GetCompletionsAtPositionOptions = {};
     const completions = languageService?.getCompletionsAtPosition(fileName, doc.offsetAt(textDocumentPosition.position), completionsOpts);

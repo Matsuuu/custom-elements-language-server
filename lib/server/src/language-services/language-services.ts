@@ -1,6 +1,6 @@
 import HTMLTemplateLiteralTSServerPlugin from "html-template-literal-tsserver-plugin/out/index.js";
 import ts from "typescript";
-import tss from "typescript/lib/tsserverlibrary.js";
+import tss, { server } from "typescript/lib/tsserverlibrary.js";
 
 import { getPluginCreateInfo } from "./plugin-creation.js";
 import { getProjectService } from "./project-service.js";
@@ -42,10 +42,9 @@ export class LanguageServiceManager {
         return languageService;
     }
 
-    public getLanguageServiceForCurrentFile(fileName: string, content: string): tss.LanguageService | undefined {
+    public getLanguageServiceForCurrentFile(fileName: string): tss.LanguageService | undefined {
 
         const project = projectService.openAndGetProjectForFile(fileName);
-        project?.writeFile(fileName, content);
         if (!project) {
             return undefined;
         }
@@ -62,11 +61,17 @@ export class LanguageServiceManager {
     }
 }
 
+// Here we have some short hand handlers for our language service instance
+
 export function getLanguageServiceManagerInstance() {
     if (!LanguageServiceManager._instance) {
         LanguageServiceManager._instance = new LanguageServiceManager();
     }
     return LanguageServiceManager._instance;
+}
+
+export function getLanguageService(fileName: string) {
+    return getLanguageServiceManagerInstance().getLanguageServiceForCurrentFile(fileName);
 }
 
 export function initializeLanguageServiceForFile(fileName: string) {
@@ -77,7 +82,12 @@ export function getLanguageServiceForCurrentFile(fileName: string) {
     return getLanguageServiceManagerInstance().getLanguageServiceForCurrentFile(fileName);
 }
 
-export function isConfiguredProject(project: tss.server.Project):
-    project is tss.server.ConfiguredProject {
+export function syncFile(filePath: string, fileContents: string) {
+    const languageService = getLanguageService(filePath);
+    // @ts-ignore
+    languageService?.getProgram().writeFile(filePath, fileContents);
+}
+
+export function isConfiguredProject(project: tss.server.Project): project is tss.server.ConfiguredProject {
     return project instanceof tss.server.ConfiguredProject;
 }

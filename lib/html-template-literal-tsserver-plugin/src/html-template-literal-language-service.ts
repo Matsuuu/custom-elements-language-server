@@ -44,7 +44,6 @@ export class HTMLTemplateLiteralLanguageService implements TemplateLanguageServi
         console.log("On completions");
 
         const content = context.text;
-        console.log(content);
         const document = createTextDocumentFromContext(context);
         const htmlDoc = this.htmlLanguageService.parseHTMLDocument(document);
         const offset = document.offsetAt(position);
@@ -55,6 +54,7 @@ export class HTMLTemplateLiteralLanguageService implements TemplateLanguageServi
         const cem = getLatestCEM();
         let cemCompletions: tss.CompletionEntry[] = [];
 
+        debugger;
         if (cem) {
             // TODO: Move this elsewhere from the main method
             const tagClass = findClassForTagName(cem, "example-project");

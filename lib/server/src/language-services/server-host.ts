@@ -1,13 +1,23 @@
 import tss from "typescript/lib/tsserverlibrary.js";
+import { documents } from "../settings.js";
 
 // TODO: Are these things actually undefined at some time?
 // TODO TODO: Implement some of these methods ourselves
+
+
+interface VersionedFile {
+    version: number;
+    content: string;
+    filepath: string;
+}
 
 export class ServerHost implements tss.server.ServerHost {
 
     args: string[];
     newLine: string;
     useCaseSensitiveFileNames: boolean;
+
+    fileContentCache: Map<string, VersionedFile> = new Map();
 
     constructor() {
         this.args = tss.sys.args;
@@ -17,9 +27,6 @@ export class ServerHost implements tss.server.ServerHost {
 
     watchFile(path: string, callback: tss.FileWatcherCallback, pollingInterval?: number | undefined, options?: tss.WatchOptions | undefined): tss.FileWatcher {
         if (!tss.sys.watchFile) throw new Error("Could not start a filewatcher");
-        if (path.includes("foo")) {
-            debugger;
-        }
         return tss.sys.watchFile(path, callback, pollingInterval, options);
     }
     watchDirectory(path: string, callback: tss.DirectoryWatcherCallback, recursive?: boolean | undefined, options?: tss.WatchOptions | undefined): tss.FileWatcher {
@@ -45,10 +52,16 @@ export class ServerHost implements tss.server.ServerHost {
         tss.sys.write(s);
     }
     readFile(path: string, encoding?: string | undefined): string | undefined {
-        // TODO: Optimize this to not oly use the ts implementation but use a cached value or something
+        const documentCacheHit = documents.get("file://" + path);
+        if (documentCacheHit) {
+            return documentCacheHit.getText();
+        }
+
         return tss.sys.readFile(path, encoding);
     }
+
     writeFile(path: string, data: string, writeByteOrderMark?: boolean | undefined): void {
+        // TODO: Ok to comment out?
         tss.sys.writeFile(path, data, writeByteOrderMark);
     }
     resolvePath(path: string): string {
