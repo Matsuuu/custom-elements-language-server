@@ -26,6 +26,12 @@ export function findClassForTagName(manifest: Package, tagName: string) {
     return mod;
 }
 
+export function findCustomElementTagLike(manifest: Package, tagNamePart: string) {
+    // TODO: Memoize this or something. Weakmaps maybe?
+    scanCustomElementTagNames(manifest);
+    return CEMCustomElementTagCache.filter(tag => tag.includes(tagNamePart));
+}
+
 export function scanCustomElementTagNames(manifest: Package) {
     const customElementDeclarations = manifest.modules.filter(mod => moduleHasCustomElementExport(mod));
     CEMCustomElementTagCache = customElementDeclarations.flatMap(decl => {

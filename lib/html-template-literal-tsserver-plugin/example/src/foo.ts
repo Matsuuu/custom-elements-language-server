@@ -4,7 +4,6 @@ export const temp = html`
     
     <example-project></example-project>
 
-    <exam
 
     <p>Foo</p>
 

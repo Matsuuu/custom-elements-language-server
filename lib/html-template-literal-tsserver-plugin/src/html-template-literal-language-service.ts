@@ -5,7 +5,8 @@ import { getDocumentRegions } from "./embedded-support.js";
 import { createTextDocumentFromContext } from "./text-document.js";
 import { completionItemToCompletionEntry } from "./interop.js";
 import { getLatestCEM } from "./cem/cem-instance.js";
-import { findClassForTagName, isCustomElementDeclaration } from "./cem/cem-helpers.js";
+import { findClassForTagName, findCustomElementTagLike, isCustomElementDeclaration } from "./cem/cem-helpers.js";
+import { JavaScriptModule } from "custom-elements-manifest";
 
 export class HTMLTemplateLiteralLanguageService implements TemplateLanguageService {
 
@@ -56,7 +57,16 @@ export class HTMLTemplateLiteralLanguageService implements TemplateLanguageServi
 
         if (cem) {
             // TODO: Move this elsewhere from the main method
-            const tagClass = findClassForTagName(cem, "example-project");
+
+            // TODO: Check if writing a tag
+            if (nodeUnderCursor && nodeUnderCursor.tag) {
+                const similiarTags = findCustomElementTagLike(cem, nodeUnderCursor.tag);
+                similiarTags.forEach(tag => {
+                    cemCompletions.push({ name: tag, kind: tss.ScriptElementKind.classElement, sortText: tag })
+                })
+            }
+            // @ts-ignore placehodler until I implement this
+            const tagClass = undefined as JavaScriptModule;
             const declaration = tagClass?.declarations?.[0];
             // TODO: Somehow tell if we're in a attribute context
             if (declaration && isCustomElementDeclaration(declaration)) {
