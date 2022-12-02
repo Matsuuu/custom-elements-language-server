@@ -54,7 +54,6 @@ export class HTMLTemplateLiteralLanguageService implements TemplateLanguageServi
         const cem = getLatestCEM();
         let cemCompletions: tss.CompletionEntry[] = [];
 
-        debugger;
         if (cem) {
             // TODO: Move this elsewhere from the main method
             const tagClass = findClassForTagName(cem, "example-project");
