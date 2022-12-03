@@ -57,7 +57,7 @@ export function getDocumentRegions(
     const importedScripts: string[] = [];
 
     const content = document.getText();
-    const tokens = [];
+    const tokens: any[] = [];
     let token = scanner.scan();
     while (token !== TokenType.EOS) {
         tokens.push(token);
@@ -136,6 +136,7 @@ export function getDocumentRegions(
         }
         token = scanner.scan();
     }
+
     return {
         getEmbeddedDocument: (
             languageId: string,
@@ -148,7 +149,7 @@ export function getDocumentRegions(
                 ignoreAttributeValues
             ),
         getLanguageAtPosition: (position: Position) =>
-            getLanguageAtPosition(document, regions, position),
+            getLanguageAtPosition(document, regions, position)
     };
 }
 

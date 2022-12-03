@@ -1,12 +1,13 @@
-import tss, { createScanner } from "typescript/lib/tsserverlibrary.js";
+import tss from "typescript/lib/tsserverlibrary.js";
 import { TemplateContext, TemplateLanguageService } from "typescript-template-language-service-decorator";
 import { LanguageService as HtmlLanguageService } from "vscode-html-languageservice";
 import { getDocumentRegions } from "./embedded-support.js";
 import { createTextDocumentFromContext } from "./text-document.js";
 import { completionItemToCompletionEntry } from "./interop.js";
 import { getLatestCEM } from "./cem/cem-instance.js";
-import { findClassForTagName, findCustomElementTagLike, isCustomElementDeclaration } from "./cem/cem-helpers.js";
+import { findCustomElementTagLike, isCustomElementDeclaration } from "./cem/cem-helpers.js";
 import { JavaScriptModule } from "custom-elements-manifest";
+import { resolveCompletionContext } from "./completion-context.js";
 
 export class HTMLTemplateLiteralLanguageService implements TemplateLanguageService {
 
@@ -44,7 +45,6 @@ export class HTMLTemplateLiteralLanguageService implements TemplateLanguageServi
     ): tss.CompletionInfo {
         console.log("On completions");
 
-        const content = context.text;
         const document = createTextDocumentFromContext(context);
         const htmlDoc = this.htmlLanguageService.parseHTMLDocument(document);
         const offset = document.offsetAt(position);
@@ -54,6 +54,8 @@ export class HTMLTemplateLiteralLanguageService implements TemplateLanguageServi
         const defaultCompletionItems = htmlLSCompletions.items.map(completionItemToCompletionEntry);
         const cem = getLatestCEM();
         let cemCompletions: tss.CompletionEntry[] = [];
+
+        resolveCompletionContext(this.htmlLanguageService, context, position);
 
         if (cem) {
             // TODO: Move this elsewhere from the main method
@@ -65,6 +67,9 @@ export class HTMLTemplateLiteralLanguageService implements TemplateLanguageServi
                     cemCompletions.push({ name: tag, kind: tss.ScriptElementKind.classElement, sortText: tag })
                 })
             }
+
+
+            //console.log(nodeUnderCursor);
             // @ts-ignore placehodler until I implement this
             const tagClass = undefined as JavaScriptModule;
             const declaration = tagClass?.declarations?.[0];
