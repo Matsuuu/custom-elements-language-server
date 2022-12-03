@@ -4,7 +4,7 @@ export const temp = html`
     
     <example-project></example-project>
 
-    <p
+    
     
     <p>Foo</p>
 

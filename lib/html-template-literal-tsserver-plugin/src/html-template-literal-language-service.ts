@@ -7,7 +7,7 @@ import { completionItemToCompletionEntry } from "./interop.js";
 import { getLatestCEM } from "./cem/cem-instance.js";
 import { findCustomElementTagLike, isCustomElementDeclaration } from "./cem/cem-helpers.js";
 import { JavaScriptModule } from "custom-elements-manifest";
-import { resolveCompletionContext } from "./completion-context.js";
+import { CompletionContextKind, isAttributeNameCompletion, isEndTagCompletion, isTagCompletion, resolveCompletionContext } from "./completion-context.js";
 
 export class HTMLTemplateLiteralLanguageService implements TemplateLanguageService {
 
@@ -55,21 +55,35 @@ export class HTMLTemplateLiteralLanguageService implements TemplateLanguageServi
         const cem = getLatestCEM();
         let cemCompletions: tss.CompletionEntry[] = [];
 
-        resolveCompletionContext(this.htmlLanguageService, context, position);
+        const completionContext = resolveCompletionContext(this.htmlLanguageService, context, position);
 
         if (cem) {
             // TODO: Move this elsewhere from the main method
 
-            // TODO: Check if writing a tag
-            if (nodeUnderCursor && nodeUnderCursor.tag) {
-                const similiarTags = findCustomElementTagLike(cem, nodeUnderCursor.tag);
+            if (isTagCompletion(completionContext)) {
+                const similiarTags = findCustomElementTagLike(cem, completionContext.tagName);
                 similiarTags.forEach(tag => {
                     cemCompletions.push({ name: tag, kind: tss.ScriptElementKind.classElement, sortText: tag })
                 })
             }
 
+            if (isEndTagCompletion(completionContext)) {
+                /*const similiarTags = findCustomElementTagLike(cem, completionContext.tagName);
+                const closingPrefix = "/";
+                similiarTags.forEach(tag => {
+                    const tagWithPrefix = closingPrefix + tag;
+                    cemCompletions.push({ name: tagWithPrefix, kind: tss.ScriptElementKind.classElement, sortText: tagWithPrefix })
+                })*/
+                // NOTE: This is done by vscode automatically?
+                // Check if it's done everywhere and then do a check on completions if 
+                // the closing tag is already present.
+            }
 
-            //console.log(nodeUnderCursor);
+            if (isAttributeNameCompletion(completionContext)) {
+
+            }
+
+
             // @ts-ignore placehodler until I implement this
             const tagClass = undefined as JavaScriptModule;
             const declaration = tagClass?.declarations?.[0];

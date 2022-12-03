@@ -66,6 +66,26 @@ export interface CompletionContext {
     kind: CompletionContextKind;
 }
 
+export function isTagCompletion(context: CompletionContext): context is TagCompletionContext {
+    return context.kind === CompletionContextKind.Tag;
+}
+
+export function isEndTagCompletion(context: CompletionContext): context is TagCompletionContext {
+    return context.kind === CompletionContextKind.EndTag;
+}
+
+export function isAttributeNameCompletion(context: CompletionContext): context is AttributeCompletionContext {
+    return context.kind === CompletionContextKind.AttributeName;
+}
+
+export function isPropertyNameCompletion(context: CompletionContext): context is PropertyCompletionContext {
+    return context.kind === CompletionContextKind.PropertyName;
+}
+
+export function isEventNameCompletion(context: CompletionContext): context is EventCompletionContext {
+    return context.kind === CompletionContextKind.Event || context.kind === CompletionContextKind.AtEvent;
+}
+
 export interface TagCompletionContext extends CompletionContext {
     tagName: string;
 }
