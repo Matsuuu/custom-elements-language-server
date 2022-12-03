@@ -7,6 +7,8 @@ import {
 import pkg from 'vscode-html-languageservice';
 const { TokenType } = pkg;
 
+// Some of the context checks were borrowed from https://github.com/microsoft/vscode-html-languageservice/blob/main/src/services/htmlCompletion.ts
+
 export function resolveCompletionContext(languageService: LanguageService, context: TemplateContext, position: Position): CompletionContext {
     const document = createTextDocumentFromContext(context);
     const scanner = languageService.createScanner(document.getText());

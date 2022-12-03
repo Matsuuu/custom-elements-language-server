@@ -63,7 +63,7 @@ export class HTMLTemplateLiteralLanguageService implements TemplateLanguageServi
             if (isTagCompletion(completionContext)) {
                 const similiarTags = findCustomElementTagLike(cem, completionContext.tagName);
                 similiarTags.forEach(tag => {
-                    cemCompletions.push({ name: tag, kind: tss.ScriptElementKind.classElement, sortText: tag })
+                    cemCompletions.push({ name: tag, kind: tss.ScriptElementKind.memberVariableElement, sortText: tag })
                 })
             }
 
@@ -94,6 +94,7 @@ export class HTMLTemplateLiteralLanguageService implements TemplateLanguageServi
                     cemCompletions.push({ name: attr.name, kind: tss.ScriptElementKind.memberVariableElement, sortText: attr.name });
                 });
             }
+
         }
         return {
             isGlobalCompletion: false,
