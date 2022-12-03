@@ -1,5 +1,7 @@
 HTML Lang server TokenTypes https://github.com/microsoft/vscode-html-languageservice/blob/main/src/htmlLanguageTypes.ts#L74-L97
 
+Completion contexts: https://github.com/microsoft/vscode-html-languageservice/blob/main/src/services/htmlCompletion.ts
+
 ```javascript
 export declare enum TokenType {
     StartCommentTag = 0,
