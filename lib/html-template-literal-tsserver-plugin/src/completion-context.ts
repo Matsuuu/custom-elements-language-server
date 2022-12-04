@@ -32,7 +32,6 @@ export function resolveCompletionContext(languageService: LanguageService, conte
             case TokenType.AttributeName:
                 if (scanner.getTokenOffset() <= offset && offset <= scanner.getTokenEnd()) {
                     const attributeName = scanner.getTokenText();
-                    debugger;
                     const tagName = currentTag;
                     return {
                         kind: CompletionContextKind.AttributeName,

@@ -1,4 +1,4 @@
-import { CustomElementDeclaration, Declaration, Export, Module, Package } from "custom-elements-manifest";
+import { CustomElementDeclaration, Declaration, Export, JavaScriptModule, Module, Package } from "custom-elements-manifest";
 
 // Map<tagName, ClassModule>
 const CEMClassCache: Map<string, Module> = new Map();
@@ -7,7 +7,7 @@ const CEMClassCache: Map<string, Module> = new Map();
 let CEMCustomElementTagCache: Array<string> = [];
 
 
-export function findClassForTagName(manifest: Package, tagName: string) {
+export function findClassForTagName(manifest: Package, tagName: string): JavaScriptModule | undefined {
     const declarationModule = manifest.modules.find(mod => moduleHasCustomElementExportByName(mod, tagName));
     if (!declarationModule) return undefined;
 
@@ -73,6 +73,7 @@ export function modulePathEquals(mod: Module, path: string) {
         || path === withTrailingSlashAsJs;
 }
 
-export function isCustomElementDeclaration(dec: Declaration): dec is CustomElementDeclaration {
+export function isCustomElementDeclaration(dec?: Declaration): dec is CustomElementDeclaration {
+    if (!dec) return false;
     return (dec as CustomElementDeclaration).customElement !== undefined && (dec as CustomElementDeclaration).customElement;
 }

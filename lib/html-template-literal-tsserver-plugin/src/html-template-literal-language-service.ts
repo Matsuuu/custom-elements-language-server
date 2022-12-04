@@ -5,8 +5,8 @@ import { getDocumentRegions } from "./embedded-support.js";
 import { createTextDocumentFromContext } from "./text-document.js";
 import { completionItemToCompletionEntry } from "./interop.js";
 import { getLatestCEM } from "./cem/cem-instance.js";
-import { findCustomElementTagLike, isCustomElementDeclaration } from "./cem/cem-helpers.js";
-import { JavaScriptModule } from "custom-elements-manifest";
+import { findClassForTagName, findCustomElementTagLike, isCustomElementDeclaration } from "./cem/cem-helpers.js";
+import { JavaScriptModule, CustomElement } from "custom-elements-manifest";
 import { CompletionContextKind, isAttributeNameCompletion, isEndTagCompletion, isTagCompletion, resolveCompletionContext } from "./completion-context.js";
 
 export class HTMLTemplateLiteralLanguageService implements TemplateLanguageService {
@@ -68,34 +68,30 @@ export class HTMLTemplateLiteralLanguageService implements TemplateLanguageServi
             }
 
             if (isEndTagCompletion(completionContext)) {
+                // NOTE: This is done by vscode automatically?
+                // Check if it's done everywhere and then do a check on completions if 
+                // the closing tag is already present.
+                //
                 /*const similiarTags = findCustomElementTagLike(cem, completionContext.tagName);
                 const closingPrefix = "/";
                 similiarTags.forEach(tag => {
                     const tagWithPrefix = closingPrefix + tag;
                     cemCompletions.push({ name: tagWithPrefix, kind: tss.ScriptElementKind.classElement, sortText: tagWithPrefix })
                 })*/
-                // NOTE: This is done by vscode automatically?
-                // Check if it's done everywhere and then do a check on completions if 
-                // the closing tag is already present.
             }
 
             if (isAttributeNameCompletion(completionContext)) {
-
+                const tagModule = findClassForTagName(cem, completionContext.tagName);
+                const classDeclaration = tagModule?.declarations?.find(d => (d as CustomElement).tagName === completionContext.tagName);
+                if (isCustomElementDeclaration(classDeclaration)) {
+                    const attributes = classDeclaration.attributes;
+                    attributes?.forEach(attr => {
+                        cemCompletions.push({ name: attr.name, kind: tss.ScriptElementKind.memberVariableElement, sortText: attr.name });
+                    });
+                }
             }
-
-
-            // @ts-ignore placehodler until I implement this
-            const tagClass = undefined as JavaScriptModule;
-            const declaration = tagClass?.declarations?.[0];
-            // TODO: Somehow tell if we're in a attribute context
-            if (declaration && isCustomElementDeclaration(declaration)) {
-                const attributes = declaration.attributes;
-                attributes?.forEach(attr => {
-                    cemCompletions.push({ name: attr.name, kind: tss.ScriptElementKind.memberVariableElement, sortText: attr.name });
-                });
-            }
-
         }
+
         return {
             isGlobalCompletion: false,
             isMemberCompletion: false,
