@@ -32,12 +32,7 @@ export function resolveCompletionContext(languageService: LanguageService, conte
             case TokenType.AttributeName:
                 if (scanner.getTokenOffset() <= offset && offset <= scanner.getTokenEnd()) {
                     const attributeName = scanner.getTokenText();
-                    const tagName = currentTag;
-                    return {
-                        kind: CompletionContextKind.AttributeName,
-                        attributeName,
-                        tagName
-                    } as AttributeCompletionContext;
+                    return resolveAttributeKind(attributeName, currentTag);
                 }
                 //currentAttributeName = scanner.getTokenText();
                 break;
@@ -65,6 +60,40 @@ export function resolveCompletionContext(languageService: LanguageService, conte
     return {
         kind: CompletionContextKind.NOOP
     }
+}
+
+function resolveAttributeKind(attributeName: string, currentTag: string) {
+    const tagName = currentTag;
+
+    if (attributeName.startsWith("@")) {
+        return {
+            kind: CompletionContextKind.AtEvent,
+            eventName: attributeName,
+            tagName
+        } as EventCompletionContext;
+    }
+
+    if (attributeName.startsWith("on")) {
+        return {
+            kind: CompletionContextKind.Event,
+            eventName: attributeName,
+            tagName
+        } as EventCompletionContext;
+    }
+
+    if (attributeName.startsWith(".")) {
+        return {
+            kind: CompletionContextKind.PropertyName,
+            propertyName: attributeName,
+            tagName
+        } as PropertyCompletionContext;
+    }
+
+    return {
+        kind: CompletionContextKind.AttributeName,
+        attributeName,
+        tagName
+    } as AttributeCompletionContext;
 }
 
 export interface CompletionContext {
@@ -108,7 +137,7 @@ export interface PropertyCompletionContext extends AttributeLikeCompletionContex
 }
 
 export interface EventCompletionContext extends AttributeLikeCompletionContext {
-    propertyName: string;
+    eventName: string;
 }
 
 export enum CompletionContextKind {

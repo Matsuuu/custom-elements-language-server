@@ -5,7 +5,7 @@ import { getDocumentRegions } from "./embedded-support.js";
 import { createTextDocumentFromContext } from "./text-document.js";
 import { completionItemToCompletionEntry } from "./interop.js";
 import { getLatestCEM } from "./cem/cem-instance.js";
-import { findClassForTagName, findCustomElementTagLike, isCustomElementDeclaration } from "./cem/cem-helpers.js";
+import { findClassForTagName, findCustomElementTagLike, findDeclarationForTagName, isCustomElementDeclaration } from "./cem/cem-helpers.js";
 import { JavaScriptModule, CustomElement } from "custom-elements-manifest";
 import { CompletionContextKind, isAttributeNameCompletion, isEndTagCompletion, isEventNameCompletion, isPropertyNameCompletion, isTagCompletion, resolveCompletionContext } from "./completion-context.js";
 
@@ -81,9 +81,8 @@ export class HTMLTemplateLiteralLanguageService implements TemplateLanguageServi
             }
 
             if (isAttributeNameCompletion(completionContext)) {
-                const tagModule = findClassForTagName(cem, completionContext.tagName);
-                const classDeclaration = tagModule?.declarations?.find(d => (d as CustomElement).tagName === completionContext.tagName);
-                if (isCustomElementDeclaration(classDeclaration)) {
+                const classDeclaration = findDeclarationForTagName(cem, completionContext.tagName);
+                if (classDeclaration) {
                     const attributes = classDeclaration.attributes;
                     attributes?.forEach(attr => {
                         cemCompletions.push({ name: attr.name, kind: tss.ScriptElementKind.memberVariableElement, sortText: attr.name });
@@ -92,7 +91,13 @@ export class HTMLTemplateLiteralLanguageService implements TemplateLanguageServi
             }
 
             if (isEventNameCompletion(completionContext)) {
-
+                const classDeclaration = findDeclarationForTagName(cem, completionContext.tagName);
+                if (classDeclaration) {
+                    const events = classDeclaration.events;
+                    events?.forEach(event => {
+                        cemCompletions.push({ name: "@" + event.name, kind: tss.ScriptElementKind.memberVariableElement, sortText: "@" + event.name });
+                    })
+                }
             }
 
             if (isPropertyNameCompletion(completionContext)) {

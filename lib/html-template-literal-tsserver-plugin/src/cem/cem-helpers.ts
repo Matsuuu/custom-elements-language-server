@@ -1,4 +1,4 @@
-import { CustomElementDeclaration, Declaration, Export, JavaScriptModule, Module, Package } from "custom-elements-manifest";
+import { CustomElement, CustomElementDeclaration, Declaration, Export, JavaScriptModule, Module, Package } from "custom-elements-manifest";
 
 // Map<tagName, ClassModule>
 const CEMClassCache: Map<string, Module> = new Map();
@@ -24,6 +24,15 @@ export function findClassForTagName(manifest: Package, tagName: string): JavaScr
 
     CEMClassCache.set(tagName, mod);
     return mod;
+}
+
+export function findDeclarationForTagName(manifest: Package, tagName: string): CustomElement | undefined {
+    const tagModule = findClassForTagName(manifest, tagName);
+    const classDeclaration = tagModule?.declarations?.find(d => (d as CustomElement).tagName === tagName);
+    if (!isCustomElementDeclaration(classDeclaration)) {
+        return undefined;
+    }
+    return classDeclaration;
 }
 
 export function findCustomElementTagLike(manifest: Package, tagNamePart: string) {
