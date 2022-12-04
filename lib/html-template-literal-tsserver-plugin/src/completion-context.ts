@@ -23,6 +23,8 @@ export function resolveCompletionContext(languageService: LanguageService, conte
     //  @my-custom-event=${() => {}}
     //  pro
     // ></example-project>
+    //
+    // Issued ticket: https://github.com/microsoft/vscode-html-languageservice/issues/148
 
     let currentTag = "";
     let token = scanner.scan();
