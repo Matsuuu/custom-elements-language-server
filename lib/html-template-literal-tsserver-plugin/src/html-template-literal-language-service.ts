@@ -102,7 +102,14 @@ export class HTMLTemplateLiteralLanguageService implements TemplateLanguageServi
             }
 
             if (isPropertyNameCompletion(completionContext)) {
-
+                const classDeclaration = findDeclarationForTagName(cem, completionContext.tagName);
+                if (classDeclaration) {
+                    const properties = classDeclaration?.members?.filter(mem => mem.kind === "field") ?? [];
+                    properties?.forEach(prop => {
+                        const propertyNameWithPeriodPrefix = "." + prop.name;
+                        cemCompletions.push({ name: prop.name, kind: tss.ScriptElementKind.memberVariableElement, sortText: propertyNameWithPeriodPrefix });
+                    })
+                }
             }
         }
 
