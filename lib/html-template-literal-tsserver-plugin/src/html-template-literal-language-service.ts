@@ -95,7 +95,8 @@ export class HTMLTemplateLiteralLanguageService implements TemplateLanguageServi
                 if (classDeclaration) {
                     const events = classDeclaration.events;
                     events?.forEach(event => {
-                        cemCompletions.push({ name: "@" + event.name, kind: tss.ScriptElementKind.memberVariableElement, sortText: "@" + event.name });
+                        const eventNameWithAtSign = "@" + event.name;
+                        cemCompletions.push({ name: eventNameWithAtSign, kind: tss.ScriptElementKind.memberVariableElement, sortText: eventNameWithAtSign });
                     })
                 }
             }
