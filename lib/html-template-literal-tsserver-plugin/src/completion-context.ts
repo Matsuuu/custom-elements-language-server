@@ -14,12 +14,15 @@ export function resolveCompletionContext(languageService: LanguageService, conte
     const scanner = languageService.createScanner(document.getText());
     const offset = document.offsetAt(position);
 
+    let currentTag = "";
     let token = scanner.scan();
     while (token !== TokenType.EOS && scanner.getTokenOffset() <= offset) {
         switch (token) {
             case TokenType.StartTag:
+                const tagName = scanner.getTokenText();
+                currentTag = tagName;
+
                 if (scanner.getTokenOffset() <= offset && offset <= scanner.getTokenEnd()) {
-                    const tagName = scanner.getTokenText();
                     return {
                         kind: CompletionContextKind.Tag,
                         tagName
@@ -29,7 +32,8 @@ export function resolveCompletionContext(languageService: LanguageService, conte
             case TokenType.AttributeName:
                 if (scanner.getTokenOffset() <= offset && offset <= scanner.getTokenEnd()) {
                     const attributeName = scanner.getTokenText();
-                    const tagName = "TODO";
+                    debugger;
+                    const tagName = currentTag;
                     return {
                         kind: CompletionContextKind.AttributeName,
                         attributeName,
