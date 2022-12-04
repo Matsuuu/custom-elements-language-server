@@ -39,6 +39,27 @@
               "default": "\"#000000\"",
               "attribute": "color",
               "reflects": true
+            },
+            {
+              "kind": "field",
+              "name": "userData",
+              "type": {
+                "text": "object"
+              },
+              "default": "{}",
+              "attribute": "userData"
+            },
+            {
+              "kind": "method",
+              "name": "doEvent"
+            }
+          ],
+          "events": [
+            {
+              "name": "my-custom-event",
+              "type": {
+                "text": "CustomEvent"
+              }
             }
           ],
           "attributes": [
@@ -65,6 +86,14 @@
               },
               "default": "\"#000000\"",
               "fieldName": "color"
+            },
+            {
+              "name": "userData",
+              "type": {
+                "text": "object"
+              },
+              "default": "{}",
+              "fieldName": "userData"
             }
           ],
           "superclass": {
@@ -108,7 +137,7 @@
         {
           "kind": "variable",
           "name": "temp",
-          "default": "html`\n    \n    <example-project></example-project>\n`"
+          "default": "html`\n    \n    <example-project></example-project>\n    \n    <p>Foo</p>\n\n    <img src=\"\" />\n\n    <input type=\"text\" />\n    \n    <textarea cols=\"40\"></texta-rea>\n\n    <div class=\"foo\">\n        <span>Bar</span>\n    </div>\n`"
         }
       ],
       "exports": [

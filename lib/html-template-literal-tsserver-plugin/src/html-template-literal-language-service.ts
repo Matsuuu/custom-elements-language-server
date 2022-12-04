@@ -7,7 +7,7 @@ import { completionItemToCompletionEntry } from "./interop.js";
 import { getLatestCEM } from "./cem/cem-instance.js";
 import { findClassForTagName, findCustomElementTagLike, isCustomElementDeclaration } from "./cem/cem-helpers.js";
 import { JavaScriptModule, CustomElement } from "custom-elements-manifest";
-import { CompletionContextKind, isAttributeNameCompletion, isEndTagCompletion, isTagCompletion, resolveCompletionContext } from "./completion-context.js";
+import { CompletionContextKind, isAttributeNameCompletion, isEndTagCompletion, isEventNameCompletion, isPropertyNameCompletion, isTagCompletion, resolveCompletionContext } from "./completion-context.js";
 
 export class HTMLTemplateLiteralLanguageService implements TemplateLanguageService {
 
@@ -90,13 +90,21 @@ export class HTMLTemplateLiteralLanguageService implements TemplateLanguageServi
                     });
                 }
             }
+
+            if (isEventNameCompletion(completionContext)) {
+
+            }
+
+            if (isPropertyNameCompletion(completionContext)) {
+
+            }
         }
 
         return {
             isGlobalCompletion: false,
             isMemberCompletion: false,
             isNewIdentifierLocation: false,
-            entries: [{ name: "This is a custom completion", kind: tss.ScriptElementKind.string, sortText: "This is a custom completion" }, ...defaultCompletionItems, ...cemCompletions]
+            entries: [...defaultCompletionItems, ...cemCompletions]
         };
 
     }

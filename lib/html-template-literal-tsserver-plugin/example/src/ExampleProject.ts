@@ -13,6 +13,9 @@ export class ExampleProject extends LitElement {
     @property({ type: String, reflect: true })
     color = "#000000";
 
+    @property({ type: String })
+    userData = {};
+
     static styles = css`
     :host {
       min-height: 100vh;
@@ -55,6 +58,10 @@ export class ExampleProject extends LitElement {
       margin-left: 5px;
     }
   `;
+
+    doEvent() {
+        this.dispatchEvent(new CustomEvent("my-custom-event"));
+    }
 
     render() {
         return html`
