@@ -13,6 +13,16 @@ export function resolveCompletionContext(languageService: LanguageService, conte
     const document = createTextDocumentFromContext(context);
     const scanner = languageService.createScanner(document.getText());
     const offset = document.offsetAt(position);
+    // NOTE: Currently there's some issues with using this scanner
+    // as it breaks on tag implementations using non javascript escaped 
+    // content.
+    //
+    // e.g. this breaks the scanner, making it only hit TokenType.EOS
+    //
+    // <example-project 
+    //  @my-custom-event=${() => {}}
+    //  pro
+    // ></example-project>
 
     let currentTag = "";
     let token = scanner.scan();
@@ -57,6 +67,7 @@ export function resolveCompletionContext(languageService: LanguageService, conte
 
         token = scanner.scan();
     }
+
     return {
         kind: CompletionContextKind.NOOP
     }

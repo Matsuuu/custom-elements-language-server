@@ -21,6 +21,12 @@ export class HTMLTemplateLiteralLanguageService implements TemplateLanguageServi
     getDefinitionAtPosition(context: TemplateContext, position: ts.LineAndCharacter): ts.DefinitionInfo[] {
         console.log("Get definition!");
 
+        const htmlLSCompletions = this.getCompletionItems(context, position);
+        const defaultCompletionItems = htmlLSCompletions.items.map(completionItemToCompletionEntry);
+
+        const completionContext = resolveCompletionContext(this.htmlLanguageService, context, position);
+
+        debugger;
         const MOCK_FOOTER_DEF_NAME = "MyFooter";
         const MOCK_FOOTER_DEF_URI = "/home/matsu/Projects/custom-elements-language-server/lib/server/test-project/src/my-footer.ts";
 
@@ -45,17 +51,13 @@ export class HTMLTemplateLiteralLanguageService implements TemplateLanguageServi
     ): tss.CompletionInfo {
         console.log("On completions");
 
-        const document = createTextDocumentFromContext(context);
-        const htmlDoc = this.htmlLanguageService.parseHTMLDocument(document);
-        const offset = document.offsetAt(position);
-        const nodeUnderCursor = htmlDoc.findNodeAt(offset);
-
         const htmlLSCompletions = this.getCompletionItems(context, position);
         const defaultCompletionItems = htmlLSCompletions.items.map(completionItemToCompletionEntry);
-        const cem = getLatestCEM();
-        let cemCompletions: tss.CompletionEntry[] = [];
 
         const completionContext = resolveCompletionContext(this.htmlLanguageService, context, position);
+
+        const cem = getLatestCEM();
+        let cemCompletions: tss.CompletionEntry[] = [];
 
         if (cem) {
             // TODO: Move this elsewhere from the main method

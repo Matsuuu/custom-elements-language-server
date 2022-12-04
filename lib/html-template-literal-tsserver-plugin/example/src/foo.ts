@@ -2,7 +2,10 @@ import { html } from "lit-html";
 
 export const temp = html`
     
-    <example-project .p></example-project>
+    <example-project 
+        @my-custom-event=${() => {}}
+        pro
+    ></example-project>
     
     <p>Foo</p>
 
