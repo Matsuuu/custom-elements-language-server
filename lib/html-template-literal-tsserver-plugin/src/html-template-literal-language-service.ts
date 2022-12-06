@@ -40,6 +40,27 @@ export class HTMLTemplateLiteralLanguageService implements TemplateLanguageServi
                     classDeclaration = findCustomElementDeclarationFromModule(matchingClass);
                 }
 
+                // TODO: Find the class declaration
+                // and put it's position into textspan
+                definitionInfos.push({
+                    name: classDeclaration?.name ?? '',
+                    kind: tss.ScriptElementKind.classElement,
+                    containerName: matchingClass?.path ?? '',
+                    containerKind: tss.ScriptElementKind.moduleElement,
+                    fileName: basePath + "/" + matchingClass?.path ?? '',
+                    textSpan: tss.createTextSpan(0, 0)
+                })
+            }
+
+            if (isAttributeNameCompletion(completionContext)) {
+                const matchingClass = findClassForTagName(cem, completionContext.tagName);
+                let classDeclaration: CustomElement | undefined;
+                if (matchingClass) {
+                    classDeclaration = findCustomElementDeclarationFromModule(matchingClass);
+                }
+
+                // TODO: Find the attribute declaration
+                // and put it's position into textspan
                 definitionInfos.push({
                     name: classDeclaration?.name ?? '',
                     kind: tss.ScriptElementKind.classElement,
@@ -52,18 +73,6 @@ export class HTMLTemplateLiteralLanguageService implements TemplateLanguageServi
         }
 
         return [...definitionInfos];
-
-        /*const MOCK_FOOTER_DEF_NAME = "MyFooter";
-        const MOCK_FOOTER_DEF_URI = "/home/matsu/Projects/custom-elements-language-server/lib/server/test-project/src/my-footer.ts";
-
-        return [{
-            name: MOCK_FOOTER_DEF_NAME,
-            kind: tss.ScriptElementKind.classElement,
-            containerName: "my-footer.ts",
-            containerKind: tss.ScriptElementKind.moduleElement,
-            fileName: MOCK_FOOTER_DEF_URI,
-            textSpan: tss.createTextSpan(0, 8)
-        }];*/
     }
 
     public getQuickInfoAtPosition(context: TemplateContext, position: tss.LineAndCharacter): tss.QuickInfo | undefined {
