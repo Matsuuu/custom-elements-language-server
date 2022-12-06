@@ -1,14 +1,9 @@
-import { TextDocument } from "vscode-languageserver-textdocument";
-import { TextDocuments } from "vscode-languageserver/node.js";
 
 const DEFAULT_CAPABILITIES: LanguageServerCapabilities = {
     hasConfigurationCapability: false,
     hasWorkspaceFolderCapability: false,
     hasDiagnosticRelatedInformationCapability: false
 }
-
-export const documentSettings = new Map<string, LanguageServerSettings>();
-export const documents: TextDocuments<TextDocument> = new TextDocuments(TextDocument);
 
 let capabilities: LanguageServerCapabilities = DEFAULT_CAPABILITIES;
 

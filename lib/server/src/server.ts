@@ -15,9 +15,10 @@ console.log("NODE VERSION: ", process.version)
 import { TextDocument } from "vscode-languageserver-textdocument";
 import { getCompletionItemInfo, getCompletionItems } from "./completion.js";
 import { validateTextDocument } from "./analyzer.js";
-import { DEFAULT_SETTINGS, documents, documentSettings, LanguageServerSettings, setCapabilities, setGlobalSettings } from "./settings.js";
-import { getLanguageServiceForCurrentFile, initializeLanguageServiceForFile } from "./language-services/language-services.js";
+import { DEFAULT_SETTINGS, LanguageServerSettings, setCapabilities, setGlobalSettings } from "./settings.js";
+import { getLanguageService, initializeLanguageServiceForFile } from "./language-services/language-services.js";
 import { definitionInfoToDefinition, textDocumentDataToUsableData } from "./transformers.js";
+import { documents, documentSettings } from "./text-documents.js";
 
 /**
  * ==============================================================================================0
@@ -53,18 +54,11 @@ connection.onCompletionResolve(getCompletionItemInfo);
 connection.onDefinition((definitionEvent) => {
 
     const usableData = textDocumentDataToUsableData(documents, definitionEvent);
-    const currentFileDef = getLanguageServiceForCurrentFile(usableData.fileName, usableData.fileContent)?.languageService?.getDefinitionAtPosition(usableData.fileName, usableData.position);
+    const languageService = getLanguageService(usableData.fileName, usableData.fileContent);
+    const currentFileDef = languageService?.getDefinitionAtPosition(usableData.fileName, usableData.position);
 
     return currentFileDef?.map(def => definitionInfoToDefinition(def, documents)) ?? [];
 });
-
-// TODO: Move this to another module
-export function scanDocument(uri: string): TextDocument {
-    const languageId = "ts"; // TODO
-    const content = tss.sys.readFile(uri.replace("file:/", ""), "utf8") ?? '';
-    debugger;
-    return TextDocument.create(uri, languageId, 0, content);
-}
 
 // Make the text document manager listen on the connection
 // for open, change and close text document events

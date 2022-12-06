@@ -9,11 +9,6 @@ import { ServerHost } from "./server-host.js";
 const serverHost = new ServerHost();
 const projectService = getProjectService(serverHost);
 
-interface LanguageServiceTools {
-    languageService: tss.LanguageService | undefined;
-    project: tss.server.Project;
-}
-
 export class LanguageServiceManager {
 
     static _instance?: LanguageServiceManager;
@@ -47,7 +42,7 @@ export class LanguageServiceManager {
         return languageService;
     }
 
-    public getLanguageServiceForCurrentFile(fileName: string, fileContent: string): LanguageServiceTools | undefined {
+    public getLanguageServiceForCurrentFile(fileName: string, fileContent: string): tss.LanguageService | undefined {
 
         const project = projectService.openAndGetProjectForFile(fileName, fileContent);
         if (!project) {
@@ -62,10 +57,7 @@ export class LanguageServiceManager {
 
         const configFilePath = project.canonicalConfigFilePath;
 
-        return {
-            languageService: this.getOrCreateLanguageService(configFilePath),
-            project
-        }
+        return this.getOrCreateLanguageService(configFilePath);
     }
 }
 
@@ -84,10 +76,6 @@ export function getLanguageService(fileName: string, fileContent: string) {
 
 export function initializeLanguageServiceForFile(fileName: string, fileContent: string) {
     getLanguageServiceManagerInstance().getLanguageServiceForCurrentFile(fileName, fileContent);
-}
-
-export function getLanguageServiceForCurrentFile(fileName: string, fileContent: string) {
-    return getLanguageServiceManagerInstance().getLanguageServiceForCurrentFile(fileName, fileContent);
 }
 
 export function isConfiguredProject(project: tss.server.Project): project is tss.server.ConfiguredProject {

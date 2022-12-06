@@ -1,6 +1,9 @@
 import { TextDocument } from "vscode-languageserver-textdocument";
 import { Diagnostic, DiagnosticSeverity, _Connection } from "vscode-languageserver/node.js";
-import { documentSettings, getCapabilities, getGlobalSettings, LanguageServerSettings } from "./settings.js";
+import { getCapabilities, LanguageServerSettings } from "./settings.js";
+import { getDocumentSettings } from "./text-documents.js";
+
+// Here we can start doing analysis on opened files. We could tell if a custom element is not imported etc.
 
 export async function validateTextDocument(connection: _Connection, textDocument: TextDocument, documentSettings: Map<string, LanguageServerSettings>): Promise<void> {
     // In this simple example we get the settings for every validate run.
@@ -46,19 +49,3 @@ export async function validateTextDocument(connection: _Connection, textDocument
     // Send the computed diagnostics to VS Code.
     connection.sendDiagnostics({ uri: textDocument.uri, diagnostics });
 }
-
-export async function getDocumentSettings(connection: _Connection, resource: string): Promise<LanguageServerSettings> {
-    if (!getCapabilities().hasConfigurationCapability) {
-        return Promise.resolve(getGlobalSettings());
-    }
-    let result = documentSettings.get(resource);
-    if (!result) {
-        result = connection.workspace.getConfiguration({
-            scopeUri: resource,
-            section: "customElementsLanguageServer",
-        });
-        documentSettings.set(resource, result);
-    }
-    return result;
-}
-
