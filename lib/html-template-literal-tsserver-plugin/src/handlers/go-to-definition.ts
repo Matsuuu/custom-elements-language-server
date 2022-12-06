@@ -68,16 +68,18 @@ function getAttributeCompletionEntries(cem: Package, completionContext: Attribut
         return [];
     }
 
-    getAttributeDefinitionTextSpan(matchingClass, completionContext.attributeName ?? '', basePath);
+    const attributeDefinitionTextSpan = getAttributeDefinitionTextSpan(matchingClass, completionContext.attributeName ?? '', basePath);
+    const fileName = matchingClass?.path.split("/").slice(-1)[0];
 
     // TODO: Find the attribute declaration
     // and put it's position into textspan
     return [{
         name: classDeclaration?.name ?? '',
         kind: tss.ScriptElementKind.classElement,
-        containerName: matchingClass?.path ?? '',
+        containerName: fileName ?? '',
         containerKind: tss.ScriptElementKind.moduleElement,
         fileName: basePath + "/" + matchingClass?.path ?? '',
-        textSpan: tss.createTextSpan(0, 0)
+        textSpan: attributeDefinitionTextSpan ?? tss.createTextSpan(0, 0),
+        contextSpan: attributeDefinitionTextSpan ?? tss.createTextSpan(0, 0),
     }];
 }

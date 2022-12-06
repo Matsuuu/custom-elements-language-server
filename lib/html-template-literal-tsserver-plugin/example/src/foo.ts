@@ -2,10 +2,10 @@ import { html } from "lit-html";
 
 export const temp = html`
     
-    <example-project 
-    title="foo"
-        project-name="foo"
-    ></example-project>
+    <example-project
+      title="foo"
+      project-name="my-project"
+      ></example-project>
     
     <p>Foo</p>
 

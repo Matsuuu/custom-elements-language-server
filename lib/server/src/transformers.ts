@@ -50,7 +50,7 @@ export function definitionInfoToDefinition(definition: ts.DefinitionInfo): Locat
 
     const endOffset = contextSpan.start + contextSpan.length;
 
-    const startPosition = offsetToPosition(textDocument, contextSpan.start + 1);
+    const startPosition = offsetToPosition(textDocument, contextSpan.start);
     const endPosition = offsetToPosition(textDocument, endOffset);
 
     return {

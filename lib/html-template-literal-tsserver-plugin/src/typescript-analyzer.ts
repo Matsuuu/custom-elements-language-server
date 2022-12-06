@@ -15,8 +15,8 @@ export function getClassDefinitionTextSpan(mod: JavaScriptModule, className: str
     }
 
     return {
-        start: classIdentifier.pos,
-        length: classIdentifier.end - classIdentifier.pos
+        start: classIdentifier.getStart(),
+        length: classIdentifier.getWidth()
     }
 }
 
@@ -27,8 +27,14 @@ export function getAttributeDefinitionTextSpan(mod: JavaScriptModule, attributeN
     }
 
     const propertyIdentifier = findAttributeIdentifierByName(sourceFile, attributeName);
+    if (!propertyIdentifier) {
+        return ZERO_TEXT_SPAN;
+    }
 
-    return ZERO_TEXT_SPAN;
+    return {
+        start: propertyIdentifier.getStart(),
+        length: propertyIdentifier.getWidth()
+    };
 }
 
 function getSourceFile(basePath: string, classPath: string) {
