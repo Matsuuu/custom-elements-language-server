@@ -3,6 +3,7 @@ import { html } from "lit-html";
 export const temp = html`
     
     <example-project 
+    title="foo"
         project-name="foo"
     ></example-project>
     

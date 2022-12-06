@@ -1,11 +1,11 @@
 import { LanguageService as HtmlLanguageService } from "vscode-html-languageservice";
 import tss from "typescript/lib/tsserverlibrary.js";
 import { getProjectBasePath } from "../template-context.js";
-import { isAttributeNameCompletion, isTagCompletion, resolveCompletionContext, TagCompletionContext } from "../completion-context.js";
+import { AttributeCompletionContext, isAttributeNameCompletion, isTagCompletion, resolveCompletionContext, TagCompletionContext } from "../completion-context.js";
 import { getLatestCEM } from "../cem/cem-instance.js";
 import { findClassForTagName, findCustomElementDeclarationFromModule } from "../cem/cem-helpers.js";
 import { CustomElement, Package } from "custom-elements-manifest";
-import { getClassDefinitionTextSpan } from "../typescript-analyzer.js";
+import { getAttributeDefinitionTextSpan, getClassDefinitionTextSpan } from "../typescript-analyzer.js";
 import { TemplateContext } from "typescript-template-language-service-decorator";
 
 export function getGoToDefinitionEntries(context: TemplateContext, position: ts.LineAndCharacter, htmlLanguageService: HtmlLanguageService) {
@@ -57,12 +57,18 @@ function getTagCompletionEntries(cem: Package, completionContext: TagCompletionC
     }];
 }
 
-function getAttributeCompletionEntries(cem: Package, completionContext: TagCompletionContext, basePath: string) {
+function getAttributeCompletionEntries(cem: Package, completionContext: AttributeCompletionContext, basePath: string) {
     const matchingClass = findClassForTagName(cem, completionContext.tagName);
-    let classDeclaration: CustomElement | undefined;
-    if (matchingClass) {
-        classDeclaration = findCustomElementDeclarationFromModule(matchingClass);
+
+    if (!matchingClass) {
+        return [];
     }
+    const classDeclaration = findCustomElementDeclarationFromModule(matchingClass);
+    if (!classDeclaration) {
+        return [];
+    }
+
+    getAttributeDefinitionTextSpan(matchingClass, completionContext.attributeName ?? '', basePath);
 
     // TODO: Find the attribute declaration
     // and put it's position into textspan

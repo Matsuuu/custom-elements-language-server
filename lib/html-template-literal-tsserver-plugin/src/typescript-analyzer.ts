@@ -47,8 +47,7 @@ function getSourceFile(basePath: string, classPath: string) {
 function findClassIdentifierByName(sourceFile: ts.SourceFile, className: string): ts.Identifier | undefined {
     let foundClassIdentifier: ts.Node | undefined = undefined;
     function findClassIdentifier(node: ts.Node) {
-        if (ts.isIdentifier(node) && node.escapedText === className) {
-            debugger;
+        if (ts.isIdentifier(node) && node.escapedText === className && ts.isClassDeclaration(node.parent)) {
             foundClassIdentifier = node;
             return;
         }
@@ -59,8 +58,79 @@ function findClassIdentifierByName(sourceFile: ts.SourceFile, className: string)
     return foundClassIdentifier;
 }
 
-function findAttributeIdentifierByName(sourceFile: ts.SourceFile, className: string): ts.Identifier | undefined {
+function findAttributeIdentifierByName(sourceFile: ts.SourceFile, attributeName: string): ts.Identifier | undefined {
+    const attributeVariants = attributeNameVariantBuilder(attributeName);
+    let foundAttributeIdentifier: ts.Node | undefined = undefined;
 
-    return undefined;
+    function findAttributeIdentifier(node: ts.Node) {
+        if (
+            ts.isIdentifier(node)
+            && attributeEscapedTextMatchesVariant(node.escapedText as string, attributeVariants)
+            && attributeNodeParentIsLikelyDeclaration(node)
+        ) {
+            foundAttributeIdentifier = node;
+            return;
+        }
+        ts.forEachChild(node, findAttributeIdentifier);
+    }
+    findAttributeIdentifier(sourceFile);
+
+    return foundAttributeIdentifier;
 }
 
+// TODO: Move these function below somewhere
+
+export interface AttributeVariants {
+    camelVariant: string;
+    snakeVariant: string;
+}
+
+export function attributeEscapedTextMatchesVariant(escaped: string, variants: AttributeVariants) {
+    return escaped === variants.snakeVariant || escaped === variants.camelVariant;
+}
+
+export function attributeNodeParentIsLikelyDeclaration(node: ts.Node) {
+    return ts.isPropertyDeclaration(node.parent)
+        || (ts.isPropertyAccessExpression(node.parent) && isInsideConstructor(node));
+}
+
+export function isInsideConstructor(node: ts.Node) {
+    const parentList = getNodeParentList(node);
+    return parentList.some(ts.isConstructorDeclaration);
+}
+
+export function getNodeParentList(node: ts.Node) {
+    let parentList: Array<ts.Node> = [];
+    let current = node;
+    while (current.parent) {
+        parentList.push(current.parent);
+        current = current.parent;
+    }
+
+    return parentList;
+}
+
+export function attributeNameVariantBuilder(attributeName: string) {
+    const isSnake = attributeName.includes("-");
+
+    let snakeVariant = isSnake ? attributeName : camelToSnake(attributeName);
+    let camelVariant = isSnake ? snakeToCamel(attributeName) : attributeName;
+
+    return {
+        snakeVariant,
+        camelVariant
+    }
+}
+
+function snakeToCamel(str: string) {
+    return str.toLowerCase().replace(/([-_][a-z])/g, group =>
+        group
+            .toUpperCase()
+            .replace('-', '')
+            .replace('_', '')
+    );
+}
+
+function camelToSnake(str: string) {
+    return str.replace(/[A-Z]/g, letter => `_${letter.toLowerCase()}`);
+}
