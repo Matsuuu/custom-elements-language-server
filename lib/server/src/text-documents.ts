@@ -7,7 +7,7 @@ export const documentSettings = new Map<string, LanguageServerSettings>();
 export const documents: TextDocuments<TextDocument> = new TextDocuments(TextDocument);
 
 export function scanDocument(uri: string): TextDocument {
-    const languageId = "ts"; // TODO
+    const languageId = uri.split(".").slice(-1)[0];
     const content = tss.sys.readFile(uri, "utf8") ?? '';
     return TextDocument.create(uri, languageId, 0, content);
 }

@@ -31,23 +31,32 @@ export function textDocumentDataToUsableData(documents: TextDocuments<TextDocume
     }
 }
 
-export function offsetToPosition(documents: TextDocuments<TextDocument>, uri: string, offset: number): Position {
-    return documents.get(uri)?.positionAt(offset) ?? Position.create(0, 0);
+export function offsetToPosition(document: TextDocument, offset: number): Position {
+    return document.positionAt(offset) ?? Position.create(0, 0);
 }
 
-export function positionToOffset(documents: TextDocuments<TextDocument>, uri: string, position: Position): number {
-    return documents.get(uri)?.offsetAt(position) ?? 0;
+export function positionToOffset(document: TextDocument, position: Position): number {
+    return document.offsetAt(position) ?? 0;
 }
 
-export function definitionInfoToDefinition(definition: ts.DefinitionInfo, documents: TextDocuments<TextDocument>): Location {
+export function definitionInfoToDefinition(definition: ts.DefinitionInfo): Location {
     const uri = fileNameToUri(definition.fileName);
     const textDocument = scanDocument(definition.fileName);
 
-    // TODO .Continue
-    debugger;
+    const contextSpan = definition.contextSpan;
+    if (contextSpan === undefined) {
+        return { uri, range: ZERO_RANGE }
+    }
+
+    const endOffset = contextSpan.start + contextSpan.length;
+
+    const startPosition = offsetToPosition(textDocument, contextSpan.start + 1);
+    const endPosition = offsetToPosition(textDocument, endOffset);
 
     return {
         uri,
-        range: Range.create(Position.create(2, 13), Position.create(2, 19))
+        range: Range.create(startPosition, endPosition)
     }
 }
+
+const ZERO_RANGE = Range.create(Position.create(0, 0), Position.create(0, 0));

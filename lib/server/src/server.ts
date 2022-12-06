@@ -57,7 +57,7 @@ connection.onDefinition((definitionEvent) => {
     const languageService = getLanguageService(usableData.fileName, usableData.fileContent);
     const currentFileDef = languageService?.getDefinitionAtPosition(usableData.fileName, usableData.position);
 
-    return currentFileDef?.map(def => definitionInfoToDefinition(def, documents)) ?? [];
+    return currentFileDef?.map(definitionInfoToDefinition) ?? [];
 });
 
 // Make the text document manager listen on the connection

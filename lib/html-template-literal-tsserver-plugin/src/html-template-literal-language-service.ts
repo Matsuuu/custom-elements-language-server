@@ -60,6 +60,7 @@ export class HTMLTemplateLiteralLanguageService implements TemplateLanguageServi
                     containerKind: tss.ScriptElementKind.moduleElement,
                     fileName: basePath + "/" + matchingClass?.path ?? '',
                     textSpan: classDefinitionTextSpan ?? tss.createTextSpan(0, 0),
+                    contextSpan: classDefinitionTextSpan ?? tss.createTextSpan(0, 0),
                 });
             }
 
