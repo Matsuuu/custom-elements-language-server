@@ -8,6 +8,7 @@ import {
     ProposedFeatures,
     TextDocumentSyncKind,
 } from "vscode-languageserver/node.js";
+import tss from "typescript/lib/tsserverlibrary.js";
 
 console.log("NODE VERSION: ", process.version)
 
@@ -56,6 +57,14 @@ connection.onDefinition((definitionEvent) => {
 
     return currentFileDef?.map(def => definitionInfoToDefinition(def, documents)) ?? [];
 });
+
+// TODO: Move this to another module
+export function scanDocument(uri: string): TextDocument {
+    const languageId = "ts"; // TODO
+    const content = tss.sys.readFile(uri.replace("file:/", ""), "utf8") ?? '';
+    debugger;
+    return TextDocument.create(uri, languageId, 0, content);
+}
 
 // Make the text document manager listen on the connection
 // for open, change and close text document events

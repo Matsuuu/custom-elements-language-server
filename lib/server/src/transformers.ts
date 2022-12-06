@@ -2,6 +2,7 @@ import ts from "typescript";
 import { Location, Position, Range, TextDocumentPositionParams } from "vscode-languageserver";
 import { TextDocument } from "vscode-languageserver-textdocument";
 import { TextDocuments } from "vscode-languageserver/node.js";
+import { scanDocument } from "./server.js";
 
 export interface UsableTextDocumentData {
     fileName: string;
@@ -40,6 +41,10 @@ export function positionToOffset(documents: TextDocuments<TextDocument>, uri: st
 
 export function definitionInfoToDefinition(definition: ts.DefinitionInfo, documents: TextDocuments<TextDocument>): Location {
     const uri = fileNameToUri(definition.fileName);
+    const textDocument = scanDocument(definition.fileName);
+
+    // TODO .Continue
+    debugger;
 
     return {
         uri,

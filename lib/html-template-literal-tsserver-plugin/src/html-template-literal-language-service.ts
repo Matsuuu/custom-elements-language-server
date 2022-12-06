@@ -9,6 +9,7 @@ import { findClassForTagName, findCustomElementDeclarationFromModule, findCustom
 import { isAttributeNameCompletion, isEndTagCompletion, isEventNameCompletion, isPropertyNameCompletion, isTagCompletion, resolveCompletionContext } from "./completion-context.js";
 import { CustomElement } from "custom-elements-manifest";
 import { getProjectBasePath } from "./template-context.js";
+import { getClassDefinitionTextSpan } from "./typescript-analyzer.js";
 
 export class HTMLTemplateLiteralLanguageService implements TemplateLanguageService {
 
@@ -40,16 +41,26 @@ export class HTMLTemplateLiteralLanguageService implements TemplateLanguageServi
                     classDeclaration = findCustomElementDeclarationFromModule(matchingClass);
                 }
 
+                // TODO: Make these if horriblities into early exit functions when moving
+                let classDefinitionTextSpan: tss.TextSpan | undefined;
+                if (matchingClass && classDeclaration) {
+                    classDefinitionTextSpan = getClassDefinitionTextSpan(matchingClass, classDeclaration?.name ?? '', basePath);
+                }
+
+                const fileNameSplit = matchingClass?.path.split("/");
+                const fileName = fileNameSplit?.[fileNameSplit?.length - 1];
+
+
                 // TODO: Find the class declaration
                 // and put it's position into textspan
                 definitionInfos.push({
                     name: classDeclaration?.name ?? '',
                     kind: tss.ScriptElementKind.classElement,
-                    containerName: matchingClass?.path ?? '',
+                    containerName: fileName ?? '',
                     containerKind: tss.ScriptElementKind.moduleElement,
                     fileName: basePath + "/" + matchingClass?.path ?? '',
-                    textSpan: tss.createTextSpan(0, 0)
-                })
+                    textSpan: classDefinitionTextSpan ?? tss.createTextSpan(0, 0),
+                });
             }
 
             if (isAttributeNameCompletion(completionContext)) {
@@ -58,7 +69,6 @@ export class HTMLTemplateLiteralLanguageService implements TemplateLanguageServi
                 if (matchingClass) {
                     classDeclaration = findCustomElementDeclarationFromModule(matchingClass);
                 }
-
                 // TODO: Find the attribute declaration
                 // and put it's position into textspan
                 definitionInfos.push({
@@ -68,7 +78,7 @@ export class HTMLTemplateLiteralLanguageService implements TemplateLanguageServi
                     containerKind: tss.ScriptElementKind.moduleElement,
                     fileName: basePath + "/" + matchingClass?.path ?? '',
                     textSpan: tss.createTextSpan(0, 0)
-                })
+                });
             }
         }
 
