@@ -26,6 +26,14 @@ export function findClassForTagName(manifest: Package, tagName: string): JavaScr
     return mod;
 }
 
+export function findCustomElementDeclarationFromModule(mod: Module): CustomElement | undefined {
+    const classDeclaration = mod.declarations?.find(d => (d as CustomElement).customElement);
+    if (!isCustomElementDeclaration(classDeclaration)) {
+        return undefined;
+    }
+    return classDeclaration;
+}
+
 export function findDeclarationForTagName(manifest: Package, tagName: string): CustomElement | undefined {
     const tagModule = findClassForTagName(manifest, tagName);
     const classDeclaration = tagModule?.declarations?.find(d => (d as CustomElement).tagName === tagName);

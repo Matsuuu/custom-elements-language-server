@@ -61,6 +61,7 @@ export function getCEMInstantiator() {
 export function getLatestCEM() {
     const cem = getCEMInstantiator()?.getCEM();
     if (cem) {
+        // TODO: Refresh?
         scanCustomElementTagNames(cem);
     }
     return cem;

@@ -5,9 +5,10 @@ import { getDocumentRegions } from "./embedded-support.js";
 import { createTextDocumentFromContext } from "./text-document.js";
 import { completionItemToCompletionEntry } from "./interop.js";
 import { getLatestCEM } from "./cem/cem-instance.js";
-import { findClassForTagName, findCustomElementTagLike, findDeclarationForTagName, isCustomElementDeclaration } from "./cem/cem-helpers.js";
-import { JavaScriptModule, CustomElement } from "custom-elements-manifest";
-import { CompletionContextKind, isAttributeNameCompletion, isEndTagCompletion, isEventNameCompletion, isPropertyNameCompletion, isTagCompletion, resolveCompletionContext } from "./completion-context.js";
+import { findClassForTagName, findCustomElementDeclarationFromModule, findCustomElementTagLike, findDeclarationForTagName } from "./cem/cem-helpers.js";
+import { isAttributeNameCompletion, isEndTagCompletion, isEventNameCompletion, isPropertyNameCompletion, isTagCompletion, resolveCompletionContext } from "./completion-context.js";
+import { CustomElement } from "custom-elements-manifest";
+import { getProjectBasePath } from "./template-context.js";
 
 export class HTMLTemplateLiteralLanguageService implements TemplateLanguageService {
 
@@ -24,10 +25,35 @@ export class HTMLTemplateLiteralLanguageService implements TemplateLanguageServi
         const htmlLSCompletions = this.getCompletionItems(context, position);
         const defaultCompletionItems = htmlLSCompletions.items.map(completionItemToCompletionEntry);
 
-        const completionContext = resolveCompletionContext(this.htmlLanguageService, context, position);
+        const basePath = getProjectBasePath(context);
 
-        debugger;
-        const MOCK_FOOTER_DEF_NAME = "MyFooter";
+        const definitionInfos: Array<ts.DefinitionInfo> = [];
+
+        const completionContext = resolveCompletionContext(this.htmlLanguageService, context, position);
+        const cem = getLatestCEM();
+        if (cem) {
+            // TODO: Clean all of this stuff inside the if (cem)
+            if (isTagCompletion(completionContext)) {
+                const matchingClass = findClassForTagName(cem, completionContext.tagName);
+                let classDeclaration: CustomElement | undefined;
+                if (matchingClass) {
+                    classDeclaration = findCustomElementDeclarationFromModule(matchingClass);
+                }
+
+                definitionInfos.push({
+                    name: classDeclaration?.name ?? '',
+                    kind: tss.ScriptElementKind.classElement,
+                    containerName: matchingClass?.path ?? '',
+                    containerKind: tss.ScriptElementKind.moduleElement,
+                    fileName: basePath + "/" + matchingClass?.path ?? '',
+                    textSpan: tss.createTextSpan(0, 0)
+                })
+            }
+        }
+
+        return [...definitionInfos];
+
+        /*const MOCK_FOOTER_DEF_NAME = "MyFooter";
         const MOCK_FOOTER_DEF_URI = "/home/matsu/Projects/custom-elements-language-server/lib/server/test-project/src/my-footer.ts";
 
         return [{
@@ -37,7 +63,7 @@ export class HTMLTemplateLiteralLanguageService implements TemplateLanguageServi
             containerKind: tss.ScriptElementKind.moduleElement,
             fileName: MOCK_FOOTER_DEF_URI,
             textSpan: tss.createTextSpan(0, 8)
-        }];
+        }];*/
     }
 
     public getQuickInfoAtPosition(context: TemplateContext, position: tss.LineAndCharacter): tss.QuickInfo | undefined {
@@ -60,6 +86,7 @@ export class HTMLTemplateLiteralLanguageService implements TemplateLanguageServi
         let cemCompletions: tss.CompletionEntry[] = [];
 
         if (cem) {
+            // TODO: Clean all of this stuff inside the if (cem)
             // TODO: Move this elsewhere from the main method
 
             if (isTagCompletion(completionContext)) {
