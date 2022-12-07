@@ -17,5 +17,5 @@
     "incremental": true,
     "allowJs": true
   },
-  "include": ["**/*.ts", "**/*.js"]
+  "include": ["**/*.ts", "**/*.js", "/**/*.html"]
 }
