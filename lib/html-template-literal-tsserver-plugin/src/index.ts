@@ -2,7 +2,6 @@ import { decorateWithTemplateLanguageService } from "typescript-template-languag
 import tss from "typescript/lib/tsserverlibrary.js";
 import { getLanguageService, LanguageService as HtmlLanguageService } from "vscode-html-languageservice";
 import { HTMLTemplateLiteralLanguageService } from "./html-template-literal-language-service.js";
-import * as fs from "fs";
 import { CEMInstantiator } from "./cem/cem-instance.js";
 
 class HTMLTemplateLiteralPlugin {
