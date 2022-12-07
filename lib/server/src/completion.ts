@@ -37,31 +37,9 @@ function completionEntryToCompletionItem(completionsEntry: ts.CompletionEntry): 
         kind: CompletionItemKind.Class
     }
 }
-/*
-
-export interface CompletionItem {
-    label: string;
-    labelDetails?: CompletionItemLabelDetails;
-    kind?: CompletionItemKind;
-    tags?: CompletionItemTag[];
-    detail?: string;
-    documentation?: string | MarkupContent;
-    preselect?: boolean;
-    sortText?: string;
-    filterText?: string;
-    insertText?: string;
-    insertTextFormat?: InsertTextFormat;
-    insertTextMode?: InsertTextMode;
-    textEdit?: TextEdit | InsertReplaceEdit;
-    textEditText?: string;
-    additionalTextEdits?: TextEdit[];
-    commitCharacters?: string[];
-    command?: Command;
-   data?: LSPAny;
-}
-    */
 
 export function getCompletionItemInfo(item: CompletionItem): CompletionItem {
+    // TODO: Resolve these from items
     if (item.data === 1) {
         item.detail = "TypeScript details";
         item.documentation = "TypeScript documentation";
