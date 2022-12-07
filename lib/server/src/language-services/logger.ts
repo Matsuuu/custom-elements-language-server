@@ -14,7 +14,7 @@ export class Logger implements tss.server.Logger {
     }
 
     loggingEnabled(): boolean {
-        return true; // For now we won't disable logging
+        return false; // For now we won't disable logging
     }
 
     perftrc(s: string): void {
