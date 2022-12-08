@@ -4,8 +4,8 @@ export const temp = html`
   
 
     <example-project
-      title="foo"
-      project-name="my-project"
+        title="foo"
+        project-name="my-project"
       ></example-project>
     
     <p>Foo</p>

@@ -73,38 +73,16 @@ function findClassIdentifierByName(sourceFile: ts.SourceFile, className: string)
             && ts.isClassDeclaration(node.parent);
     }
     return findNodeByCondition(sourceFile, conditions);
-
-    /*let foundClassIdentifier: ts.Node | undefined = undefined;
-    function findClassIdentifier(node: ts.Node) {
-        if (ts.isIdentifier(node) && node.escapedText === className && ts.isClassDeclaration(node.parent)) {
-            foundClassIdentifier = node;
-            return;
-        }
-        ts.forEachChild(node, findClassIdentifier);
-    }
-    findClassIdentifier(sourceFile);
-
-    return foundClassIdentifier;*/
 }
 
 function findAttributeIdentifierByName(sourceFile: ts.SourceFile, attributeName: string): ts.Identifier | undefined {
     const attributeVariants = attributeNameVariantBuilder(attributeName);
-    let foundAttributeIdentifier: ts.Node | undefined = undefined;
-
-    function findAttributeIdentifier(node: ts.Node) {
-        if (
-            ts.isIdentifier(node)
+    const conditions = (node: ts.Node) => {
+        return ts.isIdentifier(node)
             && attributeEscapedTextMatchesVariant(node.escapedText as string, attributeVariants)
             && attributeNodeParentIsLikelyDeclaration(node)
-        ) {
-            foundAttributeIdentifier = node;
-            return;
-        }
-        ts.forEachChild(node, findAttributeIdentifier);
     }
-    findAttributeIdentifier(sourceFile);
-
-    return foundAttributeIdentifier;
+    return findNodeByCondition(sourceFile, conditions);
 }
 
 // TODO: Move these function below somewhere
