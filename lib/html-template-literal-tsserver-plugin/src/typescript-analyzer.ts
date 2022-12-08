@@ -47,11 +47,34 @@ function getSourceFile(basePath: string, classPath: string) {
         host: compilerHost
     });
 
-    return program.getSourceFile(classPath);
+    return program.getSourceFile(fullClassPath);
+}
+
+type CheckerFunction = (node: ts.Node) => boolean;
+
+function findNodeByCondition<T>(sourceFile: ts.SourceFile, checkerFunction: CheckerFunction): T | undefined {
+    let foundNode: ts.Node | undefined = undefined;
+    function findNodeWithCondition(node: ts.Node) {
+        if (checkerFunction.apply(null, [node])) {
+            foundNode = node;
+            return;
+        }
+        ts.forEachChild(node, findNodeWithCondition);
+    }
+    findNodeWithCondition(sourceFile);
+
+    return foundNode;
 }
 
 function findClassIdentifierByName(sourceFile: ts.SourceFile, className: string): ts.Identifier | undefined {
-    let foundClassIdentifier: ts.Node | undefined = undefined;
+    const conditions = (node: ts.Node) => {
+        return ts.isIdentifier(node)
+            && node.escapedText === className
+            && ts.isClassDeclaration(node.parent);
+    }
+    return findNodeByCondition(sourceFile, conditions);
+
+    /*let foundClassIdentifier: ts.Node | undefined = undefined;
     function findClassIdentifier(node: ts.Node) {
         if (ts.isIdentifier(node) && node.escapedText === className && ts.isClassDeclaration(node.parent)) {
             foundClassIdentifier = node;
@@ -61,7 +84,7 @@ function findClassIdentifierByName(sourceFile: ts.SourceFile, className: string)
     }
     findClassIdentifier(sourceFile);
 
-    return foundClassIdentifier;
+    return foundClassIdentifier;*/
 }
 
 function findAttributeIdentifierByName(sourceFile: ts.SourceFile, attributeName: string): ts.Identifier | undefined {
