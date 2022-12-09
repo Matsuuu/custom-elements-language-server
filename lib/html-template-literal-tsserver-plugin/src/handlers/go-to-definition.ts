@@ -9,7 +9,7 @@ import { getAttributeDefinitionTextSpan, getClassDefinitionTextSpan, ZERO_TEXT_S
 import { TemplateContext } from "typescript-template-language-service-decorator";
 import { getFileNameFromPath } from "../fs.js";
 
-export function getGoToDefinitionEntries(context: TemplateContext, position: ts.LineAndCharacter, htmlLanguageService: HtmlLanguageService) {
+export function getGoToDefinitionEntries(context: TemplateContext, position: tss.LineAndCharacter, htmlLanguageService: HtmlLanguageService) {
     const basePath = getProjectBasePath(context);
     let definitionInfos: Array<ts.DefinitionInfo> = [];
     const actionContext = resolveActionContext(htmlLanguageService, context, position);
