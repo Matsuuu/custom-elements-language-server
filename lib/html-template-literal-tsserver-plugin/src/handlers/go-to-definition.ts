@@ -1,7 +1,7 @@
 import { LanguageService as HtmlLanguageService } from "vscode-html-languageservice";
 import tss from "typescript/lib/tsserverlibrary.js";
 import { getProjectBasePath } from "../template-context.js";
-import { AttributeCompletionContext, isAttributeNameCompletion, isTagCompletion, resolveCompletionContext, TagCompletionContext } from "../completion-context.js";
+import { AttributeActionContext, isAttributeNameAction, isTagAction, resolveActionContext, TagActionContext } from "../completion-context.js";
 import { getLatestCEM } from "../cem/cem-instance.js";
 import { findClassForTagName, findCustomElementDeclarationFromModule } from "../cem/cem-helpers.js";
 import { Package } from "custom-elements-manifest";
@@ -12,29 +12,26 @@ import { getFileNameFromPath } from "../fs.js";
 export function getGoToDefinitionEntries(context: TemplateContext, position: ts.LineAndCharacter, htmlLanguageService: HtmlLanguageService) {
     const basePath = getProjectBasePath(context);
     let definitionInfos: Array<ts.DefinitionInfo> = [];
-    const completionContext = resolveCompletionContext(htmlLanguageService, context, position);
+    const actionContext = resolveActionContext(htmlLanguageService, context, position);
     const cem = getLatestCEM();
 
     if (!cem) {
         return [];
     }
 
-    if (cem) {
-        // TODO: Clean all of this stuff inside the if (cem)
-        if (isTagCompletion(completionContext)) {
-            definitionInfos = [...definitionInfos, ...getTagDefinitionsEntries(cem, completionContext, basePath)];
-        }
+    if (isTagAction(actionContext)) {
+        definitionInfos = [...definitionInfos, ...getTagDefinitionsEntries(cem, actionContext, basePath)];
+    }
 
-        if (isAttributeNameCompletion(completionContext)) {
-            definitionInfos = [...definitionInfos, ...getAttributeDefinitionEntries(cem, completionContext, basePath)];
-        }
+    if (isAttributeNameAction(actionContext)) {
+        definitionInfos = [...definitionInfos, ...getAttributeDefinitionEntries(cem, actionContext, basePath)];
     }
 
     return [...definitionInfos];
 }
 
-function getTagDefinitionsEntries(cem: Package, completionContext: TagCompletionContext, basePath: string) {
-    const matchingClass = findClassForTagName(cem, completionContext.tagName);
+function getTagDefinitionsEntries(cem: Package, actionContext: TagActionContext, basePath: string) {
+    const matchingClass = findClassForTagName(cem, actionContext.tagName);
     if (!matchingClass) {
         return [];
     }
@@ -58,8 +55,8 @@ function getTagDefinitionsEntries(cem: Package, completionContext: TagCompletion
     }];
 }
 
-function getAttributeDefinitionEntries(cem: Package, completionContext: AttributeCompletionContext, basePath: string) {
-    const matchingClass = findClassForTagName(cem, completionContext.tagName);
+function getAttributeDefinitionEntries(cem: Package, actionContext: AttributeActionContext, basePath: string) {
+    const matchingClass = findClassForTagName(cem, actionContext.tagName);
     if (!matchingClass) {
         return [];
     }
@@ -69,7 +66,7 @@ function getAttributeDefinitionEntries(cem: Package, completionContext: Attribut
         return [];
     }
 
-    const attributeDefinitionTextSpan = getAttributeDefinitionTextSpan(matchingClass, completionContext.attributeName ?? '', basePath);
+    const attributeDefinitionTextSpan = getAttributeDefinitionTextSpan(matchingClass, actionContext.attributeName ?? '', basePath);
     const fileName = getFileNameFromPath(matchingClass?.path);
 
     return [{

@@ -6,7 +6,7 @@ import { createTextDocumentFromContext } from "./text-document.js";
 import { completionItemToCompletionEntry } from "./interop.js";
 import { getLatestCEM } from "./cem/cem-instance.js";
 import { findCustomElementTagLike, findDeclarationForTagName } from "./cem/cem-helpers.js";
-import { isAttributeNameCompletion, isEndTagCompletion, isEventNameCompletion, isPropertyNameCompletion, isTagCompletion, resolveCompletionContext } from "./completion-context.js";
+import { isAttributeNameAction, isEndTagAction, isEventNameActio, isPropertyNameAction, isTagAction, resolveActionContext } from "./completion-context.js";
 import { getGoToDefinitionEntries } from "./handlers/go-to-definition.js";
 
 export class HTMLTemplateLiteralLanguageService implements TemplateLanguageService {
@@ -36,7 +36,7 @@ export class HTMLTemplateLiteralLanguageService implements TemplateLanguageServi
         const htmlLSCompletions = this.getCompletionItems(context, position);
         const defaultCompletionItems = htmlLSCompletions.items.map(completionItemToCompletionEntry);
 
-        const completionContext = resolveCompletionContext(this.htmlLanguageService, context, position);
+        const actionContext = resolveActionContext(this.htmlLanguageService, context, position);
 
         const cem = getLatestCEM();
         let cemCompletions: tss.CompletionEntry[] = [];
@@ -45,28 +45,22 @@ export class HTMLTemplateLiteralLanguageService implements TemplateLanguageServi
             // TODO: Clean all of this stuff inside the if (cem)
             // TODO: Move this elsewhere from the main method
 
-            if (isTagCompletion(completionContext)) {
-                const similiarTags = findCustomElementTagLike(cem, completionContext.tagName);
+            if (isTagAction(actionContext)) {
+                const similiarTags = findCustomElementTagLike(cem, actionContext.tagName);
                 similiarTags.forEach(tag => {
                     cemCompletions.push({ name: tag, kind: tss.ScriptElementKind.memberVariableElement, sortText: tag })
                 })
             }
 
-            if (isEndTagCompletion(completionContext)) {
+            if (isEndTagAction(actionContext)) {
                 // NOTE: This is done by vscode automatically?
                 // Check if it's done everywhere and then do a check on completions if 
                 // the closing tag is already present.
                 //
-                /*const similiarTags = findCustomElementTagLike(cem, completionContext.tagName);
-                const closingPrefix = "/";
-                similiarTags.forEach(tag => {
-                    const tagWithPrefix = closingPrefix + tag;
-                    cemCompletions.push({ name: tagWithPrefix, kind: tss.ScriptElementKind.classElement, sortText: tagWithPrefix })
-                })*/
             }
 
-            if (isAttributeNameCompletion(completionContext)) {
-                const classDeclaration = findDeclarationForTagName(cem, completionContext.tagName);
+            if (isAttributeNameAction(actionContext)) {
+                const classDeclaration = findDeclarationForTagName(cem, actionContext.tagName);
                 if (classDeclaration) {
                     const attributes = classDeclaration.attributes;
                     attributes?.forEach(attr => {
@@ -75,8 +69,8 @@ export class HTMLTemplateLiteralLanguageService implements TemplateLanguageServi
                 }
             }
 
-            if (isEventNameCompletion(completionContext)) {
-                const classDeclaration = findDeclarationForTagName(cem, completionContext.tagName);
+            if (isEventNameActio(actionContext)) {
+                const classDeclaration = findDeclarationForTagName(cem, actionContext.tagName);
                 if (classDeclaration) {
                     const events = classDeclaration.events;
                     events?.forEach(event => {
@@ -86,8 +80,8 @@ export class HTMLTemplateLiteralLanguageService implements TemplateLanguageServi
                 }
             }
 
-            if (isPropertyNameCompletion(completionContext)) {
-                const classDeclaration = findDeclarationForTagName(cem, completionContext.tagName);
+            if (isPropertyNameAction(actionContext)) {
+                const classDeclaration = findDeclarationForTagName(cem, actionContext.tagName);
                 if (classDeclaration) {
                     const properties = classDeclaration?.members?.filter(mem => mem.kind === "field") ?? [];
                     properties?.forEach(prop => {

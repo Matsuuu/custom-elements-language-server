@@ -9,7 +9,7 @@ const { TokenType } = pkg;
 
 // Some of the context checks were borrowed from https://github.com/microsoft/vscode-html-languageservice/blob/main/src/services/htmlCompletion.ts
 
-export function resolveCompletionContext(languageService: LanguageService, context: TemplateContext, position: Position): CompletionContext {
+export function resolveActionContext(languageService: LanguageService, context: TemplateContext, position: Position): ActionContext {
     const document = createTextDocumentFromContext(context);
     const scanner = languageService.createScanner(document.getText());
     const offset = document.offsetAt(position);
@@ -36,9 +36,9 @@ export function resolveCompletionContext(languageService: LanguageService, conte
 
                 if (scanner.getTokenOffset() <= offset && offset <= scanner.getTokenEnd()) {
                     return {
-                        kind: CompletionContextKind.Tag,
+                        kind: ActionContextKind.Tag,
                         tagName
-                    } as TagCompletionContext;
+                    } as TagActionContext;
                 }
                 break;
             case TokenType.AttributeName:
@@ -58,9 +58,9 @@ export function resolveCompletionContext(languageService: LanguageService, conte
                 if (offset <= scanner.getTokenEnd()) {
                     const tagName = scanner.getTokenText();
                     return {
-                        kind: CompletionContextKind.EndTag,
+                        kind: ActionContextKind.EndTag,
                         tagName
-                    } as TagCompletionContext;
+                    } as TagActionContext;
                 }
                 break;
             default:
@@ -71,7 +71,7 @@ export function resolveCompletionContext(languageService: LanguageService, conte
     }
 
     return {
-        kind: CompletionContextKind.NOOP
+        kind: ActionContextKind.NOOP
     }
 }
 
@@ -80,80 +80,80 @@ function resolveAttributeKind(attributeName: string, currentTag: string) {
 
     if (attributeName.startsWith("@")) {
         return {
-            kind: CompletionContextKind.AtEvent,
+            kind: ActionContextKind.AtEvent,
             eventName: attributeName,
             tagName
-        } as EventCompletionContext;
+        } as EventActionContext;
     }
 
     if (attributeName.startsWith("on")) {
         return {
-            kind: CompletionContextKind.Event,
+            kind: ActionContextKind.Event,
             eventName: attributeName,
             tagName
-        } as EventCompletionContext;
+        } as EventActionContext;
     }
 
     if (attributeName.startsWith(".")) {
         return {
-            kind: CompletionContextKind.PropertyName,
+            kind: ActionContextKind.PropertyName,
             propertyName: attributeName,
             tagName
-        } as PropertyCompletionContext;
+        } as PropertyActionContext;
     }
 
     return {
-        kind: CompletionContextKind.AttributeName,
+        kind: ActionContextKind.AttributeName,
         attributeName,
         tagName
-    } as AttributeCompletionContext;
+    } as AttributeActionContext;
 }
 
-export interface CompletionContext {
-    kind: CompletionContextKind;
+export interface ActionContext {
+    kind: ActionContextKind;
 }
 
-export function isTagCompletion(context: CompletionContext): context is TagCompletionContext {
-    return context.kind === CompletionContextKind.Tag;
+export function isTagAction(context: ActionContext): context is TagActionContext {
+    return context.kind === ActionContextKind.Tag;
 }
 
-export function isEndTagCompletion(context: CompletionContext): context is TagCompletionContext {
-    return context.kind === CompletionContextKind.EndTag;
+export function isEndTagAction(context: ActionContext): context is TagActionContext {
+    return context.kind === ActionContextKind.EndTag;
 }
 
-export function isAttributeNameCompletion(context: CompletionContext): context is AttributeCompletionContext {
-    return context.kind === CompletionContextKind.AttributeName;
+export function isAttributeNameAction(context: ActionContext): context is AttributeActionContext {
+    return context.kind === ActionContextKind.AttributeName;
 }
 
-export function isPropertyNameCompletion(context: CompletionContext): context is PropertyCompletionContext {
-    return context.kind === CompletionContextKind.PropertyName;
+export function isPropertyNameAction(context: ActionContext): context is PropertyActionContext {
+    return context.kind === ActionContextKind.PropertyName;
 }
 
-export function isEventNameCompletion(context: CompletionContext): context is EventCompletionContext {
-    return context.kind === CompletionContextKind.Event || context.kind === CompletionContextKind.AtEvent;
+export function isEventNameAction(context: ActionContext): context is EventActionContext {
+    return context.kind === ActionContextKind.Event || context.kind === ActionContextKind.AtEvent;
 }
 
-export interface TagCompletionContext extends CompletionContext {
+export interface TagActionContext extends ActionContext {
     tagName: string;
 }
 
-export interface AttributeLikeCompletionContext extends CompletionContext {
+export interface AttributeLikeActionContext extends ActionContext {
     tagName: string;
 }
 
-export interface AttributeCompletionContext extends AttributeLikeCompletionContext {
+export interface AttributeActionContext extends AttributeLikeActionContext {
     attributeName: string;
 }
 
-export interface PropertyCompletionContext extends AttributeLikeCompletionContext {
+export interface PropertyActionContext extends AttributeLikeActionContext {
     propertyName: string;
 }
 
-export interface EventCompletionContext extends AttributeLikeCompletionContext {
+export interface EventActionContext extends AttributeLikeActionContext {
     eventName: string;
 }
 
-export enum CompletionContextKind {
+export enum ActionContextKind {
     Tag,
     EndTag,
     AttributeName,
@@ -165,29 +165,3 @@ export enum CompletionContextKind {
     NOOP
 };
 
-/*
-export declare enum TokenType {
-    StartCommentTag = 0,
-    Comment = 1,
-    EndCommentTag = 2,
-    StartTagOpen = 3,
-    StartTagClose = 4,
-    StartTagSelfClose = 5,
-    StartTag = 6,
-    EndTagOpen = 7,
-    EndTagClose = 8,
-    EndTag = 9,
-    DelimiterAssign = 10,
-    AttributeName = 11,
-    AttributeValue = 12,
-    StartDoctypeTag = 13,
-    Doctype = 14,
-    EndDoctypeTag = 15,
-    Content = 16,
-    Whitespace = 17,
-    Unknown = 18,
-    Script = 19,
-    Styles = 20,
-    EOS = 21
-}
-    * */
