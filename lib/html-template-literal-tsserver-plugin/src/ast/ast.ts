@@ -14,6 +14,12 @@ export function attributeNodeParentIsLikelyDeclaration(node: ts.Node) {
         || (ts.isPropertyAccessExpression(node.parent) && isInsideConstructor(node));
 }
 
+export function propertyNodeParentIsLikelyDeclaration(node: ts.Node) {
+    return node.parent !== undefined &&
+        (ts.isPropertyDeclaration(node.parent)
+            || (ts.isPropertyAccessExpression(node.parent) && isInsideConstructor(node)));
+}
+
 export function isInsideConstructor(node: ts.Node) {
     const parentList = getNodeParentList(node);
     return parentList.some(ts.isConstructorDeclaration);

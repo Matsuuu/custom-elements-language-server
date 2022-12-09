@@ -1,6 +1,6 @@
 import { JavaScriptModule } from "custom-elements-manifest";
 import ts from "typescript";
-import { attributeEscapedTextMatchesVariant, attributeNameVariantBuilder, attributeNodeParentIsLikelyDeclaration } from "./ast/ast.js";
+import { attributeEscapedTextMatchesVariant, attributeNameVariantBuilder, attributeNodeParentIsLikelyDeclaration, propertyNodeParentIsLikelyDeclaration } from "./ast/ast.js";
 
 export const ZERO_TEXT_SPAN = ts.createTextSpan(0, 0);
 
@@ -28,6 +28,23 @@ export function getAttributeDefinitionTextSpan(mod: JavaScriptModule, attributeN
     }
 
     const propertyIdentifier = findAttributeIdentifierByName(sourceFile, attributeName);
+    if (!propertyIdentifier) {
+        return ZERO_TEXT_SPAN;
+    }
+
+    return {
+        start: propertyIdentifier.getStart(),
+        length: propertyIdentifier.getWidth()
+    };
+}
+
+export function getPropertyDefinitionTextSpan(mod: JavaScriptModule, propertyName: string, basePath: string): ts.TextSpan {
+    const sourceFile = getSourceFile(basePath, mod.path);
+    if (!sourceFile) {
+        return ZERO_TEXT_SPAN;
+    }
+
+    const propertyIdentifier = findPropertyIdentifierByName(sourceFile, propertyName);
     if (!propertyIdentifier) {
         return ZERO_TEXT_SPAN;
     }
@@ -71,6 +88,17 @@ function findAttributeIdentifierByName(sourceFile: ts.SourceFile, attributeName:
     }
     return findNodeByCondition(sourceFile, conditions);
 }
+
+function findPropertyIdentifierByName(sourceFile: ts.SourceFile, propertyName: string): ts.Identifier | undefined {
+    const conditions = (node: ts.Node) => {
+        return ts.isIdentifier(node)
+            // TODO: Make this prettier. Maybe not use period in propertyName
+            && "." + node.escapedText === propertyName
+            && attributeNodeParentIsLikelyDeclaration(node)
+    }
+    return findNodeByCondition(sourceFile, conditions);
+}
+
 
 function findNodeByCondition<T>(sourceFile: ts.SourceFile, checkerFunction: CheckerFunction): T | undefined {
     let foundNode: ts.Node | undefined = undefined;
