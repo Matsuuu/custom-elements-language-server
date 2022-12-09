@@ -6,7 +6,7 @@ import { createTextDocumentFromContext } from "./text-document.js";
 import { completionItemToCompletionEntry } from "./interop.js";
 import { getLatestCEM } from "./cem/cem-instance.js";
 import { findCustomElementTagLike, findDeclarationForTagName } from "./cem/cem-helpers.js";
-import { isAttributeNameAction, isEndTagAction, isEventNameActio, isPropertyNameAction, isTagAction, resolveActionContext } from "./completion-context.js";
+import { isAttributeNameAction, isEndTagAction, isEventNameAction, isPropertyNameAction, isTagAction, resolveActionContext } from "./completion-context.js";
 import { getGoToDefinitionEntries } from "./handlers/go-to-definition.js";
 
 export class HTMLTemplateLiteralLanguageService implements TemplateLanguageService {
@@ -69,7 +69,7 @@ export class HTMLTemplateLiteralLanguageService implements TemplateLanguageServi
                 }
             }
 
-            if (isEventNameActio(actionContext)) {
+            if (isEventNameAction(actionContext)) {
                 const classDeclaration = findDeclarationForTagName(cem, actionContext.tagName);
                 if (classDeclaration) {
                     const events = classDeclaration.events;

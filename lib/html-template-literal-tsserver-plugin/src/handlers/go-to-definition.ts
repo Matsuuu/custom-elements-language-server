@@ -1,7 +1,7 @@
 import { LanguageService as HtmlLanguageService } from "vscode-html-languageservice";
 import tss from "typescript/lib/tsserverlibrary.js";
 import { getProjectBasePath } from "../template-context.js";
-import { AttributeActionContext, isAttributeNameAction, isTagAction, resolveActionContext, TagActionContext } from "../completion-context.js";
+import { AttributeActionContext, isAttributeNameAction, isEndTagAction, isTagAction, resolveActionContext, TagActionContext } from "../completion-context.js";
 import { getLatestCEM } from "../cem/cem-instance.js";
 import { findClassForTagName, findCustomElementDeclarationFromModule } from "../cem/cem-helpers.js";
 import { Package } from "custom-elements-manifest";
@@ -19,7 +19,7 @@ export function getGoToDefinitionEntries(context: TemplateContext, position: ts.
         return [];
     }
 
-    if (isTagAction(actionContext)) {
+    if (isTagAction(actionContext) || isEndTagAction(actionContext)) {
         definitionInfos = [...definitionInfos, ...getTagDefinitionsEntries(cem, actionContext, basePath)];
     }
 
