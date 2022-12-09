@@ -2,7 +2,7 @@ import { JavaScriptModule } from "custom-elements-manifest";
 import ts from "typescript";
 import { attributeEscapedTextMatchesVariant, attributeNameVariantBuilder, attributeNodeParentIsLikelyDeclaration } from "./ast/ast.js";
 
-const ZERO_TEXT_SPAN = ts.createTextSpan(0, 0);
+export const ZERO_TEXT_SPAN = ts.createTextSpan(0, 0);
 
 export function getClassDefinitionTextSpan(mod: JavaScriptModule, className: string, basePath: string): ts.TextSpan {
     const sourceFile = getSourceFile(basePath, mod.path);
@@ -24,7 +24,7 @@ export function getClassDefinitionTextSpan(mod: JavaScriptModule, className: str
 export function getAttributeDefinitionTextSpan(mod: JavaScriptModule, attributeName: string, basePath: string): ts.TextSpan {
     const sourceFile = getSourceFile(basePath, mod.path);
     if (!sourceFile) {
-        return ts.createTextSpan(0, 0);
+        return ZERO_TEXT_SPAN;
     }
 
     const propertyIdentifier = findAttributeIdentifierByName(sourceFile, attributeName);
@@ -53,20 +53,6 @@ function getSourceFile(basePath: string, classPath: string) {
 
 type CheckerFunction = (node: ts.Node) => boolean;
 
-function findNodeByCondition<T>(sourceFile: ts.SourceFile, checkerFunction: CheckerFunction): T | undefined {
-    let foundNode: ts.Node | undefined = undefined;
-    function findNodeWithCondition(node: ts.Node) {
-        if (checkerFunction.apply(null, [node])) {
-            foundNode = node;
-            return;
-        }
-        ts.forEachChild(node, findNodeWithCondition);
-    }
-    findNodeWithCondition(sourceFile);
-
-    return foundNode;
-}
-
 function findClassIdentifierByName(sourceFile: ts.SourceFile, className: string): ts.Identifier | undefined {
     const conditions = (node: ts.Node) => {
         return ts.isIdentifier(node)
@@ -86,3 +72,16 @@ function findAttributeIdentifierByName(sourceFile: ts.SourceFile, attributeName:
     return findNodeByCondition(sourceFile, conditions);
 }
 
+function findNodeByCondition<T>(sourceFile: ts.SourceFile, checkerFunction: CheckerFunction): T | undefined {
+    let foundNode: ts.Node | undefined = undefined;
+    function findNodeWithCondition(node: ts.Node) {
+        if (checkerFunction.apply(null, [node])) {
+            foundNode = node;
+            return;
+        }
+        ts.forEachChild(node, findNodeWithCondition);
+    }
+    findNodeWithCondition(sourceFile);
+
+    return foundNode;
+}
