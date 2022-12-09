@@ -71,7 +71,8 @@ export function resolveActionContext(languageService: LanguageService, context: 
     }
 
     return {
-        kind: ActionContextKind.NOOP
+        kind: ActionContextKind.NOOP,
+        tagName: ''
     }
 }
 
@@ -111,6 +112,7 @@ function resolveAttributeKind(attributeName: string, currentTag: string) {
 
 export interface ActionContext {
     kind: ActionContextKind;
+    tagName: string;
 }
 
 export function isTagAction(context: ActionContext): context is TagActionContext {
@@ -134,11 +136,9 @@ export function isEventNameAction(context: ActionContext): context is EventActio
 }
 
 export interface TagActionContext extends ActionContext {
-    tagName: string;
 }
 
 export interface AttributeLikeActionContext extends ActionContext {
-    tagName: string;
 }
 
 export interface AttributeActionContext extends AttributeLikeActionContext {

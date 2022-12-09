@@ -1,10 +1,10 @@
 import { LanguageService as HtmlLanguageService } from "vscode-html-languageservice";
 import tss from "typescript/lib/tsserverlibrary.js";
 import { getProjectBasePath } from "../template-context.js";
-import { AttributeActionContext, isAttributeNameAction, isEndTagAction, isTagAction, resolveActionContext, TagActionContext } from "../completion-context.js";
+import { AttributeActionContext, isAttributeNameAction, isEndTagAction, isPropertyNameAction, isTagAction, resolveActionContext, TagActionContext } from "../completion-context.js";
 import { getLatestCEM } from "../cem/cem-instance.js";
 import { findClassForTagName, findCustomElementDeclarationFromModule } from "../cem/cem-helpers.js";
-import { Package } from "custom-elements-manifest";
+import { CustomElement, JavaScriptModule, Package } from "custom-elements-manifest";
 import { getAttributeDefinitionTextSpan, getClassDefinitionTextSpan, ZERO_TEXT_SPAN } from "../typescript-analyzer.js";
 import { TemplateContext } from "typescript-template-language-service-decorator";
 import { getFileNameFromPath } from "../fs.js";
@@ -16,33 +16,38 @@ export function getGoToDefinitionEntries(context: TemplateContext, position: tss
     const cem = getLatestCEM();
 
     if (!cem) {
-        return [];
+        return [...definitionInfos];
     }
 
+    const matchingClass = findClassForTagName(cem, actionContext.tagName);
+    if (!matchingClass) {
+        return [...definitionInfos];
+    }
+
+    const fileName = getFileNameFromPath(matchingClass?.path);
+    const classDeclaration = findCustomElementDeclarationFromModule(matchingClass);
+    if (!classDeclaration) {
+        return [...definitionInfos];
+    }
+
+
     if (isTagAction(actionContext) || isEndTagAction(actionContext)) {
-        definitionInfos = [...definitionInfos, ...getTagDefinitionsEntries(cem, actionContext, basePath)];
+        definitionInfos = [...definitionInfos, ...getTagDefinitionsEntries(basePath, matchingClass, classDeclaration, fileName)];
     }
 
     if (isAttributeNameAction(actionContext)) {
-        definitionInfos = [...definitionInfos, ...getAttributeDefinitionEntries(cem, actionContext, basePath)];
+        definitionInfos = [...definitionInfos, ...getAttributeDefinitionEntries(actionContext, basePath, matchingClass, classDeclaration, fileName)];
+    }
+
+    if (isPropertyNameAction(actionContext)) {
+
     }
 
     return [...definitionInfos];
 }
 
-function getTagDefinitionsEntries(cem: Package, actionContext: TagActionContext, basePath: string) {
-    const matchingClass = findClassForTagName(cem, actionContext.tagName);
-    if (!matchingClass) {
-        return [];
-    }
-
-    const classDeclaration = findCustomElementDeclarationFromModule(matchingClass);
-    if (!classDeclaration) {
-        return [];
-    }
-
+function getTagDefinitionsEntries(basePath: string, matchingClass: JavaScriptModule, classDeclaration: CustomElement, fileName: string) {
     const classDefinitionTextSpan = getClassDefinitionTextSpan(matchingClass, classDeclaration?.name ?? '', basePath);
-    const fileName = getFileNameFromPath(matchingClass?.path);
 
     return [{
         name: classDeclaration?.name ?? '',
@@ -55,19 +60,8 @@ function getTagDefinitionsEntries(cem: Package, actionContext: TagActionContext,
     }];
 }
 
-function getAttributeDefinitionEntries(cem: Package, actionContext: AttributeActionContext, basePath: string) {
-    const matchingClass = findClassForTagName(cem, actionContext.tagName);
-    if (!matchingClass) {
-        return [];
-    }
-
-    const classDeclaration = findCustomElementDeclarationFromModule(matchingClass);
-    if (!classDeclaration) {
-        return [];
-    }
-
+function getAttributeDefinitionEntries(actionContext: AttributeActionContext, basePath: string, matchingClass: JavaScriptModule, classDeclaration: CustomElement, fileName: string) {
     const attributeDefinitionTextSpan = getAttributeDefinitionTextSpan(matchingClass, actionContext.attributeName ?? '', basePath);
-    const fileName = getFileNameFromPath(matchingClass?.path);
 
     return [{
         name: classDeclaration?.name ?? '',
