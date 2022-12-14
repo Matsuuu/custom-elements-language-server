@@ -30,6 +30,10 @@ export class Logger implements tss.server.Logger {
     }
 
     msg(s: string, type?: tss.server.Msg | undefined): void {
+        if (!this.loggingEnabled()) {
+            return;
+        }
+
         switch (type) {
             case tss.server.Msg.Info:
                 console.log(s);
