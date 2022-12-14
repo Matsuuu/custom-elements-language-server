@@ -1,5 +1,5 @@
 {
-  "name": "custom-elements-languageserver",
+  "name": "custom-elements-languageserver-project",
   "description": "A language server example",
   "author": "Microsoft Corporation",
   "license": "MIT",
@@ -73,7 +73,9 @@
     ]
   },
   "scripts": {
-      "dev": "concurrently \"cd lib/server && npm start\" \"cd lib/html-template-literal-tsserver-plugin && npm start\""
+      "dev": "concurrently \"cd lib/server && npm start\" \"cd lib/html-template-literal-tsserver-plugin && npm start\"",
+      "build:server": "cd lib/server && npm run build",
+      "install:server": "cd lib/server && npm install -g ."
   },
   "devDependencies": {
     "concurrently": "^7.5.0"

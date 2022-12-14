@@ -1,5 +1,5 @@
 {
-  "name": "custom-elements-language-server",
+  "name": "custom-elements-languageserver",
   "version": "0.0.1",
   "description": "",
   "type": "module",
@@ -8,9 +8,10 @@
     "start": "npm run watch",
     "start-old": "npm run build && node ./out/server.js",
     "build": "tsc",
-    "watch": "tsc --watch",
-    "lsp-test": "npm run build && node ./out/language-services/lsp-tester.js",
-    "lsp-test:debug": "npm run build && node --inspect ./out/language-services/lsp-tester.js"
+    "watch": "tsc --watch"
+  },
+  "bin": {
+    "custom-elements-languageserver": "./bin/custom-elements-languageserver.js"
   },
   "repository": {
     "type": "git",
