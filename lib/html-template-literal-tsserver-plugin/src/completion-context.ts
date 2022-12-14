@@ -82,7 +82,7 @@ function resolveAttributeKind(attributeName: string, currentTag: string) {
     if (attributeName.startsWith("@")) {
         return {
             kind: ActionContextKind.AtEvent,
-            eventName: attributeName,
+            eventName: attributeName.substring(1),
             tagName
         } as EventActionContext;
     }
@@ -98,7 +98,7 @@ function resolveAttributeKind(attributeName: string, currentTag: string) {
     if (attributeName.startsWith(".")) {
         return {
             kind: ActionContextKind.PropertyName,
-            propertyName: attributeName,
+            propertyName: attributeName.substring(1),
             tagName
         } as PropertyActionContext;
     }

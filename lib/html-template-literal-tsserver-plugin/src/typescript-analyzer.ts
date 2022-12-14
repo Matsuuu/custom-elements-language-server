@@ -1,6 +1,6 @@
 import { JavaScriptModule } from "custom-elements-manifest";
 import ts from "typescript";
-import { attributeEscapedTextMatchesVariant, attributeNameVariantBuilder, attributeNodeParentIsLikelyDeclaration, propertyNodeParentIsLikelyDeclaration } from "./ast/ast.js";
+import { attributeEscapedTextMatchesVariant, attributeNameVariantBuilder, attributeNodeParentIsLikelyDeclaration, eventNameMatches, nodeIsEventDeclaration, propertyNodeParentIsLikelyDeclaration } from "./ast/ast.js";
 
 export const ZERO_TEXT_SPAN = ts.createTextSpan(0, 0);
 
@@ -55,6 +55,23 @@ export function getPropertyDefinitionTextSpan(mod: JavaScriptModule, propertyNam
     };
 }
 
+export function getEventDefinitionTextSpan(mod: JavaScriptModule, eventName: string, basePath: string): ts.TextSpan {
+    const sourceFile = getSourceFile(basePath, mod.path);
+    if (!sourceFile) {
+        return ZERO_TEXT_SPAN;
+    }
+
+    const eventIdentifier = findEventIdentifierByName(sourceFile, eventName);
+    if (!eventIdentifier) {
+        return ZERO_TEXT_SPAN;
+    }
+
+    return {
+        start: eventIdentifier.getStart(),
+        length: eventIdentifier.getWidth()
+    };
+}
+
 function getSourceFile(basePath: string, classPath: string) {
     // TODO: Make some of these static / final ?
     const fullClassPath = basePath + "/" + classPath;
@@ -92,13 +109,20 @@ function findAttributeIdentifierByName(sourceFile: ts.SourceFile, attributeName:
 function findPropertyIdentifierByName(sourceFile: ts.SourceFile, propertyName: string): ts.Identifier | undefined {
     const conditions = (node: ts.Node) => {
         return ts.isIdentifier(node)
-            // TODO: Make this prettier. Maybe not use period in propertyName
-            && "." + node.escapedText === propertyName
+            && node.escapedText === propertyName
             && attributeNodeParentIsLikelyDeclaration(node)
     }
     return findNodeByCondition(sourceFile, conditions);
 }
 
+function findEventIdentifierByName(sourceFile: ts.SourceFile, eventName: string): ts.Identifier | undefined {
+    const conditions = (node: ts.Node) => {
+        return ts.isIdentifier(node)
+            && nodeIsEventDeclaration(node)
+            && eventNameMatches(node, eventName);
+    }
+    return findNodeByCondition(sourceFile, conditions);
+}
 
 function findNodeByCondition<T>(sourceFile: ts.SourceFile, checkerFunction: CheckerFunction): T | undefined {
     let foundNode: ts.Node | undefined = undefined;

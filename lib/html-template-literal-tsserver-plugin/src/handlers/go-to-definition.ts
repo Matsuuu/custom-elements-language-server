@@ -1,11 +1,11 @@
 import { LanguageService as HtmlLanguageService } from "vscode-html-languageservice";
 import tss from "typescript/lib/tsserverlibrary.js";
 import { getProjectBasePath } from "../template-context.js";
-import { AttributeActionContext, isAttributeNameAction, isEndTagAction, isPropertyNameAction, isTagAction, PropertyActionContext, resolveActionContext, TagActionContext } from "../completion-context.js";
+import { AttributeActionContext, EventActionContext, isAttributeNameAction, isEndTagAction, isEventNameAction, isPropertyNameAction, isTagAction, PropertyActionContext, resolveActionContext, TagActionContext } from "../completion-context.js";
 import { getLatestCEM } from "../cem/cem-instance.js";
 import { findClassForTagName, findCustomElementDeclarationFromModule } from "../cem/cem-helpers.js";
 import { CustomElement, JavaScriptModule, Package } from "custom-elements-manifest";
-import { getAttributeDefinitionTextSpan, getClassDefinitionTextSpan, getPropertyDefinitionTextSpan, ZERO_TEXT_SPAN } from "../typescript-analyzer.js";
+import { getAttributeDefinitionTextSpan, getClassDefinitionTextSpan, getEventDefinitionTextSpan, getPropertyDefinitionTextSpan, ZERO_TEXT_SPAN } from "../typescript-analyzer.js";
 import { TemplateContext } from "typescript-template-language-service-decorator";
 import { getFileNameFromPath } from "../fs.js";
 
@@ -41,6 +41,10 @@ export function getGoToDefinitionEntries(context: TemplateContext, position: tss
 
     if (isPropertyNameAction(actionContext)) {
         definitionInfos = [...definitionInfos, ...getPropertyDefinitionEntries(actionContext, basePath, matchingClass, classDeclaration, fileName)];
+    }
+
+    if (isEventNameAction(actionContext)) {
+        definitionInfos = [...definitionInfos, ...getEventDefinitionEntries(actionContext, basePath, matchingClass, classDeclaration, fileName)];
     }
 
     return [...definitionInfos];
@@ -85,5 +89,19 @@ function getPropertyDefinitionEntries(actionContext: PropertyActionContext, base
         fileName: basePath + "/" + matchingClass?.path ?? '',
         textSpan: propertyDefinitionTextSpan ?? ZERO_TEXT_SPAN,
         contextSpan: propertyDefinitionTextSpan ?? ZERO_TEXT_SPAN,
+    }];
+}
+
+function getEventDefinitionEntries(actionContext: EventActionContext, basePath: string, matchingClass: JavaScriptModule, classDeclaration: CustomElement, fileName: string) {
+    const eventDefinitionTextSpan = getEventDefinitionTextSpan(matchingClass, actionContext.eventName ?? '', basePath);
+
+    return [{
+        name: classDeclaration?.name ?? '',
+        kind: tss.ScriptElementKind.classElement,
+        containerName: fileName ?? '',
+        containerKind: tss.ScriptElementKind.moduleElement,
+        fileName: basePath + "/" + matchingClass?.path ?? '',
+        textSpan: eventDefinitionTextSpan ?? ZERO_TEXT_SPAN,
+        contextSpan: eventDefinitionTextSpan ?? ZERO_TEXT_SPAN,
     }];
 }

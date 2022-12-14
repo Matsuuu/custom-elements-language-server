@@ -14,6 +14,26 @@ export function attributeNodeParentIsLikelyDeclaration(node: ts.Node) {
         || (ts.isPropertyAccessExpression(node.parent) && isInsideConstructor(node));
 }
 
+export function nodeIsEventDeclaration(node: ts.Node) {
+    return ts.isIdentifier(node) &&
+        (node.escapedText === "CustomEvent"
+            || node.escapedText === "Event")
+}
+
+export function eventNameMatches(node: ts.Node, eventName: string) {
+    const parentNode = node.parent;
+    if (!parentNode || !ts.isNewExpression(parentNode)) return false;
+
+    const eventNameNode = parentNode.arguments?.[0];
+    if (!eventNameNode) return false;
+
+    if (ts.isStringLiteral(eventNameNode) && eventNameNode.text === eventName) return true;
+
+    // TODO: Find event declared as a variable?
+
+    return false;
+}
+
 export function propertyNodeParentIsLikelyDeclaration(node: ts.Node) {
     return node.parent !== undefined &&
         (ts.isPropertyDeclaration(node.parent)

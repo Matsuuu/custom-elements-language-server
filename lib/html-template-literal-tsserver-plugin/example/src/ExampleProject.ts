@@ -16,6 +16,10 @@ export class ExampleProject extends LitElement {
     @property({ type: String })
     userData = {};
 
+    constructor() {
+        super();
+    }
+
     static styles = css`
     :host {
       min-height: 100vh;
