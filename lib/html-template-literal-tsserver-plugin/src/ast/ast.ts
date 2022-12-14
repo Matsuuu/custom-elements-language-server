@@ -25,11 +25,21 @@ export function eventNameMatches(node: ts.Node, eventName: string) {
     if (!parentNode || !ts.isNewExpression(parentNode)) return false;
 
     const eventNameNode = parentNode.arguments?.[0];
+
     if (!eventNameNode) return false;
 
     if (ts.isStringLiteral(eventNameNode) && eventNameNode.text === eventName) return true;
 
-    // TODO: Find event declared as a variable?
+    // Find event declared as a variable?
+    // 
+    // The solution below works if we enable
+    // program.getDeclarationDiagnostics();
+    // but that makes a lot of stuff slow as shit
+    // as it has to do a lot of analysis
+    // @ts-ignore
+    /*const flowNode = eventNameNode.flowNode;
+    const variableEventName = flowNode.node.initializer.text;
+    if (variableEventName === eventName) return true;*/
 
     return false;
 }

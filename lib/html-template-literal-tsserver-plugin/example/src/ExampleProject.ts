@@ -64,7 +64,8 @@ export class ExampleProject extends LitElement {
   `;
 
     doEvent() {
-        this.dispatchEvent(new CustomEvent("my-custom-event"));
+      const ev = "my-custom-event";
+        this.dispatchEvent(new CustomEvent(ev));
     }
 
     render() {
