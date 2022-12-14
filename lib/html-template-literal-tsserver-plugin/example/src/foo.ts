@@ -14,7 +14,7 @@ export const temp = html`
 
     <input type="text" />
     
-    <textarea cols="40"></texta-rea>
+    <textarea cols="40"></textarea>
 
     <div class="foo">
         <span>Bar</span>

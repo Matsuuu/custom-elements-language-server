@@ -1,5 +1,5 @@
 {
-  "name": "custom-elements-language-services",
+  "name": "custom-elements-languageserver",
   "description": "A language server example",
   "author": "Microsoft Corporation",
   "license": "MIT",
