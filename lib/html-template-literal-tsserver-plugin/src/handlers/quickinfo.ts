@@ -4,11 +4,17 @@ import { LanguageService as HtmlLanguageService } from "vscode-html-languageserv
 import { getLatestCEM } from "../cem/cem-instance.js";
 import { isAttributeNameAction, isEndTagAction, isEventNameAction, isPropertyNameAction, isTagAction, resolveActionContext } from "../completion-context.js";
 import { getProjectBasePath } from "../template-context.js";
+import { getSourceFile } from "../typescript-analyzer.js";
 
 export function getQuickInfo(context: TemplateContext, position: tss.LineAndCharacter, htmlLanguageService: HtmlLanguageService) {
     const basePath = getProjectBasePath(context);
     const actionContext = resolveActionContext(htmlLanguageService, context, position);
     const cem = getLatestCEM();
+
+    const sourceFile = getSourceFile(basePath, mod.path);
+    if (!sourceFile) {
+        return undefined;
+    }
 
     if (isTagAction(actionContext) || isEndTagAction(actionContext)) {
 
@@ -26,6 +32,5 @@ export function getQuickInfo(context: TemplateContext, position: tss.LineAndChar
 
     }
 
-    debugger;
     return undefined;
 }

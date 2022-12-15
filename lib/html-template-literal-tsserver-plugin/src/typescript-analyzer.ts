@@ -72,7 +72,7 @@ export function getEventDefinitionTextSpan(mod: JavaScriptModule, eventName: str
     };
 }
 
-function getSourceFile(basePath: string, classPath: string) {
+export function getSourceFile(basePath: string, classPath: string) {
     // TODO: Make some of these static / final ?
     // TODO: Yeah we need to really cache this shit
     const fullClassPath = basePath + "/" + classPath;
