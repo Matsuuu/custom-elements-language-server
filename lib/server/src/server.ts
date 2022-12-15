@@ -3,9 +3,13 @@ import {
     DidChangeConfigurationNotification,
     DidChangeConfigurationParams,
     DidChangeTextDocumentParams,
+    Disposable,
+    Hover,
+    HoverParams,
     InitializeParams,
     InitializeResult,
     ProposedFeatures,
+    ServerRequestHandler,
     TextDocumentSyncKind,
 } from "vscode-languageserver/node.js";
 import tss from "typescript/lib/tsserverlibrary.js";
@@ -43,6 +47,15 @@ connection.onDidChangeWatchedFiles((_change) => {
     console.log("File changed");
     // Monitored files have change in VS Code
     connection.console.log("We received a file change event");
+});
+
+connection.onHover((hoverInfo) => {
+    const usableData = textDocumentDataToUsableData(documents, hoverInfo);
+    const languageService = getLanguageService(usableData.fileName, usableData.fileContent);
+
+    return {
+        contents: ["# Title ", "### Content"]
+    };
 });
 
 // This handler provides the initial list of the completion items.
@@ -113,6 +126,7 @@ function onInitialize(params: InitializeParams) {
             completionProvider: {
                 resolveProvider: true,
             },
+            hoverProvider: true,
             declarationProvider: true,
             definitionProvider: true
         },
