@@ -53,7 +53,7 @@ connection.onHover((hoverInfo) => {
     const usableData = textDocumentDataToUsableData(documents, hoverInfo);
     const languageService = getLanguageService(usableData.fileName, usableData.fileContent);
 
-    languageService?.getQuickInfoAtPosition(usableData.fileName, usableData.position);
+    const quickInfo = languageService?.getQuickInfoAtPosition(usableData.fileName, usableData.position);
     return {
         contents: ["# Title ", "### Content"],
     };

@@ -3,6 +3,7 @@ import { TemplateContext, TemplateLanguageService } from "typescript-template-la
 import { LanguageService as HtmlLanguageService } from "vscode-html-languageservice";
 import { getGoToDefinitionEntries } from "./handlers/go-to-definition.js";
 import { getCompletionEntries } from "./handlers/completion.js";
+import { getQuickInfo } from "./handlers/quickinfo.js";
 
 export class HTMLTemplateLiteralLanguageService implements TemplateLanguageService {
 
@@ -19,7 +20,7 @@ export class HTMLTemplateLiteralLanguageService implements TemplateLanguageServi
 
     public getQuickInfoAtPosition(context: TemplateContext, position: tss.LineAndCharacter): tss.QuickInfo | undefined {
         console.log("Fetching quick info");
-        return undefined;
+        return getQuickInfo(context, position, this.htmlLanguageService);
     }
 
     public getCompletionsAtPosition(
