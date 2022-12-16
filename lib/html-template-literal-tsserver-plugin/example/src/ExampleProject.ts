@@ -1,24 +1,32 @@
-import { LitElement, html, css } from 'lit';
+import { css, html, LitElement } from 'lit';
 import { property } from 'lit/decorators.js';
 
 const logo = new URL('../../assets/open-wc-logo.svg', import.meta.url).href;
 
+/**
+ * ExampleProject (used via html element `<example-project>`)
+ * is a component used for displaying project information for the
+ * user via a card-like UI component
+ *
+ * @fires my-custom-event
+ * */
 export class ExampleProject extends LitElement {
-    @property({ type: String })
-    title = 'My app';
+    @property({ type: String }) title = 'My app';
 
     @property({ type: String, reflect: true, attribute: "project-name" })
     projectName = "Example Project";
 
-    @property({ type: String, reflect: true })
-    color = "#000000";
+    /**
+     * Color of project card background and general theme
+     * */
+    @property({ type: String, reflect: true }) color = "#000000";
 
-    @property({ type: String })
-    userData = {};
+    /**
+     * Userdata for authentication and token purposes
+     * */
+    @property({ type: Object }) userData = {};
 
-    constructor() {
-        super();
-    }
+    constructor() { super(); }
 
     static styles = css`
     :host {
@@ -64,8 +72,13 @@ export class ExampleProject extends LitElement {
   `;
 
     doEvent() {
-      const ev = "my-custom-event";
-        this.dispatchEvent(new CustomEvent(ev));
+        const eventName = "my-custom-event";
+        /**
+         * Event that gets triggered when my custom action
+         * is triggered by the user
+         * */
+        const event = new CustomEvent(eventName);
+        this.dispatchEvent(event);
     }
 
     render() {
