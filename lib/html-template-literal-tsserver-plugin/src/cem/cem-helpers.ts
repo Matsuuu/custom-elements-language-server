@@ -2,10 +2,9 @@ import { CustomElement, CustomElementDeclaration, Declaration, Export, JavaScrip
 
 // Map<tagName, ClassModule>
 const CEMClassCache: Map<string, Module> = new Map();
-// TODO: Make this a map with Map<string, CustomElementDeclaration> or something similiar 
+// TODO: Make this a map with Map<string, CustomElementDeclaration> or something similiar
 // if there's a perf benefit from it
 let CEMCustomElementTagCache: Array<string> = [];
-
 
 export function findClassForTagName(manifest: Package, tagName: string): JavaScriptModule | undefined {
     const declarationModule = manifest.modules.find(mod => moduleHasCustomElementExportByName(mod, tagName));
@@ -52,9 +51,7 @@ export function findCustomElementTagLike(manifest: Package, tagNamePart: string)
 export function scanCustomElementTagNames(manifest: Package) {
     const customElementDeclarations = manifest.modules.filter(mod => moduleHasCustomElementExport(mod));
     CEMCustomElementTagCache = customElementDeclarations.flatMap(decl => {
-        return decl.exports
-            ?.filter(exportHasCustomElementExport)
-            .map(exp => exp.name) ?? [];
+        return decl.exports?.filter(exportHasCustomElementExport).map(exp => exp.name) ?? [];
     });
 }
 
@@ -84,10 +81,7 @@ export function modulePathEquals(mod: Module, path: string) {
     const withTrailingSlash = modulePath.startsWith("/") ? modulePath : "/" + modulePath;
     const withTrailingSlashAsJs = withTrailingSlash.replace(".ts", ".js");
     // TODO: Ugly
-    return path === modulePath
-        || path === modulePathAsJs
-        || path === withTrailingSlash
-        || path === withTrailingSlashAsJs;
+    return path === modulePath || path === modulePathAsJs || path === withTrailingSlash || path === withTrailingSlashAsJs;
 }
 
 export function isCustomElementDeclaration(dec?: Declaration): dec is CustomElementDeclaration {

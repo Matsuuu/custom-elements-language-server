@@ -1,21 +1,19 @@
-
 const DEFAULT_CAPABILITIES: LanguageServerCapabilities = {
     hasConfigurationCapability: false,
     hasWorkspaceFolderCapability: false,
-    hasDiagnosticRelatedInformationCapability: false
-}
+    hasDiagnosticRelatedInformationCapability: false,
+};
 
 let capabilities: LanguageServerCapabilities = DEFAULT_CAPABILITIES;
 
 export function setCapabilities(capabilitiesBuilder: CapabilitiesBuilder): LanguageServerCapabilities {
     capabilities = {
         ...capabilities,
-        ...capabilitiesBuilder
+        ...capabilitiesBuilder,
     };
 
     return capabilities;
 }
-
 
 export function getCapabilities() {
     return capabilities;
@@ -32,8 +30,7 @@ export function getGlobalSettings() {
     return globalSettings;
 }
 
-
-export interface LanguageServerSettings { }
+export interface LanguageServerSettings {}
 
 export interface CapabilitiesBuilder {
     hasConfigurationCapability?: boolean;
@@ -46,4 +43,3 @@ export interface LanguageServerCapabilities {
     hasWorkspaceFolderCapability: boolean;
     hasDiagnosticRelatedInformationCapability: boolean;
 }
-

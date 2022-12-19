@@ -8,11 +8,11 @@ export function createTextDocumentFromContext(context: TemplateContext): TextDoc
         version: 1,
         getText: () => context.text,
         positionAt: (offset: number) => {
-            return context.toPosition(offset)
+            return context.toPosition(offset);
         },
         offsetAt: (position: Position) => {
             return context.toOffset(position);
         },
-        lineCount: context.text.split(/\n/g).length + 1
-    }
+        lineCount: context.text.split(/\n/g).length + 1,
+    };
 }

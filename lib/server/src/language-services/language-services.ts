@@ -10,7 +10,6 @@ const serverHost = new ServerHost();
 const projectService = getProjectService(serverHost);
 
 export class LanguageServiceManager {
-
     static _instance?: LanguageServiceManager;
 
     private _languageServiceCache: Map<string, tss.LanguageService> = new Map();
@@ -43,7 +42,6 @@ export class LanguageServiceManager {
     }
 
     public getLanguageServiceForCurrentFile(fileName: string, fileContent: string): tss.LanguageService | undefined {
-
         const project = projectService.openAndGetProjectForFile(fileName, fileContent);
         if (!project) {
             return undefined;

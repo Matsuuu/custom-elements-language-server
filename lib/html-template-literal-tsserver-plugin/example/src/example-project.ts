@@ -1,3 +1,3 @@
-import { ExampleProject } from './ExampleProject.js';
+import { ExampleProject } from "./ExampleProject.js";
 
-customElements.define('example-project', ExampleProject);
+customElements.define("example-project", ExampleProject);

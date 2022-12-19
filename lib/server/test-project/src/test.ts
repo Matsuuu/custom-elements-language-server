@@ -1,17 +1,16 @@
-import { LitElement, html } from 'lit';
-import { customElement } from 'lit/decorators.js';
+import { LitElement, html } from "lit";
+import { customElement } from "lit/decorators.js";
 
-import './my-header.js';
-import './my-article.js';
-import './my-footer.js';
+import "./my-header.js";
+import "./my-article.js";
+import "./my-footer.js";
 
 function foo() {
     return "bar";
 }
 
-@customElement('my-page')
+@customElement("my-page")
 class MyPage extends LitElement {
-
     firstUpdated() {
         foo();
     }
@@ -36,6 +35,3 @@ class MyPage extends LitElement {
     `;
     }
 }
-
-
-

@@ -1,10 +1,7 @@
 import { TemplateContext } from "typescript-template-language-service-decorator";
 import { createTextDocumentFromContext } from "./text-document.js";
-import {
-    Position,
-    LanguageService
-} from 'vscode-html-languageservice';
-import pkg from 'vscode-html-languageservice';
+import { Position, LanguageService } from "vscode-html-languageservice";
+import pkg from "vscode-html-languageservice";
 const { TokenType } = pkg;
 
 // Some of the context checks were borrowed from https://github.com/microsoft/vscode-html-languageservice/blob/main/src/services/htmlCompletion.ts
@@ -14,12 +11,12 @@ export function resolveActionContext(languageService: LanguageService, context: 
     const scanner = languageService.createScanner(document.getText());
     const offset = document.offsetAt(position);
     // NOTE: Currently there's some issues with using this scanner
-    // as it breaks on tag implementations using non javascript escaped 
+    // as it breaks on tag implementations using non javascript escaped
     // content.
     //
     // e.g. this breaks the scanner, making it only hit TokenType.EOS
     //
-    // <example-project 
+    // <example-project
     //  @my-custom-event=${() => {}}
     //  pro
     // ></example-project>
@@ -37,7 +34,7 @@ export function resolveActionContext(languageService: LanguageService, context: 
                 if (scanner.getTokenOffset() <= offset && offset <= scanner.getTokenEnd()) {
                     return {
                         kind: ActionContextKind.Tag,
-                        tagName
+                        tagName,
                     } as TagActionContext;
                 }
                 break;
@@ -59,7 +56,7 @@ export function resolveActionContext(languageService: LanguageService, context: 
                     const tagName = scanner.getTokenText();
                     return {
                         kind: ActionContextKind.EndTag,
-                        tagName
+                        tagName,
                     } as TagActionContext;
                 }
                 break;
@@ -72,8 +69,8 @@ export function resolveActionContext(languageService: LanguageService, context: 
 
     return {
         kind: ActionContextKind.NOOP,
-        tagName: ''
-    }
+        tagName: "",
+    };
 }
 
 function resolveAttributeKind(attributeName: string, currentTag: string) {
@@ -83,7 +80,7 @@ function resolveAttributeKind(attributeName: string, currentTag: string) {
         return {
             kind: ActionContextKind.AtEvent,
             eventName: attributeName.substring(1),
-            tagName
+            tagName,
         } as EventActionContext;
     }
 
@@ -91,7 +88,7 @@ function resolveAttributeKind(attributeName: string, currentTag: string) {
         return {
             kind: ActionContextKind.Event,
             eventName: attributeName,
-            tagName
+            tagName,
         } as EventActionContext;
     }
 
@@ -99,14 +96,14 @@ function resolveAttributeKind(attributeName: string, currentTag: string) {
         return {
             kind: ActionContextKind.PropertyName,
             propertyName: attributeName.substring(1),
-            tagName
+            tagName,
         } as PropertyActionContext;
     }
 
     return {
         kind: ActionContextKind.AttributeName,
         attributeName,
-        tagName
+        tagName,
     } as AttributeActionContext;
 }
 
@@ -135,11 +132,9 @@ export function isEventNameAction(context: ActionContext): context is EventActio
     return context.kind === ActionContextKind.Event || context.kind === ActionContextKind.AtEvent;
 }
 
-export interface TagActionContext extends ActionContext {
-}
+export interface TagActionContext extends ActionContext {}
 
-export interface AttributeLikeActionContext extends ActionContext {
-}
+export interface AttributeLikeActionContext extends ActionContext {}
 
 export interface AttributeActionContext extends AttributeLikeActionContext {
     attributeName: string;
@@ -162,6 +157,5 @@ export enum ActionContextKind {
     AtEvent,
     PropertyName,
     PropertyValue,
-    NOOP
-};
-
+    NOOP,
+}

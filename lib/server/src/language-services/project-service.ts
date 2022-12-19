@@ -16,12 +16,11 @@ export function getProjectService(host: tss.server.ServerHost) {
         globalPlugins: [], // TODO: Add our plugin here?
         allowLocalPluginLoads: true,
         typingsInstaller: tss.server.nullTypingsInstaller, // TODO
-        session: undefined
+        session: undefined,
     });
 }
 
 export class ProjectService extends tss.server.ProjectService {
-
     private static _instance: ProjectService | undefined;
 
     public static getInstance(options: tss.server.ProjectServiceOptions) {
@@ -40,7 +39,6 @@ export class ProjectService extends tss.server.ProjectService {
     }
 
     public openAndGetProjectForFile(fileName: string, fileContent: string) {
-
         const isHtmlFile = fileName.endsWith("html");
         if (isHtmlFile) {
             return this.openAndGetProjectForHtmlFile(fileName, fileContent);
@@ -59,11 +57,10 @@ export class ProjectService extends tss.server.ProjectService {
             return undefined;
         }
 
-        const configuredProjects = this.configuredProjects
+        const configuredProjects = this.configuredProjects;
         if (!configuredProjects.has(closestConfigurationFile)) {
             return undefined;
         }
-
 
         const project = configuredProjects.get(closestConfigurationFile);
         project?.writeFile(fileName, fileContent);

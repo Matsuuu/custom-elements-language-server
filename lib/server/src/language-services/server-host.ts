@@ -4,7 +4,6 @@ import { documents } from "../text-documents.js";
 // TODO: Are these things actually undefined at some time?
 // TODO TODO: Implement some of these methods ourselves
 
-
 interface VersionedFile {
     version: number;
     content: string;
@@ -12,7 +11,6 @@ interface VersionedFile {
 }
 
 export class ServerHost implements tss.server.ServerHost {
-
     args: string[];
     newLine: string;
     useCaseSensitiveFileNames: boolean;
@@ -21,15 +19,20 @@ export class ServerHost implements tss.server.ServerHost {
 
     constructor() {
         this.args = tss.sys.args;
-        this.newLine = tss.sys.newLine
-        this.useCaseSensitiveFileNames = tss.sys.useCaseSensitiveFileNames
+        this.newLine = tss.sys.newLine;
+        this.useCaseSensitiveFileNames = tss.sys.useCaseSensitiveFileNames;
     }
 
     watchFile(path: string, callback: tss.FileWatcherCallback, pollingInterval?: number | undefined, options?: tss.WatchOptions | undefined): tss.FileWatcher {
         if (!tss.sys.watchFile) throw new Error("Could not start a filewatcher");
         return tss.sys.watchFile(path, callback, pollingInterval, options);
     }
-    watchDirectory(path: string, callback: tss.DirectoryWatcherCallback, recursive?: boolean | undefined, options?: tss.WatchOptions | undefined): tss.FileWatcher {
+    watchDirectory(
+        path: string,
+        callback: tss.DirectoryWatcherCallback,
+        recursive?: boolean | undefined,
+        options?: tss.WatchOptions | undefined,
+    ): tss.FileWatcher {
         if (!tss.sys.watchDirectory) throw new Error("Could not start a directorywatcher");
         return tss.sys.watchDirectory(path, callback, recursive, options);
     }
@@ -85,11 +88,16 @@ export class ServerHost implements tss.server.ServerHost {
     getDirectories(path: string): string[] {
         return tss.sys.getDirectories(path);
     }
-    readDirectory(path: string, extensions?: readonly string[] | undefined, exclude?: readonly string[] | undefined, include?: readonly string[] | undefined, depth?: number | undefined): string[] {
+    readDirectory(
+        path: string,
+        extensions?: readonly string[] | undefined,
+        exclude?: readonly string[] | undefined,
+        include?: readonly string[] | undefined,
+        depth?: number | undefined,
+    ): string[] {
         return tss.sys.readDirectory(path, extensions, exclude, include, depth);
     }
     exit(exitCode?: number | undefined): void {
         tss.sys.exit(exitCode);
     }
-
 }

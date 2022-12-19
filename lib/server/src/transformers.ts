@@ -27,8 +27,8 @@ export function textDocumentDataToUsableData(documents: TextDocuments<TextDocume
     return {
         fileName,
         position: doc?.offsetAt(textDocumentData.position) ?? 0,
-        fileContent: doc?.getText() ?? ''
-    }
+        fileContent: doc?.getText() ?? "",
+    };
 }
 
 export function offsetToPosition(document: TextDocument, offset: number): Position {
@@ -45,7 +45,7 @@ export function definitionInfoToDefinition(definition: ts.DefinitionInfo): Locat
 
     const contextSpan = definition.contextSpan;
     if (contextSpan === undefined) {
-        return { uri, range: ZERO_RANGE }
+        return { uri, range: ZERO_RANGE };
     }
 
     const endOffset = contextSpan.start + contextSpan.length;
@@ -55,8 +55,8 @@ export function definitionInfoToDefinition(definition: ts.DefinitionInfo): Locat
 
     return {
         uri,
-        range: Range.create(startPosition, endPosition)
-    }
+        range: Range.create(startPosition, endPosition),
+    };
 }
 
 const ZERO_RANGE = Range.create(Position.create(0, 0), Position.create(0, 0));

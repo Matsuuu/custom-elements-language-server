@@ -14,7 +14,7 @@ import {
 } from "vscode-languageserver/node.js";
 import tss from "typescript/lib/tsserverlibrary.js";
 
-console.log("NODE VERSION: ", process.version)
+console.log("NODE VERSION: ", process.version);
 
 import { TextDocument } from "vscode-languageserver-textdocument";
 import { getCompletionItemInfo, getCompletionItems } from "./completion.js";
@@ -43,13 +43,13 @@ let hasDiagnosticRelatedInformationCapability: boolean = false;
 connection.onInitialize(onInitialize);
 connection.onInitialized(onInitialized);
 connection.onDidChangeConfiguration(onDidChangeConfiguration);
-connection.onDidChangeWatchedFiles((_change) => {
+connection.onDidChangeWatchedFiles(_change => {
     console.log("File changed");
     // Monitored files have change in VS Code
     connection.console.log("We received a file change event");
 });
 
-connection.onHover((hoverInfo) => {
+connection.onHover(hoverInfo => {
     const usableData = textDocumentDataToUsableData(documents, hoverInfo);
     const languageService = getLanguageService(usableData.fileName, usableData.fileContent);
 
@@ -65,8 +65,7 @@ connection.onCompletion(getCompletionItems);
 // the completion list.
 connection.onCompletionResolve(getCompletionItemInfo);
 
-connection.onDefinition((definitionEvent) => {
-
+connection.onDefinition(definitionEvent => {
     const usableData = textDocumentDataToUsableData(documents, definitionEvent);
     const languageService = getLanguageService(usableData.fileName, usableData.fileContent);
     const currentFileDef = languageService?.getDefinitionAtPosition(usableData.fileName, usableData.position);
@@ -88,12 +87,8 @@ function onInitialize(params: InitializeParams) {
     // TODO: Figure out these
     // Does the client support the `workspace/configuration` request?
     // If not, we fall back using global settings.
-    hasConfigurationCapability = !!(
-        capabilities.workspace && !!capabilities.workspace.configuration
-    );
-    hasWorkspaceFolderCapability = !!(
-        capabilities.workspace && !!capabilities.workspace.workspaceFolders
-    );
+    hasConfigurationCapability = !!(capabilities.workspace && !!capabilities.workspace.configuration);
+    hasWorkspaceFolderCapability = !!(capabilities.workspace && !!capabilities.workspace.workspaceFolders);
     hasDiagnosticRelatedInformationCapability = !!(
         capabilities.textDocument &&
         capabilities.textDocument.publishDiagnostics &&
@@ -103,22 +98,21 @@ function onInitialize(params: InitializeParams) {
     setCapabilities({
         hasConfigurationCapability,
         hasWorkspaceFolderCapability,
-        hasDiagnosticRelatedInformationCapability
-    })
+        hasDiagnosticRelatedInformationCapability,
+    });
 
-    documents.onDidClose((e) => {
+    documents.onDidClose(e => {
         documentSettings.delete(e.document.uri);
     });
 
-    documents.onDidOpen((e) => {
+    documents.onDidOpen(e => {
         console.log("Opened text doc");
 
         const fileName = e.document.uri.replace("file://", "");
         initializeLanguageServiceForFile(fileName, e.document.getText());
-    })
+    });
 
-    connection.onShutdown(() => {
-    })
+    connection.onShutdown(() => {});
 
     const result: InitializeResult = {
         capabilities: {
@@ -129,7 +123,7 @@ function onInitialize(params: InitializeParams) {
             },
             hoverProvider: true,
             declarationProvider: true,
-            definitionProvider: true
+            definitionProvider: true,
         },
     };
     if (hasWorkspaceFolderCapability) {
@@ -146,17 +140,13 @@ function onInitialized() {
     console.log("Initialized");
     if (hasConfigurationCapability) {
         // Register for all configuration changes.
-        connection.client.register(
-            DidChangeConfigurationNotification.type,
-            undefined
-        );
+        connection.client.register(DidChangeConfigurationNotification.type, undefined);
     }
     if (hasWorkspaceFolderCapability) {
-        connection.workspace.onDidChangeWorkspaceFolders((_event) => {
+        connection.workspace.onDidChangeWorkspaceFolders(_event => {
             connection.console.log("Workspace folder change event received.");
         });
     }
-
 }
 
 function onDidChangeConfiguration(change: DidChangeConfigurationParams) {
@@ -165,9 +155,7 @@ function onDidChangeConfiguration(change: DidChangeConfigurationParams) {
         // Reset all cached document settings
         documentSettings.clear();
     } else {
-        setGlobalSettings(<LanguageServerSettings>(
-            (change.settings.languageServerExample || DEFAULT_SETTINGS)
-        ));
+        setGlobalSettings(<LanguageServerSettings>(change.settings.languageServerExample || DEFAULT_SETTINGS));
     }
 
     // Revalidate all open text documents

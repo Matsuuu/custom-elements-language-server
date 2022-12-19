@@ -5,7 +5,11 @@ import { getDocumentSettings } from "./text-documents.js";
 
 // Here we can start doing analysis on opened files. We could tell if a custom element is not imported etc.
 
-export async function validateTextDocument(connection: _Connection, textDocument: TextDocument, documentSettings: Map<string, LanguageServerSettings>): Promise<void> {
+export async function validateTextDocument(
+    connection: _Connection,
+    textDocument: TextDocument,
+    documentSettings: Map<string, LanguageServerSettings>,
+): Promise<void> {
     // In this simple example we get the settings for every validate run.
     let settings = await getDocumentSettings(connection, textDocument.uri);
 

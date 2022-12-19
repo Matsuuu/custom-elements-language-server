@@ -4,7 +4,6 @@ import * as fs from "fs";
 import { scanCustomElementTagNames } from "./cem-helpers.js";
 
 export class CEMInstantiator {
-
     public static _instance: CEMInstantiator | undefined;
 
     public static init(pluginInfo: tss.server.PluginCreateInfo) {
@@ -15,7 +14,6 @@ export class CEMInstantiator {
     private _cem: Package | undefined;
 
     constructor(pluginInfo: tss.server.PluginCreateInfo) {
-
         this._projectDirectory = pluginInfo.project.getCurrentDirectory();
         this.refreshCEM();
     }

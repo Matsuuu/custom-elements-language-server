@@ -1,13 +1,10 @@
 import tss from "typescript/lib/tsserverlibrary.js";
 
 export class Logger implements tss.server.Logger {
-
     // TODO: Actually care about level
     private level: tss.server.LogLevel = tss.server.LogLevel.normal;
 
-    constructor() {
-
-    }
+    constructor() {}
 
     hasLevel(level: tss.server.LogLevel): boolean {
         return level >= tss.server.LogLevel.terse && level <= tss.server.LogLevel.verbose;
@@ -18,11 +15,11 @@ export class Logger implements tss.server.Logger {
     }
 
     perftrc(s: string): void {
-        this.msg(s, tss.server.Msg.Perf)
+        this.msg(s, tss.server.Msg.Perf);
     }
 
     info(s: string): void {
-        this.msg(s, tss.server.Msg.Info)
+        this.msg(s, tss.server.Msg.Info);
     }
 
     error(s: string): void {
@@ -54,8 +51,10 @@ export class Logger implements tss.server.Logger {
 
     // TODO: Write logs to file
 
-    getLogFileName(): string | undefined { return undefined; }
-    startGroup(): void { }
-    endGroup(): void { }
-    close(): void { }
+    getLogFileName(): string | undefined {
+        return undefined;
+    }
+    startGroup(): void {}
+    endGroup(): void {}
+    close(): void {}
 }

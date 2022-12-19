@@ -8,5 +8,5 @@ export function tssIteratorToArray<T>(iterator: tss.Iterator<T>): Array<T> {
         outputArray.push(round.value);
     }
 
-    return outputArray
+    return outputArray;
 }

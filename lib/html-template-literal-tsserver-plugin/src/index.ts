@@ -11,23 +11,21 @@ class HTMLTemplateLiteralPlugin {
     private _consumerInfo: tss.server.PluginCreateInfo | undefined;
     private _projectDirectory: string = "";
 
-    public constructor(private readonly _typescript: typeof tss) {
-
-    }
+    public constructor(private readonly _typescript: typeof tss) {}
 
     public create(info: tss.server.PluginCreateInfo): tss.LanguageService {
         this.initialize(info);
         CEMInstantiator.init(info);
         this._logger?.info("Starting up HTML Template Literal TSServer Plugin");
 
-        const htmlTemplateLiteralLanguageService = new HTMLTemplateLiteralLanguageService(this._typescript, this.htmlLanguageService)
+        const htmlTemplateLiteralLanguageService = new HTMLTemplateLiteralLanguageService(this._typescript, this.htmlLanguageService);
 
         const languageService = decorateWithTemplateLanguageService(
             this._typescript,
             info.languageService,
             info.project,
             htmlTemplateLiteralLanguageService,
-            this.getTemplateSettings()
+            this.getTemplateSettings(),
         );
 
         this._logger?.info("Finalized HTML Template Literal TSServer Plugin setup");
@@ -49,12 +47,14 @@ class HTMLTemplateLiteralPlugin {
 
     private getTemplateSettings() {
         return {
-            get tags() { return ["html", "htm"] },
+            get tags() {
+                return ["html", "htm"];
+            },
             enableForStringWithSubstitutions: true,
             getSubstitutions: (templateString: any, spans: any): string => {
                 return "";
-            }
-        }
+            },
+        };
     }
 }
 

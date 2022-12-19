@@ -23,20 +23,20 @@ export function getCompletionEntries(context: TemplateContext, position: tss.Lin
             isGlobalCompletion: false,
             isMemberCompletion: false,
             isNewIdentifierLocation: false,
-            entries: [...defaultCompletionItems]
+            entries: [...defaultCompletionItems],
         };
     }
 
     if (isTagAction(actionContext)) {
         const similiarTags = findCustomElementTagLike(cem, actionContext.tagName);
         similiarTags.forEach(tag => {
-            cemCompletions.push({ name: tag, kind: tss.ScriptElementKind.memberVariableElement, sortText: tag })
-        })
+            cemCompletions.push({ name: tag, kind: tss.ScriptElementKind.memberVariableElement, sortText: tag });
+        });
     }
 
     if (isEndTagAction(actionContext)) {
         // NOTE: This is done by vscode automatically?
-        // Check if it's done everywhere and then do a check on completions if 
+        // Check if it's done everywhere and then do a check on completions if
         // the closing tag is already present.
         //
     }
@@ -58,7 +58,7 @@ export function getCompletionEntries(context: TemplateContext, position: tss.Lin
             events?.forEach(event => {
                 const eventNameWithAtSign = "@" + event.name;
                 cemCompletions.push({ name: eventNameWithAtSign, kind: tss.ScriptElementKind.memberVariableElement, sortText: eventNameWithAtSign });
-            })
+            });
         }
     }
 
@@ -69,7 +69,7 @@ export function getCompletionEntries(context: TemplateContext, position: tss.Lin
             properties?.forEach(prop => {
                 const propertyNameWithPeriodPrefix = "." + prop.name;
                 cemCompletions.push({ name: prop.name, kind: tss.ScriptElementKind.memberVariableElement, sortText: propertyNameWithPeriodPrefix });
-            })
+            });
         }
     }
 
@@ -77,10 +77,9 @@ export function getCompletionEntries(context: TemplateContext, position: tss.Lin
         isGlobalCompletion: false,
         isMemberCompletion: false,
         isNewIdentifierLocation: false,
-        entries: [...defaultCompletionItems, ...cemCompletions]
+        entries: [...defaultCompletionItems, ...cemCompletions],
     };
 }
-
 
 function getDefaultCompletionItems(context: TemplateContext, position: tss.LineAndCharacter, htmlLanguageService: HtmlLanguageService) {
     const document = createTextDocumentFromContext(context);

@@ -7,12 +7,10 @@ export function completionItemToCompletionEntry(completionItem: CompletionItem):
         sortText: completionItem.label,
         kindModifiers: "declare",
         kind: completionItem.kind ? completionKindToScriptElementKind(completionItem.kind) : tss.ScriptElementKind.unknown,
-    }
+    };
 }
 
-function completionKindToScriptElementKind(
-    kind: CompletionItemKind
-): tss.ScriptElementKind {
+function completionKindToScriptElementKind(kind: CompletionItemKind): tss.ScriptElementKind {
     return completionItemKindMappings[kind];
 }
 
@@ -35,4 +33,4 @@ const completionItemKindMappings: { [index: number]: tss.ScriptElementKind } = {
     [CompletionItemKind.File]: tss.ScriptElementKind.moduleElement,
     [CompletionItemKind.Snippet]: tss.ScriptElementKind.unknown,
     [CompletionItemKind.Text]: tss.ScriptElementKind.unknown,
-}
+};

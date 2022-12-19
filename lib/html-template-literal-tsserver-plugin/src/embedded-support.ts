@@ -4,13 +4,8 @@
  *--------------------------------------------------------------------------------------------*/
 // Original code forked from https://github.com/vscode-langservers/vscode-html-languageserver/
 
-import {
-    TextDocument,
-    Position,
-    LanguageService,
-    Range
-} from 'vscode-html-languageservice';
-import pkg from 'vscode-html-languageservice';
+import { TextDocument, Position, LanguageService, Range } from "vscode-html-languageservice";
+import pkg from "vscode-html-languageservice";
 const { TextDocument: TextDocumentImpl, TokenType } = pkg;
 
 export interface LanguageRange extends Range {
@@ -19,14 +14,11 @@ export interface LanguageRange extends Range {
 }
 
 export interface HTMLDocumentRegions {
-    getEmbeddedDocument(
-        languageId: string,
-        ignoreAttributeValues?: boolean
-    ): TextDocument;
+    getEmbeddedDocument(languageId: string, ignoreAttributeValues?: boolean): TextDocument;
     getLanguageAtPosition(position: Position): string | undefined;
 }
 
-export const CSS_STYLE_RULE = '__';
+export const CSS_STYLE_RULE = "__";
 
 interface EmbeddedRegion {
     languageId: string | undefined;
@@ -45,13 +37,10 @@ interface EmbeddedRegion {
  */
 const onlyPlaceholdersRegex = /^ *x{3,}( *x{3,})* *$/;
 
-export function getDocumentRegions(
-    languageService: LanguageService,
-    document: TextDocument
-): HTMLDocumentRegions {
+export function getDocumentRegions(languageService: LanguageService, document: TextDocument): HTMLDocumentRegions {
     const regions: EmbeddedRegion[] = [];
     const scanner = languageService.createScanner(document.getText());
-    let lastTagName: string = '';
+    let lastTagName: string = "";
     let lastAttributeName: string | null = null;
     let languageIdFromType: string | undefined;
     const importedScripts: string[] = [];
@@ -65,11 +54,11 @@ export function getDocumentRegions(
             case TokenType.StartTag:
                 lastTagName = scanner.getTokenText();
                 lastAttributeName = null;
-                languageIdFromType = 'javascript';
+                languageIdFromType = "javascript";
                 break;
             case TokenType.Styles:
                 regions.push({
-                    languageId: 'css',
+                    languageId: "css",
                     start: scanner.getTokenOffset(),
                     end: scanner.getTokenEnd(),
                     onlyPlaceholders: onlyPlaceholdersRegex.test(scanner.getTokenText()),
@@ -87,37 +76,25 @@ export function getDocumentRegions(
                 lastAttributeName = scanner.getTokenText();
                 break;
             case TokenType.AttributeValue:
-                if (
-                    lastAttributeName === 'src' &&
-                    lastTagName.toLowerCase() === 'script'
-                ) {
+                if (lastAttributeName === "src" && lastTagName.toLowerCase() === "script") {
                     let value = scanner.getTokenText();
-                    if (value[0] === '\'' || value[0] === '"') {
+                    if (value[0] === "'" || value[0] === '"') {
                         value = value.substr(1, value.length - 1);
                     }
                     importedScripts.push(value);
-                } else if (
-                    lastAttributeName === 'type' &&
-                    lastTagName.toLowerCase() === 'script'
-                ) {
-                    if (
-                        /["'](module|(text|application)\/(java|ecma)script)["']/.test(
-                            scanner.getTokenText()
-                        )
-                    ) {
-                        languageIdFromType = 'javascript';
+                } else if (lastAttributeName === "type" && lastTagName.toLowerCase() === "script") {
+                    if (/["'](module|(text|application)\/(java|ecma)script)["']/.test(scanner.getTokenText())) {
+                        languageIdFromType = "javascript";
                     } else {
                         languageIdFromType = void 0;
                     }
                 } else {
-                    const attributeLanguageId = getAttributeLanguage(
-                        lastAttributeName!
-                    );
+                    const attributeLanguageId = getAttributeLanguage(lastAttributeName!);
                     if (attributeLanguageId) {
                         let start = scanner.getTokenOffset();
                         let end = scanner.getTokenEnd();
                         const firstChar = document.getText()[start];
-                        if (firstChar === '\'' || firstChar === '"') {
+                        if (firstChar === "'" || firstChar === '"') {
                             start++;
                             end--;
                         }
@@ -138,26 +115,12 @@ export function getDocumentRegions(
     }
 
     return {
-        getEmbeddedDocument: (
-            languageId: string,
-            ignoreAttributeValues: boolean
-        ) =>
-            getEmbeddedDocument(
-                document,
-                regions,
-                languageId,
-                ignoreAttributeValues
-            ),
-        getLanguageAtPosition: (position: Position) =>
-            getLanguageAtPosition(document, regions, position)
+        getEmbeddedDocument: (languageId: string, ignoreAttributeValues: boolean) => getEmbeddedDocument(document, regions, languageId, ignoreAttributeValues),
+        getLanguageAtPosition: (position: Position) => getLanguageAtPosition(document, regions, position),
     };
 }
 
-function getLanguageAtPosition(
-    document: TextDocument,
-    regions: EmbeddedRegion[],
-    position: Position
-): string | undefined {
+function getLanguageAtPosition(document: TextDocument, regions: EmbeddedRegion[], position: Position): string | undefined {
     const offset = document.offsetAt(position);
     for (const region of regions) {
         if (region.start <= offset) {
@@ -168,88 +131,53 @@ function getLanguageAtPosition(
             break;
         }
     }
-    return 'html';
+    return "html";
 }
 
-function getEmbeddedDocument(
-    document: TextDocument,
-    contents: EmbeddedRegion[],
-    languageId: string,
-    ignoreAttributeValues: boolean
-): TextDocument {
+function getEmbeddedDocument(document: TextDocument, contents: EmbeddedRegion[], languageId: string, ignoreAttributeValues: boolean): TextDocument {
     let currentPos = 0;
     const oldContent = document.getText();
-    let result = '';
-    let lastSuffix = '';
+    let result = "";
+    let lastSuffix = "";
     for (const c of contents) {
-        if (
-            c.languageId === languageId &&
-            (!ignoreAttributeValues || !c.attributeValue)
-        ) {
-            result = substituteWithWhitespace(
-                result,
-                currentPos,
-                c.start,
-                oldContent,
-                lastSuffix,
-                getPrefix(c)
-            );
-            result += oldContent.substring(c.start, c.end)
-                .replace(onlyPlaceholdersRegex, match => ' '.repeat(match.length));
+        if (c.languageId === languageId && (!ignoreAttributeValues || !c.attributeValue)) {
+            result = substituteWithWhitespace(result, currentPos, c.start, oldContent, lastSuffix, getPrefix(c));
+            result += oldContent.substring(c.start, c.end).replace(onlyPlaceholdersRegex, match => " ".repeat(match.length));
             currentPos = c.end;
             lastSuffix = getSuffix(c);
         }
     }
-    result = substituteWithWhitespace(
-        result,
-        currentPos,
-        oldContent.length,
-        oldContent,
-        lastSuffix,
-        ''
-    );
-    return TextDocumentImpl.create(
-        document.uri,
-        languageId,
-        document.version,
-        result
-    );
+    result = substituteWithWhitespace(result, currentPos, oldContent.length, oldContent, lastSuffix, "");
+    return TextDocumentImpl.create(document.uri, languageId, document.version, result);
 }
 
 function getPrefix(c: EmbeddedRegion) {
     if (c.attributeValue && !c.onlyPlaceholders) {
         switch (c.languageId) {
-            case 'css':
-                return CSS_STYLE_RULE + '{';
+            case "css":
+                return CSS_STYLE_RULE + "{";
         }
     }
-    return '';
+    return "";
 }
 function getSuffix(c: EmbeddedRegion) {
     if (c.attributeValue && !c.onlyPlaceholders) {
         switch (c.languageId) {
-            case 'css':
-                return '}';
-            case 'javascript':
-                return ';';
+            case "css":
+                return "}";
+            case "javascript":
+                return ";";
         }
     }
-    return '';
+    return "";
 }
 
-function substituteWithWhitespace(
-    result: string,
-    start: number,
-    end: number,
-    oldContent: string,
-    before: string,
-    after: string
-) {
+function substituteWithWhitespace(result: string, start: number, end: number, oldContent: string, before: string, after: string) {
     let accumulatedWS = 0;
     result += before;
     for (let i = start + before.length; i < end; i++) {
         const ch = oldContent[i];
-        if (ch === '\n' || ch === '\r') {
+        if (ch === "\n" || ch === "\r") {
             // only write new lines, skip the whitespace
             accumulatedWS = 0;
             result += ch;
@@ -257,7 +185,7 @@ function substituteWithWhitespace(
             accumulatedWS++;
         }
     }
-    result = append(result, ' ', accumulatedWS - after.length);
+    result = append(result, " ", accumulatedWS - after.length);
     result += after;
     return result;
 }
@@ -278,5 +206,5 @@ function getAttributeLanguage(attributeName: string): string | null {
     if (!match) {
         return null;
     }
-    return match[1] ? 'css' : 'javascript';
+    return match[1] ? "css" : "javascript";
 }

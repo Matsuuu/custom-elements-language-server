@@ -10,14 +10,11 @@ export function attributeEscapedTextMatchesVariant(escaped: string, variants: At
 }
 
 export function attributeNodeParentIsLikelyDeclaration(node: ts.Node) {
-    return ts.isPropertyDeclaration(node.parent)
-        || (ts.isPropertyAccessExpression(node.parent) && isInsideConstructor(node));
+    return ts.isPropertyDeclaration(node.parent) || (ts.isPropertyAccessExpression(node.parent) && isInsideConstructor(node));
 }
 
 export function nodeIsEventDeclaration(node: ts.Node) {
-    return ts.isIdentifier(node) &&
-        (node.escapedText === "CustomEvent"
-            || node.escapedText === "Event")
+    return ts.isIdentifier(node) && (node.escapedText === "CustomEvent" || node.escapedText === "Event");
 }
 
 export function eventNameMatches(node: ts.Node, eventName: string) {
@@ -31,7 +28,7 @@ export function eventNameMatches(node: ts.Node, eventName: string) {
     if (ts.isStringLiteral(eventNameNode) && eventNameNode.text === eventName) return true;
 
     // Find event declared as a variable?
-    // 
+    //
     // The solution below works if we enable
     // program.getDeclarationDiagnostics();
     // but that makes a lot of stuff slow as shit
@@ -45,9 +42,7 @@ export function eventNameMatches(node: ts.Node, eventName: string) {
 }
 
 export function propertyNodeParentIsLikelyDeclaration(node: ts.Node) {
-    return node.parent !== undefined &&
-        (ts.isPropertyDeclaration(node.parent)
-            || (ts.isPropertyAccessExpression(node.parent) && isInsideConstructor(node)));
+    return node.parent !== undefined && (ts.isPropertyDeclaration(node.parent) || (ts.isPropertyAccessExpression(node.parent) && isInsideConstructor(node)));
 }
 
 export function isInsideConstructor(node: ts.Node) {
@@ -74,17 +69,12 @@ export function attributeNameVariantBuilder(attributeName: string) {
 
     return {
         snakeVariant,
-        camelVariant
-    }
+        camelVariant,
+    };
 }
 
 function snakeToCamel(str: string) {
-    return str.toLowerCase().replace(/([-_][a-z])/g, group =>
-        group
-            .toUpperCase()
-            .replace('-', '')
-            .replace('_', '')
-    );
+    return str.toLowerCase().replace(/([-_][a-z])/g, group => group.toUpperCase().replace("-", "").replace("_", ""));
 }
 
 function camelToSnake(str: string) {

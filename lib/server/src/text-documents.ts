@@ -8,7 +8,7 @@ export const documents: TextDocuments<TextDocument> = new TextDocuments(TextDocu
 
 export function scanDocument(uri: string): TextDocument {
     const languageId = uri.split(".").slice(-1)[0];
-    const content = tss.sys.readFile(uri, "utf8") ?? '';
+    const content = tss.sys.readFile(uri, "utf8") ?? "";
     return TextDocument.create(uri, languageId, 0, content);
 }
 
@@ -26,4 +26,3 @@ export async function getDocumentSettings(connection: _Connection, resource: str
     }
     return result;
 }
-

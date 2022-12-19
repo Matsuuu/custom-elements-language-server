@@ -4,8 +4,8 @@
 
 This repo has two projects:
 
-- `/` is a TSServer Plugin 
-- `/example` is a TypeScript project which uses the root TSServer Plugin
+-   `/` is a TSServer Plugin
+-   `/example` is a TypeScript project which uses the root TSServer Plugin
 
 The source files for your project
 

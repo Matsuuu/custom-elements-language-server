@@ -1,29 +1,27 @@
 {
-  "paths": ["lib/**"],
-  "exclude": ["example", "./lib/html-template-literal-tsserver-plugin/example", "./lib/server/test-project"],
-  "compilerOptions": {
-    "target": "ESNext",                                     /* Set the JavaScript language version for emitted JavaScript and include compatible library declarations. */
-    "module": "ESNext",                                /* Specify what module code is generated. */
-    "moduleResolution": "nodenext",
-    "outDir": "./out",                                   /* Specify an output folder for all emitted files. */
-    "skipLibCheck": true,                                 /* Skip type checking all .d.ts files. */
-    "declaration": true,
+    "paths": ["lib/**"],
+    "exclude": ["example", "./lib/html-template-literal-tsserver-plugin/example", "./lib/server/test-project"],
+    "compilerOptions": {
+        "target": "ESNext" /* Set the JavaScript language version for emitted JavaScript and include compatible library declarations. */,
+        "module": "ESNext" /* Specify what module code is generated. */,
+        "moduleResolution": "nodenext",
+        "outDir": "./out" /* Specify an output folder for all emitted files. */,
+        "skipLibCheck": true /* Skip type checking all .d.ts files. */,
+        "declaration": true,
 
-    "experimentalDecorators": true,
-    "forceConsistentCasingInFileNames": true,
-    "strict": true,
-    "noImplicitAny": true,
-    "strictNullChecks": true,
-    "strictFunctionTypes": true,
-    "strictBindCallApply": true,
-    "strictPropertyInitialization": true,
-    "alwaysStrict": true,
-    "noImplicitReturns": true,
-    "allowUnreachableCode": true,
-    "sourceMap": true,
-  },
+        "experimentalDecorators": true,
+        "forceConsistentCasingInFileNames": true,
+        "strict": true,
+        "noImplicitAny": true,
+        "strictNullChecks": true,
+        "strictFunctionTypes": true,
+        "strictBindCallApply": true,
+        "strictPropertyInitialization": true,
+        "alwaysStrict": true,
+        "noImplicitReturns": true,
+        "allowUnreachableCode": true,
+        "sourceMap": true
+    },
 
-  "include": [
-    "./lib"
-  ]
+    "include": ["./lib"]
 }

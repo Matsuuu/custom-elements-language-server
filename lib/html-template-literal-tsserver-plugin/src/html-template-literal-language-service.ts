@@ -6,13 +6,7 @@ import { getCompletionEntries } from "./handlers/completion.js";
 import { getQuickInfo } from "./handlers/quickinfo.js";
 
 export class HTMLTemplateLiteralLanguageService implements TemplateLanguageService {
-
-    constructor(
-        private readonly typescript: typeof tss,
-        private readonly htmlLanguageService: HtmlLanguageService
-    ) {
-
-    }
+    constructor(private readonly typescript: typeof tss, private readonly htmlLanguageService: HtmlLanguageService) {}
 
     getDefinitionAtPosition(context: TemplateContext, position: ts.LineAndCharacter): ts.DefinitionInfo[] {
         return getGoToDefinitionEntries(context, position, this.htmlLanguageService);
@@ -23,10 +17,7 @@ export class HTMLTemplateLiteralLanguageService implements TemplateLanguageServi
         return getQuickInfo(context, position, this.htmlLanguageService);
     }
 
-    public getCompletionsAtPosition(
-        context: TemplateContext,
-        position: tss.LineAndCharacter
-    ): tss.CompletionInfo {
-        return getCompletionEntries(context, position, this.htmlLanguageService)
+    public getCompletionsAtPosition(context: TemplateContext, position: tss.LineAndCharacter): tss.CompletionInfo {
+        return getCompletionEntries(context, position, this.htmlLanguageService);
     }
 }
