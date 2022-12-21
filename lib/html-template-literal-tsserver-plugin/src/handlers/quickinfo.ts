@@ -45,4 +45,5 @@ export function getQuickInfo(context: TemplateContext, position: tss.LineAndChar
 }
 
 function getTagQuickInfo(basePath: string, matchingClass: JavaScriptModule, classDeclaration: CustomElement, fileName: string) {
+    return undefined;
 }

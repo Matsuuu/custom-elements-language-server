@@ -5,6 +5,8 @@ export interface AttributeVariants {
     snakeVariant: string;
 }
 
+export type CheckerFunction = (node: ts.Node) => boolean;
+
 export function attributeEscapedTextMatchesVariant(escaped: string, variants: AttributeVariants) {
     return escaped === variants.snakeVariant || escaped === variants.camelVariant;
 }

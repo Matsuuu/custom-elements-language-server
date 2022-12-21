@@ -15,15 +15,9 @@ import {
 import { getLatestCEM } from "../cem/cem-instance.js";
 import { findClassForTagName, findCustomElementDeclarationFromModule } from "../cem/cem-helpers.js";
 import { CustomElement, JavaScriptModule } from "custom-elements-manifest";
-import {
-    getAttributeDefinitionTextSpan,
-    getClassDefinitionTextSpan,
-    getEventDefinitionTextSpan,
-    getPropertyDefinitionTextSpan,
-    ZERO_TEXT_SPAN,
-} from "../typescript-analyzer.js";
 import { TemplateContext } from "typescript-template-language-service-decorator";
 import { getFileNameFromPath } from "../fs.js";
+import { getAttributeDefinitionTextSpan, getClassDefinitionTextSpan, getEventDefinitionTextSpan, getPropertyDefinitionTextSpan } from "../ast/text-span.js";
 
 export function getGoToDefinitionEntries(context: TemplateContext, position: tss.LineAndCharacter, htmlLanguageService: HtmlLanguageService) {
     const basePath = getProjectBasePath(context);
@@ -75,8 +69,8 @@ function getTagDefinitionsEntries(basePath: string, matchingClass: JavaScriptMod
             containerName: fileName ?? "",
             containerKind: tss.ScriptElementKind.moduleElement,
             fileName: basePath + "/" + matchingClass?.path ?? "",
-            textSpan: classDefinitionTextSpan ?? ZERO_TEXT_SPAN,
-            contextSpan: classDefinitionTextSpan ?? ZERO_TEXT_SPAN,
+            textSpan: classDefinitionTextSpan,
+            contextSpan: classDefinitionTextSpan,
         },
     ];
 }
@@ -97,8 +91,8 @@ function getAttributeDefinitionEntries(
             containerName: fileName ?? "",
             containerKind: tss.ScriptElementKind.moduleElement,
             fileName: basePath + "/" + matchingClass?.path ?? "",
-            textSpan: attributeDefinitionTextSpan ?? ZERO_TEXT_SPAN,
-            contextSpan: attributeDefinitionTextSpan ?? ZERO_TEXT_SPAN,
+            textSpan: attributeDefinitionTextSpan,
+            contextSpan: attributeDefinitionTextSpan,
         },
     ];
 }
@@ -119,8 +113,8 @@ function getPropertyDefinitionEntries(
             containerName: fileName ?? "",
             containerKind: tss.ScriptElementKind.moduleElement,
             fileName: basePath + "/" + matchingClass?.path ?? "",
-            textSpan: propertyDefinitionTextSpan ?? ZERO_TEXT_SPAN,
-            contextSpan: propertyDefinitionTextSpan ?? ZERO_TEXT_SPAN,
+            textSpan: propertyDefinitionTextSpan,
+            contextSpan: propertyDefinitionTextSpan,
         },
     ];
 }
@@ -141,8 +135,8 @@ function getEventDefinitionEntries(
             containerName: fileName ?? "",
             containerKind: tss.ScriptElementKind.moduleElement,
             fileName: basePath + "/" + matchingClass?.path ?? "",
-            textSpan: eventDefinitionTextSpan ?? ZERO_TEXT_SPAN,
-            contextSpan: eventDefinitionTextSpan ?? ZERO_TEXT_SPAN,
+            textSpan: eventDefinitionTextSpan,
+            contextSpan: eventDefinitionTextSpan,
         },
     ];
 }
