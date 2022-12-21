@@ -1,5 +1,5 @@
 import ts from "typescript";
-import { Location, Position, Range, TextDocumentPositionParams } from "vscode-languageserver";
+import { Hover, Location, Position, Range, TextDocumentPositionParams } from "vscode-languageserver";
 import { TextDocument } from "vscode-languageserver-textdocument";
 import { TextDocuments } from "vscode-languageserver/node.js";
 import { scanDocument } from "./text-documents.js";
@@ -57,6 +57,16 @@ export function definitionInfoToDefinition(definition: ts.DefinitionInfo): Locat
         uri,
         range: Range.create(startPosition, endPosition),
     };
+}
+
+
+export function quickInfoToHover(quickInfo: ts.QuickInfo | undefined): Hover | undefined {
+    if (!quickInfo) return undefined;
+
+    return {
+        contents: quickInfo.documentation?.map(doc => doc.text) ?? [],
+        range: ZERO_RANGE
+    }
 }
 
 const ZERO_RANGE = Range.create(Position.create(0, 0), Position.create(0, 0));

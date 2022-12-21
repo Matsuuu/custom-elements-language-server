@@ -3,9 +3,11 @@ import {
     DidChangeConfigurationNotification,
     DidChangeConfigurationParams,
     DidChangeTextDocumentParams,
+    Hover,
     InitializeParams,
     InitializeResult,
     ProposedFeatures,
+    Range,
     TextDocumentSyncKind,
 } from "vscode-languageserver/node.js";
 import tss from "typescript/lib/tsserverlibrary.js";
@@ -17,7 +19,7 @@ import { getCompletionItemInfo, getCompletionItems } from "./completion.js";
 import { validateTextDocument } from "./analyzer.js";
 import { DEFAULT_SETTINGS, LanguageServerSettings, setCapabilities, setGlobalSettings } from "./settings.js";
 import { getLanguageService, initializeLanguageServiceForFile } from "./language-services/language-services.js";
-import { definitionInfoToDefinition, textDocumentDataToUsableData } from "./transformers.js";
+import { definitionInfoToDefinition, quickInfoToHover, textDocumentDataToUsableData } from "./transformers.js";
 import { documents, documentSettings } from "./text-documents.js";
 
 /**
@@ -50,9 +52,7 @@ connection.onHover(hoverInfo => {
     const languageService = getLanguageService(usableData.fileName, usableData.fileContent);
 
     const quickInfo = languageService?.getQuickInfoAtPosition(usableData.fileName, usableData.position);
-    return {
-        contents: ["# Title ", "### Content"],
-    };
+    return quickInfoToHover(quickInfo);
 });
 
 // This handler provides the initial list of the completion items.

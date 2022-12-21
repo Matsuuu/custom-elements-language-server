@@ -10,8 +10,9 @@ import { isAttributeNameAction, isEndTagAction, isEventNameAction, isPropertyNam
 import { getFileNameFromPath } from "../fs.js";
 import { getProjectBasePath } from "../template-context.js";
 import { getSourceFile } from "../ts/sourcefile.js";
+import { getClassDefinitionTextSpan } from "../ast/text-span.js";
 
-export function getQuickInfo(context: TemplateContext, position: tss.LineAndCharacter, htmlLanguageService: HtmlLanguageService) {
+export function getQuickInfo(context: TemplateContext, position: tss.LineAndCharacter, htmlLanguageService: HtmlLanguageService): tss.QuickInfo | undefined {
     const basePath = getProjectBasePath(context);
     const actionContext = resolveActionContext(htmlLanguageService, context, position);
     const cem = getLatestCEM();
@@ -48,12 +49,13 @@ export function getQuickInfo(context: TemplateContext, position: tss.LineAndChar
     return undefined;
 }
 
-function getTagQuickInfo(basePath: string, matchingClass: JavaScriptModule, classDeclaration: CustomElement, fileName: string, fileFullText: string) {
+function getTagQuickInfo(basePath: string, matchingClass: JavaScriptModule, classDeclaration: CustomElement, fileName: string, fileFullText: string): tss.QuickInfo | undefined {
     const classIdentifier = getClassIdentifier(matchingClass.path, classDeclaration?.name, basePath,);
     const classDeclarationNode = classIdentifier?.parent;
     if (!classDeclarationNode) {
         return undefined;
     }
+    const classDefinitionTextSpan = getClassDefinitionTextSpan(matchingClass, classDeclaration?.name ?? "", basePath);
 
     const commentRanges = ts.getLeadingCommentRanges(fileFullText, classDeclarationNode.pos);
     const quickInfo = commentRanges?.reduce((info, range) => {
@@ -63,7 +65,18 @@ function getTagQuickInfo(basePath: string, matchingClass: JavaScriptModule, clas
         info += commentRangeToText(range, fileFullText);
         return info;
     }, "") ?? "";
-    return undefined;
+    // TODO: Return class name block and possibly something else. e.g. jsdoc annotated parts in separate blocks
+    // e.g. @fires foo
+
+    return {
+        kind: ts.ScriptElementKind.string,
+        kindModifiers: "",
+        textSpan: classDefinitionTextSpan,
+        documentation: [{
+            text: quickInfo,
+            kind: tss.SymbolDisplayPartKind.text.toString() // TODO ??
+        }]
+    }
 }
 
 function commentRangeToText(commentRange: ts.CommentRange, fileFullText: string) {
