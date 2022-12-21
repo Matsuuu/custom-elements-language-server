@@ -1,11 +1,12 @@
+import { CustomElement, JavaScriptModule } from "custom-elements-manifest";
 import { TemplateContext } from "typescript-template-language-service-decorator";
 import tss from "typescript/lib/tsserverlibrary.js";
 import { LanguageService as HtmlLanguageService } from "vscode-html-languageservice";
-import { findClassForTagName } from "../cem/cem-helpers.js";
+import { findClassForTagName, findCustomElementDeclarationFromModule } from "../cem/cem-helpers.js";
 import { getLatestCEM } from "../cem/cem-instance.js";
 import { isAttributeNameAction, isEndTagAction, isEventNameAction, isPropertyNameAction, isTagAction, resolveActionContext } from "../completion-context.js";
+import { getFileNameFromPath } from "../fs.js";
 import { getProjectBasePath } from "../template-context.js";
-import { getSourceFile } from "../typescript-analyzer.js";
 
 export function getQuickInfo(context: TemplateContext, position: tss.LineAndCharacter, htmlLanguageService: HtmlLanguageService) {
     const basePath = getProjectBasePath(context);
@@ -21,12 +22,14 @@ export function getQuickInfo(context: TemplateContext, position: tss.LineAndChar
         return undefined;
     }
 
-    const sourceFile = getSourceFile(basePath, matchingClass.path);
-    if (!sourceFile) {
+    const fileName = getFileNameFromPath(matchingClass?.path);
+    const classDeclaration = findCustomElementDeclarationFromModule(matchingClass);
+    if (!classDeclaration) {
         return undefined;
     }
 
     if (isTagAction(actionContext) || isEndTagAction(actionContext)) {
+        return getTagQuickInfo(basePath, matchingClass, classDeclaration, fileName);
     }
 
     if (isAttributeNameAction(actionContext)) {
@@ -39,4 +42,7 @@ export function getQuickInfo(context: TemplateContext, position: tss.LineAndChar
     }
 
     return undefined;
+}
+
+function getTagQuickInfo(basePath: string, matchingClass: JavaScriptModule, classDeclaration: CustomElement, fileName: string) {
 }

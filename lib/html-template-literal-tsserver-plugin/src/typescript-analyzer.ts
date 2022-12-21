@@ -6,7 +6,6 @@ import {
     attributeNodeParentIsLikelyDeclaration,
     eventNameMatches,
     nodeIsEventDeclaration,
-    propertyNodeParentIsLikelyDeclaration,
 } from "./ast/ast.js";
 
 export const ZERO_TEXT_SPAN = ts.createTextSpan(0, 0);

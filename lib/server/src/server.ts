@@ -3,13 +3,9 @@ import {
     DidChangeConfigurationNotification,
     DidChangeConfigurationParams,
     DidChangeTextDocumentParams,
-    Disposable,
-    Hover,
-    HoverParams,
     InitializeParams,
     InitializeResult,
     ProposedFeatures,
-    ServerRequestHandler,
     TextDocumentSyncKind,
 } from "vscode-languageserver/node.js";
 import tss from "typescript/lib/tsserverlibrary.js";
@@ -112,7 +108,7 @@ function onInitialize(params: InitializeParams) {
         initializeLanguageServiceForFile(fileName, e.document.getText());
     });
 
-    connection.onShutdown(() => {});
+    connection.onShutdown(() => { });
 
     const result: InitializeResult = {
         capabilities: {
