@@ -4,6 +4,7 @@ export const temp = html`
     <example-project my-attribute="f" 
     project-name="foo" 
     .projectName="" 
+    .color="#f00b44"
     @my-custom-event="">
       
     </example-project>

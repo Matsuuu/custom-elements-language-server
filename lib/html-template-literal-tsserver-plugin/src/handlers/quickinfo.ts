@@ -3,10 +3,10 @@ import { TemplateContext } from "typescript-template-language-service-decorator"
 import ts from "typescript";
 import tss from "typescript/lib/tsserverlibrary.js";
 import { LanguageService as HtmlLanguageService } from "vscode-html-languageservice";
-import { getAttributeIdentifier, getClassIdentifier } from "../ast/identifier.js";
+import { getAttributeIdentifier, getClassIdentifier, getPropertyIdentifier } from "../ast/identifier.js";
 import { findClassForTagName, findCustomElementDeclarationFromModule } from "../cem/cem-helpers.js";
 import { getLatestCEM } from "../cem/cem-instance.js";
-import { AttributeActionContext, isAttributeNameAction, isEndTagAction, isEventNameAction, isPropertyNameAction, isTagAction, resolveActionContext } from "../completion-context.js";
+import { AttributeActionContext, isAttributeNameAction, isEndTagAction, isEventNameAction, isPropertyNameAction, isTagAction, PropertyActionContext, resolveActionContext } from "../completion-context.js";
 import { getFileNameFromPath } from "../fs.js";
 import { getProjectBasePath } from "../template-context.js";
 import { getSourceFile } from "../ts/sourcefile.js";
@@ -43,6 +43,7 @@ export function getQuickInfo(context: TemplateContext, position: tss.LineAndChar
     }
 
     if (isPropertyNameAction(actionContext)) {
+        return getPropertyQuickInfo(basePath, matchingClass, classDeclaration, actionContext, fileName, fileFullText);
     }
 
     if (isEventNameAction(actionContext)) {
@@ -121,6 +122,41 @@ function getAttributeQuickInfo(basePath: any, matchingClass: JavaScriptModule, c
     }
 }
 
+function getPropertyQuickInfo(basePath: any, matchingClass: JavaScriptModule, classDeclaration: CustomElement, actionContext: PropertyActionContext, fileName: string, fileFullText: string): tss.QuickInfo | undefined {
+    const propertyName = actionContext.propertyName;
+    const propertyIdentifier = getPropertyIdentifier(matchingClass.path, propertyName, basePath);
+    const propertyDeclaration = propertyIdentifier?.parent;
+    if (!propertyDeclaration) {
+        return undefined;
+    }
+
+    const propertyDefinitionTextSpan = getAttributeDefinitionTextSpan(matchingClass, propertyName ?? "", basePath);
+    const commentRanges = ts.getLeadingCommentRanges(fileFullText, propertyDeclaration.pos);
+    const quickInfo = commentRangesToStringArray(commentRanges, fileFullText);
+
+    const attributeNameDocumentation = [
+        "```typescript",
+        "(property) " + classDeclaration.name + "." + propertyName + ": string",
+        "```"
+    ].join("\n");
+
+    return {
+        kind: ts.ScriptElementKind.string,
+        kindModifiers: "",
+        textSpan: propertyDefinitionTextSpan,
+        documentation: [
+            {
+                text: attributeNameDocumentation,
+                kind: tss.SymbolDisplayPartKind.className.toString()
+            },
+            {
+                text: quickInfo,
+                kind: tss.SymbolDisplayPartKind.text.toString()
+            }
+        ]
+    }
+}
+
 function commentRangesToStringArray(commentRanges: Array<ts.CommentRange> | undefined, fileFullText: string) {
     return commentRanges?.reduce((info, range) => {
         if (info.length > 0) {
@@ -139,11 +175,11 @@ function commentRangeToText(commentRange: ts.CommentRange, fileFullText: string)
 
     const commentTextSanitized = commentText.split("\n")
         .map(line => {
-            let end = 3;
-            if (line.trimEnd().endsWith("*/") || line.trimEnd().endsWith("/**")) {
+            let end = 2;
+            if (line.trimEnd().endsWith("*/") || line.trimStart().startsWith("/**")) {
                 end = line.length
             }
-            return line.substring(end)
+            return line.trimStart().substring(end)
         })
         .join("\n")
         .trim();
