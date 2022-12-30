@@ -10,6 +10,8 @@ const logo = new URL("../../assets/open-wc-logo.svg", import.meta.url).href;
  *
  * @augments LitElement
  * 
+ * @attribute {string} my-attribute
+ * 
  * @fires my-custom-event
  * */
 export class ExampleProject extends LitElement {
@@ -28,10 +30,16 @@ export class ExampleProject extends LitElement {
      * */
     @property({ type: Object }) userData = {};
 
+    myAttribute = "bar";
+
     constructor() {
         super();
+        /**
+         * My attribute is used to do stuff
+         * */
+        this.myAttribute = "foo";
+        this.setAttribute("my-attribute", this.myAttribute);
     }
-
     static styles = css`
         :host {
             min-height: 100vh;

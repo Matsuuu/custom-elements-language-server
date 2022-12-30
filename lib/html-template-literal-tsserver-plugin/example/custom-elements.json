@@ -1,349 +1,212 @@
 {
-    "schemaVersion": "1.0.0",
-    "readme": "",
-    "modules": [
+  "schemaVersion": "1.0.0",
+  "readme": "",
+  "modules": [
+    {
+      "kind": "javascript-module",
+      "path": "html/index.js",
+      "declarations": [
         {
-            "kind": "javascript-module",
-            "path": "html/index.js",
-            "declarations": [
-                {
-                    "kind": "variable",
-                    "name": "temp",
-                    "default": "html`\n  \n    \n    <example-project\n      title=\"foo\"\n      project-name=\"my-project\"\n      ></example-project>\n    \n    <p>Foo</p>\n\n    <img src=\"\" />\n\n    <input type=\"text\" />\n    \n    <textarea cols=\"40\"></texta-rea>\n\n    <div class=\"foo\">\n        <span>Bar</span>\n    </div>\n`"
-                }
-            ],
-            "exports": [
-                {
-                    "kind": "js",
-                    "name": "temp",
-                    "declaration": {
-                        "name": "temp",
-                        "module": "html/index.js"
-                    }
-                }
-            ]
-        },
-        {
-            "kind": "javascript-module",
-            "path": "src/ExampleProject.ts",
-            "declarations": [
-                {
-                    "kind": "class",
-                    "description": "ExampleProject (used via html element `<example-project>`)\nis a component used for displaying project information for the\nuser via a card-like UI component",
-                    "name": "ExampleProject",
-                    "members": [
-                        {
-                            "kind": "field",
-                            "name": "title",
-                            "type": {
-                                "text": "string"
-                            },
-                            "default": "'My app'",
-                            "attribute": "title"
-                        },
-                        {
-                            "kind": "field",
-                            "name": "projectName",
-                            "type": {
-                                "text": "string"
-                            },
-                            "default": "\"Example Project\"",
-                            "attribute": "project-name",
-                            "reflects": true
-                        },
-                        {
-                            "kind": "field",
-                            "name": "color",
-                            "type": {
-                                "text": "string"
-                            },
-                            "default": "\"#000000\"",
-                            "description": "Color of project card background and general theme",
-                            "attribute": "color",
-                            "reflects": true
-                        },
-                        {
-                            "kind": "field",
-                            "name": "userData",
-                            "type": {
-                                "text": "object"
-                            },
-                            "default": "{}",
-                            "description": "Userdata for authentication and token purposes",
-                            "attribute": "userData"
-                        },
-                        {
-                            "kind": "method",
-                            "name": "doEvent"
-                        }
-                    ],
-                    "events": [
-                        {
-                            "name": "my-custom-event"
-                        }
-                    ],
-                    "attributes": [
-                        {
-                            "name": "title",
-                            "type": {
-                                "text": "string"
-                            },
-                            "default": "'My app'",
-                            "fieldName": "title"
-                        },
-                        {
-                            "name": "project-name",
-                            "type": {
-                                "text": "string"
-                            },
-                            "default": "\"Example Project\"",
-                            "fieldName": "projectName"
-                        },
-                        {
-                            "name": "color",
-                            "type": {
-                                "text": "string"
-                            },
-                            "default": "\"#000000\"",
-                            "description": "Color of project card background and general theme",
-                            "fieldName": "color"
-                        },
-                        {
-                            "name": "userData",
-                            "type": {
-                                "text": "object"
-                            },
-                            "default": "{}",
-                            "description": "Userdata for authentication and token purposes",
-                            "fieldName": "userData"
-                        }
-                    ],
-                    "superclass": {
-                        "name": "LitElement",
-                        "package": "lit"
-                    },
-                    "tagName": "example-project",
-                    "customElement": true
-                }
-            ],
-            "exports": [
-                {
-                    "kind": "js",
-                    "name": "ExampleProject",
-                    "declaration": {
-                        "name": "ExampleProject",
-                        "module": "src/ExampleProject.ts"
-                    }
-                }
-            ]
-        },
-        {
-            "kind": "javascript-module",
-            "path": "src/example-project.ts",
-            "declarations": [],
-            "exports": [
-                {
-                    "kind": "custom-element-definition",
-                    "name": "example-project",
-                    "declaration": {
-                        "name": "ExampleProject",
-                        "module": "/src/ExampleProject.js"
-                    }
-                }
-            ]
-        },
-        {
-            "kind": "javascript-module",
-            "path": "src/foo.ts",
-            "declarations": [
-                {
-                    "kind": "variable",
-                    "name": "temp",
-                    "default": "html`\n\n\n  <example-project\n    project-name=\"foo\"\n    .projectName=\"\"\n    @my-custom-event=\"\"\n  ></example-project>\n    \n    <p>Foo</p>\n\n    <img src=\"\" />\n\n    <input type=\"text\" />\n    \n    <textarea cols=\"40\"></textarea>\n\n    <div class=\"foo\">\n        <span>Bar</span>\n    </div>\n`"
-                }
-            ],
-            "exports": [
-                {
-                    "kind": "js",
-                    "name": "temp",
-                    "declaration": {
-                        "name": "temp",
-                        "module": "src/foo.ts"
-                    }
-                }
-            ]
-        },
-        {
-            "kind": "javascript-module",
-            "path": "src/index.js",
-            "declarations": [
-                {
-                    "kind": "variable",
-                    "name": "temp",
-                    "default": "html`\n  \n    <example-project\n      title=\"foo\"\n      project-name=\"my-project\"\n      ></example-project>\n    \n    <p>Foo</p>\n\n    <img src=\"\" />\n\n    <input type=\"text\" />\n    \n    <textarea cols=\"40\"></texta-rea>\n\n    <div class=\"foo\">\n        <span>Bar</span>\n    </div>\n`"
-                }
-            ],
-            "exports": [
-                {
-                    "kind": "js",
-                    "name": "temp",
-                    "declaration": {
-                        "name": "temp",
-                        "module": "src/index.js"
-                    }
-                }
-            ]
-        },
-        {
-            "kind": "javascript-module",
-            "path": "out-tsc/html/index.js",
-            "declarations": [
-                {
-                    "kind": "variable",
-                    "name": "temp",
-                    "default": "html `\n  \n    \n    <example-project\n      title=\"foo\"\n      project-name=\"my-project\"\n      ></example-project>\n    \n    <p>Foo</p>\n\n    <img src=\"\" />\n\n    <input type=\"text\" />\n    \n    <textarea cols=\"40\"></texta-rea>\n\n    <div class=\"foo\">\n        <span>Bar</span>\n    </div>\n`"
-                }
-            ],
-            "exports": [
-                {
-                    "kind": "js",
-                    "name": "temp",
-                    "declaration": {
-                        "name": "temp",
-                        "module": "out-tsc/html/index.js"
-                    }
-                }
-            ]
-        },
-        {
-            "kind": "javascript-module",
-            "path": "out-tsc/src/ExampleProject.js",
-            "declarations": [
-                {
-                    "kind": "class",
-                    "description": "",
-                    "name": "ExampleProject",
-                    "members": [
-                        {
-                            "kind": "method",
-                            "name": "doEvent"
-                        },
-                        {
-                            "kind": "field",
-                            "name": "title",
-                            "type": {
-                                "text": "string"
-                            },
-                            "default": "'My app'"
-                        },
-                        {
-                            "kind": "field",
-                            "name": "projectName",
-                            "type": {
-                                "text": "string"
-                            },
-                            "default": "\"Example Project\""
-                        },
-                        {
-                            "kind": "field",
-                            "name": "color",
-                            "type": {
-                                "text": "string"
-                            },
-                            "default": "\"#000000\""
-                        },
-                        {
-                            "kind": "field",
-                            "name": "userData",
-                            "type": {
-                                "text": "object"
-                            },
-                            "default": "{}"
-                        }
-                    ],
-                    "events": [
-                        {
-                            "name": "my-custom-event",
-                            "type": {
-                                "text": "CustomEvent"
-                            }
-                        }
-                    ],
-                    "superclass": {
-                        "name": "LitElement",
-                        "package": "lit"
-                    },
-                    "tagName": "example-project",
-                    "customElement": true
-                }
-            ],
-            "exports": [
-                {
-                    "kind": "js",
-                    "name": "ExampleProject",
-                    "declaration": {
-                        "name": "ExampleProject",
-                        "module": "out-tsc/src/ExampleProject.js"
-                    }
-                }
-            ]
-        },
-        {
-            "kind": "javascript-module",
-            "path": "out-tsc/src/example-project.js",
-            "declarations": [],
-            "exports": [
-                {
-                    "kind": "custom-element-definition",
-                    "name": "example-project",
-                    "declaration": {
-                        "name": "ExampleProject",
-                        "module": "/out-tsc/src/ExampleProject.js"
-                    }
-                }
-            ]
-        },
-        {
-            "kind": "javascript-module",
-            "path": "out-tsc/src/foo.js",
-            "declarations": [
-                {
-                    "kind": "variable",
-                    "name": "temp",
-                    "default": "html `\n  \n\n    <example-project\n      title=\"foo\"\n      project-name=\"my-project\"\n      ></example-project>\n    \n    <p>Foo</p>\n\n    <img src=\"\" />\n\n    <input type=\"text\" />\n    \n    <textarea cols=\"40\"></texta-rea>\n\n    <div class=\"foo\">\n        <span>Bar</span>\n    </div>\n`"
-                }
-            ],
-            "exports": [
-                {
-                    "kind": "js",
-                    "name": "temp",
-                    "declaration": {
-                        "name": "temp",
-                        "module": "out-tsc/src/foo.js"
-                    }
-                }
-            ]
-        },
-        {
-            "kind": "javascript-module",
-            "path": "out-tsc/src/index.js",
-            "declarations": [
-                {
-                    "kind": "variable",
-                    "name": "temp",
-                    "default": "html `\n  \n    \n    \n    <example-project\n      title=\"foo\"\n      project-name=\"my-project\"\n      ></example-project>\n    \n    <p>Foo</p>\n\n    <img src=\"\" />\n\n    <input type=\"text\" />\n    \n    <textarea cols=\"40\"></texta-rea>\n\n    <div class=\"foo\">\n        <span>Bar</span>\n    </div>\n`"
-                }
-            ],
-            "exports": [
-                {
-                    "kind": "js",
-                    "name": "temp",
-                    "declaration": {
-                        "name": "temp",
-                        "module": "out-tsc/src/index.js"
-                    }
-                }
-            ]
+          "kind": "variable",
+          "name": "temp",
+          "default": "html`\n  \n    \n    <example-project\n      title=\"foo\"\n      project-name=\"my-project\"\n      ></example-project>\n    \n    <p>Foo</p>\n\n    <img src=\"\" />\n\n    <input type=\"text\" />\n    \n    <textarea cols=\"40\"></texta-rea>\n\n    <div class=\"foo\">\n        <span>Bar</span>\n    </div>\n`"
         }
-    ]
+      ],
+      "exports": [
+        {
+          "kind": "js",
+          "name": "temp",
+          "declaration": {
+            "name": "temp",
+            "module": "html/index.js"
+          }
+        }
+      ]
+    },
+    {
+      "kind": "javascript-module",
+      "path": "src/ExampleProject.ts",
+      "declarations": [
+        {
+          "kind": "class",
+          "description": "ExampleProject (used via html element `<example-project>`)\nis a component used for displaying project information for the\nuser via a card-like UI component",
+          "name": "ExampleProject",
+          "members": [
+            {
+              "kind": "field",
+              "name": "title",
+              "type": {
+                "text": "string"
+              },
+              "default": "\"My app\"",
+              "attribute": "title"
+            },
+            {
+              "kind": "field",
+              "name": "projectName",
+              "type": {
+                "text": "string"
+              },
+              "default": "\"Example Project\"",
+              "attribute": "project-name",
+              "reflects": true
+            },
+            {
+              "kind": "field",
+              "name": "color",
+              "type": {
+                "text": "string"
+              },
+              "default": "\"#000000\"",
+              "description": "Color of project card background and general theme",
+              "attribute": "color",
+              "reflects": true
+            },
+            {
+              "kind": "field",
+              "name": "userData",
+              "type": {
+                "text": "object"
+              },
+              "default": "{}",
+              "description": "Userdata for authentication and token purposes",
+              "attribute": "userData"
+            },
+            {
+              "kind": "field",
+              "name": "myAttribute",
+              "type": {
+                "text": "string"
+              },
+              "default": "\"foo\""
+            },
+            {
+              "kind": "method",
+              "name": "doEvent"
+            }
+          ],
+          "events": [
+            {
+              "name": "my-custom-event"
+            }
+          ],
+          "attributes": [
+            {
+              "type": {
+                "text": "string"
+              },
+              "name": "my-attribute"
+            },
+            {
+              "name": "title",
+              "type": {
+                "text": "string"
+              },
+              "default": "\"My app\"",
+              "fieldName": "title"
+            },
+            {
+              "name": "project-name",
+              "type": {
+                "text": "string"
+              },
+              "default": "\"Example Project\"",
+              "fieldName": "projectName"
+            },
+            {
+              "name": "color",
+              "type": {
+                "text": "string"
+              },
+              "default": "\"#000000\"",
+              "description": "Color of project card background and general theme",
+              "fieldName": "color"
+            },
+            {
+              "name": "userData",
+              "type": {
+                "text": "object"
+              },
+              "default": "{}",
+              "description": "Userdata for authentication and token purposes",
+              "fieldName": "userData"
+            }
+          ],
+          "superclass": {
+            "name": "LitElement",
+            "package": "lit"
+          },
+          "tagName": "example-project",
+          "customElement": true
+        }
+      ],
+      "exports": [
+        {
+          "kind": "js",
+          "name": "ExampleProject",
+          "declaration": {
+            "name": "ExampleProject",
+            "module": "src/ExampleProject.ts"
+          }
+        }
+      ]
+    },
+    {
+      "kind": "javascript-module",
+      "path": "src/example-project.ts",
+      "declarations": [],
+      "exports": [
+        {
+          "kind": "custom-element-definition",
+          "name": "example-project",
+          "declaration": {
+            "name": "ExampleProject",
+            "module": "/src/ExampleProject.js"
+          }
+        }
+      ]
+    },
+    {
+      "kind": "javascript-module",
+      "path": "src/foo.ts",
+      "declarations": [
+        {
+          "kind": "variable",
+          "name": "temp",
+          "default": "html`\n    <example-project project-name=\"foo\" .projectName=\"\" @my-custom-event=\"\">\n      \n    </example-project>\n\n    <p>Foo</p>\n\n    <img src=\"\" />\n\n    <input type=\"text\" />\n\n    <textarea cols=\"40\"></textarea>\n\n    <div class=\"foo\">\n        <span>Bar</span>\n    </div>\n`"
+        }
+      ],
+      "exports": [
+        {
+          "kind": "js",
+          "name": "temp",
+          "declaration": {
+            "name": "temp",
+            "module": "src/foo.ts"
+          }
+        }
+      ]
+    },
+    {
+      "kind": "javascript-module",
+      "path": "src/index.js",
+      "declarations": [
+        {
+          "kind": "variable",
+          "name": "temp",
+          "default": "html`\n  \n    <example-project\n      title=\"foo\"\n      project-name=\"my-project\"\n      ></example-project>\n    \n    <p>Foo</p>\n\n    <img src=\"\" />\n\n    <input type=\"text\" />\n    \n    <textarea cols=\"40\"></texta-rea>\n\n    <div class=\"foo\">\n        <span>Bar</span>\n    </div>\n`"
+        }
+      ],
+      "exports": [
+        {
+          "kind": "js",
+          "name": "temp",
+          "declaration": {
+            "name": "temp",
+            "module": "src/index.js"
+          }
+        }
+      ]
+    }
+  ]
 }

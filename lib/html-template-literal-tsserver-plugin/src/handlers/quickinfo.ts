@@ -3,14 +3,15 @@ import { TemplateContext } from "typescript-template-language-service-decorator"
 import ts from "typescript";
 import tss from "typescript/lib/tsserverlibrary.js";
 import { LanguageService as HtmlLanguageService } from "vscode-html-languageservice";
-import { getClassIdentifier } from "../ast/identifier.js";
+import { getAttributeIdentifier, getClassIdentifier } from "../ast/identifier.js";
 import { findClassForTagName, findCustomElementDeclarationFromModule } from "../cem/cem-helpers.js";
 import { getLatestCEM } from "../cem/cem-instance.js";
-import { isAttributeNameAction, isEndTagAction, isEventNameAction, isPropertyNameAction, isTagAction, resolveActionContext } from "../completion-context.js";
+import { AttributeActionContext, isAttributeNameAction, isEndTagAction, isEventNameAction, isPropertyNameAction, isTagAction, resolveActionContext } from "../completion-context.js";
 import { getFileNameFromPath } from "../fs.js";
 import { getProjectBasePath } from "../template-context.js";
 import { getSourceFile } from "../ts/sourcefile.js";
-import { getClassDefinitionTextSpan } from "../ast/text-span.js";
+import { getAttributeDefinitionTextSpan, getClassDefinitionTextSpan } from "../ast/text-span.js";
+import { attributeNameVariantBuilder } from "../ast/ast.js";
 
 export function getQuickInfo(context: TemplateContext, position: tss.LineAndCharacter, htmlLanguageService: HtmlLanguageService): tss.QuickInfo | undefined {
     const basePath = getProjectBasePath(context);
@@ -38,6 +39,7 @@ export function getQuickInfo(context: TemplateContext, position: tss.LineAndChar
     }
 
     if (isAttributeNameAction(actionContext)) {
+        return getAttributeQuickInfo(basePath, matchingClass, classDeclaration, actionContext, fileName, fileFullText);
     }
 
     if (isPropertyNameAction(actionContext)) {
@@ -58,15 +60,8 @@ function getTagQuickInfo(basePath: string, matchingClass: JavaScriptModule, clas
     const classDefinitionTextSpan = getClassDefinitionTextSpan(matchingClass, classDeclaration?.name ?? "", basePath);
 
     const commentRanges = ts.getLeadingCommentRanges(fileFullText, classDeclarationNode.pos);
-    const quickInfo = commentRanges?.reduce((info, range) => {
-        if (info.length > 0) {
-            info += "\n";
-        }
-        info += commentRangeToText(range, fileFullText);
-        return info;
-    }, "") ?? "";
-    // TODO: Return class name block and possibly something else. e.g. jsdoc annotated parts in separate blocks
-    // e.g. @fires foo
+    const quickInfo = commentRangesToStringArray(commentRanges, fileFullText);
+
     const classNameDocumentation = [
         "```typescript",
         "class " + classIdentifier.getText(),
@@ -84,10 +79,56 @@ function getTagQuickInfo(basePath: string, matchingClass: JavaScriptModule, clas
             },
             {
                 text: quickInfo,
-                kind: tss.SymbolDisplayPartKind.text.toString() // TODO ??
+                kind: tss.SymbolDisplayPartKind.text.toString()
             }
         ]
     }
+}
+
+function getAttributeQuickInfo(basePath: any, matchingClass: JavaScriptModule, classDeclaration: CustomElement, actionContext: AttributeActionContext, fileName: string, fileFullText: string): tss.QuickInfo | undefined {
+    const attributeName = actionContext.attributeName;
+    const attributeVariants = attributeNameVariantBuilder(attributeName);
+    const attributeIdentifier = getAttributeIdentifier(matchingClass.path, attributeName, basePath);
+    const attributeDeclaration = attributeIdentifier?.parent;
+    if (!attributeDeclaration) {
+        return undefined;
+    }
+
+    const attributeDefinitionTextSpan = getAttributeDefinitionTextSpan(matchingClass, attributeName ?? "", basePath);
+    const commentRanges = ts.getLeadingCommentRanges(fileFullText, attributeDeclaration.pos);
+    const quickInfo = commentRangesToStringArray(commentRanges, fileFullText);
+
+    const attributeNameDocumentation = [
+        "```typescript",
+        "(attribute) <" + classDeclaration.tagName + " " + attributeVariants.snakeVariant + "=\"\">: string",
+        "```"
+    ].join("\n");
+
+    return {
+        kind: ts.ScriptElementKind.string,
+        kindModifiers: "",
+        textSpan: attributeDefinitionTextSpan,
+        documentation: [
+            {
+                text: attributeNameDocumentation,
+                kind: tss.SymbolDisplayPartKind.className.toString()
+            },
+            {
+                text: quickInfo,
+                kind: tss.SymbolDisplayPartKind.text.toString()
+            }
+        ]
+    }
+}
+
+function commentRangesToStringArray(commentRanges: Array<ts.CommentRange> | undefined, fileFullText: string) {
+    return commentRanges?.reduce((info, range) => {
+        if (info.length > 0) {
+            info += "\n";
+        }
+        info += commentRangeToText(range, fileFullText);
+        return info;
+    }, "") ?? "";
 }
 
 function commentRangeToText(commentRange: ts.CommentRange, fileFullText: string) {
@@ -109,3 +150,4 @@ function commentRangeToText(commentRange: ts.CommentRange, fileFullText: string)
 
     return commentTextSanitized;
 }
+
