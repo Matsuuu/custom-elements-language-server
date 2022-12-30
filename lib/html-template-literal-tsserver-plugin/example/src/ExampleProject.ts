@@ -84,13 +84,7 @@ export class ExampleProject extends LitElement {
     `;
 
     doEvent() {
-        const eventName = "my-custom-event";
-        /**
-         * Event that gets triggered when my custom action
-         * is triggered by the user
-         * */
-        const event = new CustomEvent(eventName);
-        this.dispatchEvent(event);
+        this.dispatchEvent(new CustomEvent("my-custom-event"));
     }
 
     render() {

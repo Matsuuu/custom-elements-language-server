@@ -3,14 +3,14 @@ import { TemplateContext } from "typescript-template-language-service-decorator"
 import ts from "typescript";
 import tss from "typescript/lib/tsserverlibrary.js";
 import { LanguageService as HtmlLanguageService } from "vscode-html-languageservice";
-import { getAttributeIdentifier, getClassIdentifier, getPropertyIdentifier } from "../ast/identifier.js";
+import { getAttributeIdentifier, getClassIdentifier, getEventIdentifier, getPropertyIdentifier } from "../ast/identifier.js";
 import { findClassForTagName, findCustomElementDeclarationFromModule } from "../cem/cem-helpers.js";
 import { getLatestCEM } from "../cem/cem-instance.js";
-import { AttributeActionContext, isAttributeNameAction, isEndTagAction, isEventNameAction, isPropertyNameAction, isTagAction, PropertyActionContext, resolveActionContext } from "../completion-context.js";
+import { AttributeActionContext, EventActionContext, isAttributeNameAction, isEndTagAction, isEventNameAction, isPropertyNameAction, isTagAction, PropertyActionContext, resolveActionContext } from "../completion-context.js";
 import { getFileNameFromPath } from "../fs.js";
 import { getProjectBasePath } from "../template-context.js";
 import { getSourceFile } from "../ts/sourcefile.js";
-import { getAttributeDefinitionTextSpan, getClassDefinitionTextSpan } from "../ast/text-span.js";
+import { getAttributeDefinitionTextSpan, getClassDefinitionTextSpan, getEventDefinitionTextSpan } from "../ast/text-span.js";
 import { attributeNameVariantBuilder } from "../ast/ast.js";
 
 export function getQuickInfo(context: TemplateContext, position: tss.LineAndCharacter, htmlLanguageService: HtmlLanguageService): tss.QuickInfo | undefined {
@@ -47,6 +47,7 @@ export function getQuickInfo(context: TemplateContext, position: tss.LineAndChar
     }
 
     if (isEventNameAction(actionContext)) {
+        return getEventQuickInfo(basePath, matchingClass, classDeclaration, actionContext, fileName, fileFullText);
     }
 
     return undefined;
@@ -144,6 +145,41 @@ function getPropertyQuickInfo(basePath: any, matchingClass: JavaScriptModule, cl
         kind: ts.ScriptElementKind.string,
         kindModifiers: "",
         textSpan: propertyDefinitionTextSpan,
+        documentation: [
+            {
+                text: attributeNameDocumentation,
+                kind: tss.SymbolDisplayPartKind.className.toString()
+            },
+            {
+                text: quickInfo,
+                kind: tss.SymbolDisplayPartKind.text.toString()
+            }
+        ]
+    }
+}
+
+function getEventQuickInfo(basePath: any, matchingClass: JavaScriptModule, classDeclaration: CustomElement, actionContext: EventActionContext, fileName: string, fileFullText: string): tss.QuickInfo | undefined {
+    const eventName = actionContext.eventName;
+    const eventIdentifier = getEventIdentifier(matchingClass.path, eventName, basePath);
+    const eventDeclaration = eventIdentifier?.parent;
+    if (!eventDeclaration) {
+        return undefined;
+    }
+
+    const eventDefinitionTextSpan = getEventDefinitionTextSpan(matchingClass, eventName ?? "", basePath);
+    const commentRanges = ts.getLeadingCommentRanges(fileFullText, eventDeclaration.pos);
+    const quickInfo = commentRangesToStringArray(commentRanges, fileFullText);
+
+    const attributeNameDocumentation = [
+        "```typescript",
+        "(event) " + eventName,
+        "```"
+    ].join("\n");
+
+    return {
+        kind: ts.ScriptElementKind.string,
+        kindModifiers: "",
+        textSpan: eventDefinitionTextSpan,
         documentation: [
             {
                 text: attributeNameDocumentation,
