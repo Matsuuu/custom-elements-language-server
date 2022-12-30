@@ -8,6 +8,8 @@ const logo = new URL("../../assets/open-wc-logo.svg", import.meta.url).href;
  * is a component used for displaying project information for the
  * user via a card-like UI component
  *
+ * @augments LitElement
+ * 
  * @fires my-custom-event
  * */
 export class ExampleProject extends LitElement {

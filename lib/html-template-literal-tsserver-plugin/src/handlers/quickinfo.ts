@@ -67,15 +67,26 @@ function getTagQuickInfo(basePath: string, matchingClass: JavaScriptModule, clas
     }, "") ?? "";
     // TODO: Return class name block and possibly something else. e.g. jsdoc annotated parts in separate blocks
     // e.g. @fires foo
+    const classNameDocumentation = [
+        "```typescript",
+        "class " + classIdentifier.getText(),
+        "```"
+    ].join("\n");
 
     return {
         kind: ts.ScriptElementKind.string,
         kindModifiers: "",
         textSpan: classDefinitionTextSpan,
-        documentation: [{
-            text: quickInfo,
-            kind: tss.SymbolDisplayPartKind.text.toString() // TODO ??
-        }]
+        documentation: [
+            {
+                text: classNameDocumentation,
+                kind: tss.SymbolDisplayPartKind.className.toString()
+            },
+            {
+                text: quickInfo,
+                kind: tss.SymbolDisplayPartKind.text.toString() // TODO ??
+            }
+        ]
     }
 }
 
