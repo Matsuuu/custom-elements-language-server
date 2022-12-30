@@ -1,7 +1,9 @@
 import { html } from "lit-html";
 
 export const temp = html`
-    <example-project project-name="foo" .projectName="" @my-custom-event=""></example-project>
+    <example-project project-name="foo" .projectName="" @my-custom-event="">
+      
+    </example-project>
 
     <p>Foo</p>
 
