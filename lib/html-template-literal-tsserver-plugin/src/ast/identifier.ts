@@ -18,6 +18,28 @@ export function getClassIdentifier(classPath: string, className: string, basePat
     return findClassIdentifierByName(sourceFile, className);
 }
 
+export function findIdentifiers(classPath: string, basePath: string) {
+    const sourceFile = getSourceFile(basePath, classPath);
+    if (!sourceFile) {
+        return undefined;
+    }
+    return findNodesByCondition(sourceFile, (node) => ts.isIdentifier(node));
+}
+
+export function findTemplateExpressions(classPath: string, basePath: string): Array<ts.Node> {
+    const sourceFile = getSourceFile(basePath, classPath);
+    if (!sourceFile) {
+        return [];
+    }
+    return findNodesByCondition(sourceFile, nodeIsTemplateLiteral);
+}
+
+function nodeIsTemplateLiteral(node: ts.Node) {
+    return ts.isTemplateLiteral(node) ||
+        ts.isNoSubstitutionTemplateLiteral(node) ||
+        ts.isTaggedTemplateExpression(node);
+}
+
 export function getAttributeIdentifier(classPath: string, attributeName: string, basePath: string): ts.Identifier | undefined {
     const sourceFile = getSourceFile(basePath, classPath);
     if (!sourceFile) {
@@ -90,4 +112,17 @@ function findNodeByCondition<T>(sourceFile: ts.SourceFile, checkerFunction: Chec
     findNodeWithCondition(sourceFile);
 
     return foundNode;
+}
+
+function findNodesByCondition<T>(sourceFile: ts.SourceFile, checkerFunction: CheckerFunction): Array<T> {
+    let foundNodes: Array<T> = [];
+    function findNodeWithCondition(node: ts.Node) {
+        if (checkerFunction.apply(null, [node])) {
+            foundNodes.push(node as T);
+        }
+        ts.forEachChild(node, findNodeWithCondition);
+    }
+    findNodeWithCondition(sourceFile);
+
+    return foundNodes;
 }

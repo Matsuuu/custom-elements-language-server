@@ -57,6 +57,11 @@ export class LanguageServiceManager {
 
         return this.getOrCreateLanguageService(configFilePath);
     }
+
+    public getProjectForCurrentFile(fileName: string, fileContent: string) {
+        return projectService.openAndGetProjectForFile(fileName, fileContent);
+    }
+
 }
 
 // Here we have some short hand handlers for our language service instance
@@ -74,6 +79,10 @@ export function getLanguageService(fileName: string, fileContent: string) {
 
 export function initializeLanguageServiceForFile(fileName: string, fileContent: string) {
     getLanguageServiceManagerInstance().getLanguageServiceForCurrentFile(fileName, fileContent);
+}
+
+export function getProjectForCurrentFile(fileName: string, fileContent: string) {
+    return getLanguageServiceManagerInstance().getProjectForCurrentFile(fileName, fileContent);
 }
 
 export function isConfiguredProject(project: tss.server.Project): project is tss.server.ConfiguredProject {
