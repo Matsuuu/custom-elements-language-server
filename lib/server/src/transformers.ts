@@ -39,11 +39,11 @@ export function positionToOffset(document: TextDocument, position: Position): nu
     return document.offsetAt(position) ?? 0;
 }
 
-export function definitionInfoToDefinition(definition: ts.DefinitionInfo): Location {
-    const uri = fileNameToUri(definition.fileName);
-    const textDocument = scanDocument(definition.fileName);
+export function documentSpanToLocation(documentSpan: ts.DocumentSpan): Location {
+    const uri = fileNameToUri(documentSpan.fileName);
+    const textDocument = scanDocument(documentSpan.fileName);
 
-    const contextSpan = definition.contextSpan;
+    const contextSpan = documentSpan.contextSpan;
     if (contextSpan === undefined) {
         return { uri, range: ZERO_RANGE };
     }
@@ -58,7 +58,6 @@ export function definitionInfoToDefinition(definition: ts.DefinitionInfo): Locat
         range: Range.create(startPosition, endPosition),
     };
 }
-
 
 export function quickInfoToHover(quickInfo: ts.QuickInfo | undefined): Hover | undefined {
     if (!quickInfo) return undefined;

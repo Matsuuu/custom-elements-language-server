@@ -1,14 +1,14 @@
 import {
+    Range,
     createConnection,
     DidChangeConfigurationNotification,
     DidChangeConfigurationParams,
     DidChangeTextDocumentParams,
-    Hover,
     InitializeParams,
     InitializeResult,
     ProposedFeatures,
-    Range,
     TextDocumentSyncKind,
+    Position,
 } from "vscode-languageserver/node.js";
 import tss from "typescript/lib/tsserverlibrary.js";
 
@@ -19,7 +19,7 @@ import { getCompletionItemInfo, getCompletionItems } from "./completion.js";
 import { validateTextDocument } from "./analyzer.js";
 import { DEFAULT_SETTINGS, LanguageServerSettings, setCapabilities, setGlobalSettings } from "./settings.js";
 import { getLanguageService, initializeLanguageServiceForFile } from "./language-services/language-services.js";
-import { definitionInfoToDefinition, quickInfoToHover, textDocumentDataToUsableData } from "./transformers.js";
+import { documentSpanToLocation, quickInfoToHover, textDocumentDataToUsableData } from "./transformers.js";
 import { documents, documentSettings } from "./text-documents.js";
 
 /**
@@ -64,9 +64,23 @@ connection.onCompletionResolve(getCompletionItemInfo);
 connection.onDefinition(definitionEvent => {
     const usableData = textDocumentDataToUsableData(documents, definitionEvent);
     const languageService = getLanguageService(usableData.fileName, usableData.fileContent);
-    const currentFileDef = languageService?.getDefinitionAtPosition(usableData.fileName, usableData.position);
+    const definitions = languageService?.getDefinitionAtPosition(usableData.fileName, usableData.position);
 
-    return currentFileDef?.map(definitionInfoToDefinition) ?? [];
+    const definitionLocations = definitions?.map(documentSpanToLocation) ?? [];
+    return definitionLocations;
+});
+
+connection.onReferences((referencesEvent) => {
+    const usableData = textDocumentDataToUsableData(documents, referencesEvent);
+    const languageService = getLanguageService(usableData.fileName, usableData.fileContent);
+    const references = languageService?.getReferencesAtPosition(usableData.fileName, usableData.position);
+    // Here we can't utilize the template literal language service
+
+    return references?.map(documentSpanToLocation) ?? [];
+    /*return [{
+        uri: "file:///home/matsu/Projects/custom-elements-language-server/lib/html-template-literal-tsserver-plugin/example/src/foo.ts",
+        range: Range.create(Position.create(0, 0), Position.create(0, 10))
+    }]*/
 });
 
 // Make the text document manager listen on the connection
@@ -119,6 +133,7 @@ function onInitialize(params: InitializeParams) {
             },
             hoverProvider: true,
             declarationProvider: true,
+            referencesProvider: true,
             definitionProvider: true,
         },
     };
