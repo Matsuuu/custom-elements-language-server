@@ -4,5 +4,5 @@ export {
     HTMLTemplateLiteralTSServerPlugin as plugin,
 }
 
-export * as cemHelpers from "./cem/cem-helpers.js";
-export * as cemInstance from "./cem/cem-instance.js";
+export * from "./cem/cem-helpers.js";
+export * from "./cem/cem-instance.js";
