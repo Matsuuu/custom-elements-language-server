@@ -21,6 +21,7 @@ import { DEFAULT_SETTINGS, LanguageServerSettings, setCapabilities, setGlobalSet
 import { getLanguageService, initializeLanguageServiceForFile } from "./language-services/language-services.js";
 import { documentSpanToLocation, quickInfoToHover, textDocumentDataToUsableData } from "./transformers.js";
 import { documents, documentSettings } from "./text-documents.js";
+import { getReferencesAtPosition } from "./handlers/references.js";
 
 /**
  * ==============================================================================================0
@@ -71,12 +72,11 @@ connection.onDefinition(definitionEvent => {
 });
 
 connection.onReferences((referencesEvent) => {
-    const usableData = textDocumentDataToUsableData(documents, referencesEvent);
-    const languageService = getLanguageService(usableData.fileName, usableData.fileContent);
-    const references = languageService?.getReferencesAtPosition(usableData.fileName, usableData.position);
+    const references = getReferencesAtPosition(referencesEvent);
     // Here we can't utilize the template literal language service
 
-    return references?.map(documentSpanToLocation) ?? [];
+    return [];
+    // return references?.map(documentSpanToLocation) ?? [];
     /*return [{
         uri: "file:///home/matsu/Projects/custom-elements-language-server/lib/html-template-literal-tsserver-plugin/example/src/foo.ts",
         range: Range.create(Position.create(0, 0), Position.create(0, 10))

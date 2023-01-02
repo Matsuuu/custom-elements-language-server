@@ -3,7 +3,7 @@
     "version": "0.0.1",
     "license": "MIT",
     "type": "module",
-    "main": "out/server.js",
+    "main": "out/export.js",
     "dependencies": {
         "typescript": "^4.8.4",
         "typescript-template-language-service-decorator": "^2.3.1",

@@ -1,4 +1,4 @@
-import HTMLTemplateLiteralTSServerPlugin from "html-template-literal-tsserver-plugin/out/index.js";
+import { plugin } from "html-template-literal-tsserver-plugin";
 import ts from "typescript";
 import tss, { server } from "typescript/lib/tsserverlibrary.js";
 
@@ -28,7 +28,7 @@ export class LanguageServiceManager {
             throw new Error("Failed to initialize Plugin Creation Info");
         }
 
-        const templateLiteralTSServerPlugin = HTMLTemplateLiteralTSServerPlugin({ typescript: tss });
+        const templateLiteralTSServerPlugin = plugin({ typescript: tss });
         const languageService = templateLiteralTSServerPlugin.create(pluginCreateInfo);
 
         if (!languageService) {

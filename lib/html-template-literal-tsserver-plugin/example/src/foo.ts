@@ -5,8 +5,7 @@ export const temp = html`
     project-name="foo" 
     .projectName="" 
     .color="#f00b44"
-    @my-custom-event="">
-      
+    @my-custom-event="">      
     </example-project>
 
     <p>Foo</p>
