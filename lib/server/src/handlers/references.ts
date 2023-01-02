@@ -1,9 +1,9 @@
-import { findTagNameForClass, findTemplateExpressions, getLatestCEM } from "html-template-literal-tsserver-plugin";
+import { findIdentifiers, findTagNameForClass, findTemplateExpressions, getLatestCEM } from "html-template-literal-tsserver-plugin";
 import tss from "typescript/lib/tsserverlibrary.js";
 import { ReferenceParams, Location, Position, Range } from "vscode-languageserver";
 import { getProjectForCurrentFile } from "../language-services/language-services.js";
 import { documents, scanDocument } from "../text-documents.js";
-import { fileNameToUri, offsetToPosition, textDocumentDataToUsableData } from "../transformers.js";
+import { fileNameToUri, offsetToPosition, positionToOffset, textDocumentDataToUsableData } from "../transformers.js";
 
 export function getReferencesAtPosition(referenceParams: ReferenceParams) {
     const usableData = textDocumentDataToUsableData(documents, referenceParams);
@@ -12,7 +12,18 @@ export function getReferencesAtPosition(referenceParams: ReferenceParams) {
     if (!cem) {
         return [];
     }
-    const tagNameModule = findTagNameForClass(cem, "ExampleProject");
+    const openFilePath = referenceParams.textDocument.uri.replace("file://", "");
+    const openDoc = scanDocument(openFilePath);
+    const identifiers = findIdentifiers(openFilePath, "");
+    const offset = positionToOffset(openDoc, referenceParams.position);
+    const identifierUnderCursor = identifiers.find(id => id.pos <= offset && id.end >= offset);
+
+    const referenceClass = identifierUnderCursor?.escapedText;
+    if (!referenceClass) {
+        return [];
+    }
+
+    const tagNameModule = findTagNameForClass(cem, referenceClass);
 
     const definition = tagNameModule.exports?.filter(exp => exp.kind === "custom-element-definition")?.[0];
     if (!definition) {
@@ -20,7 +31,6 @@ export function getReferencesAtPosition(referenceParams: ReferenceParams) {
     }
 
     const tagName = definition.name;
-    const declaration = definition.declaration;
 
     const fileContentMap: any = {};
 

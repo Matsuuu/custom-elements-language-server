@@ -18,10 +18,10 @@ export function getClassIdentifier(classPath: string, className: string, basePat
     return findClassIdentifierByName(sourceFile, className);
 }
 
-export function findIdentifiers(classPath: string, basePath: string) {
+export function findIdentifiers(classPath: string, basePath: string): Array<ts.Identifier> {
     const sourceFile = getSourceFile(basePath, classPath);
     if (!sourceFile) {
-        return undefined;
+        return [];
     }
     return findNodesByCondition(sourceFile, (node) => ts.isIdentifier(node));
 }
