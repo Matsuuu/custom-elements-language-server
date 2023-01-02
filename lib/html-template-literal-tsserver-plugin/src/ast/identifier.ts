@@ -37,7 +37,7 @@ export function findTemplateExpressions(classPath: string, basePath: string): Ar
 function nodeIsTemplateLiteral(node: ts.Node) {
     return ts.isTemplateLiteral(node) ||
         ts.isNoSubstitutionTemplateLiteral(node) ||
-        ts.isTaggedTemplateExpression(node);
+        ts.isTemplateExpression(node);
 }
 
 export function getAttributeIdentifier(classPath: string, attributeName: string, basePath: string): ts.Identifier | undefined {

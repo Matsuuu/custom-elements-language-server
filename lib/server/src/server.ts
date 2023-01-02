@@ -75,7 +75,7 @@ connection.onReferences((referencesEvent) => {
     const references = getReferencesAtPosition(referencesEvent);
     // Here we can't utilize the template literal language service
 
-    return [];
+    return references;
     // return references?.map(documentSpanToLocation) ?? [];
     /*return [{
         uri: "file:///home/matsu/Projects/custom-elements-language-server/lib/html-template-literal-tsserver-plugin/example/src/foo.ts",

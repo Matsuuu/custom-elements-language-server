@@ -1,9 +1,9 @@
 import { findTagNameForClass, findTemplateExpressions, getLatestCEM } from "html-template-literal-tsserver-plugin";
 import tss from "typescript/lib/tsserverlibrary.js";
-import { ReferenceParams } from "vscode-languageserver";
+import { ReferenceParams, Location, Position, Range } from "vscode-languageserver";
 import { getProjectForCurrentFile } from "../language-services/language-services.js";
-import { documents } from "../text-documents.js";
-import { textDocumentDataToUsableData } from "../transformers.js";
+import { documents, scanDocument } from "../text-documents.js";
+import { fileNameToUri, offsetToPosition, textDocumentDataToUsableData } from "../transformers.js";
 
 export function getReferencesAtPosition(referenceParams: ReferenceParams) {
     const usableData = textDocumentDataToUsableData(documents, referenceParams);
@@ -24,7 +24,7 @@ export function getReferencesAtPosition(referenceParams: ReferenceParams) {
 
     const fileContentMap: any = {};
 
-    const files = project?.getRootScriptInfos().filter(file => {
+    const filesUsingTag = project?.getRootScriptInfos().filter(file => {
         const templateExpressions = findTemplateExpressions(file.path, "");
         const contentAreas = templateExpressions.map(exp => exp.getText());
         const contains = contentAreas.some(area => area.includes("<" + tagName));
@@ -34,7 +34,34 @@ export function getReferencesAtPosition(referenceParams: ReferenceParams) {
             }
         }
         return contains;
+    }) ?? [];
+
+    const locations: Array<Location> = filesUsingTag?.flatMap(file => {
+        const templateExpressions: Array<tss.Node> = fileContentMap[file.path].templateExpressions;
+        return templateExpressions.flatMap((templateExp) => {
+            const tagLength = `<${tagName}`.length;
+            const content = templateExp.getFullText();
+            const matches = [...content.matchAll(new RegExp(`<${tagName}`, "gi"))];
+            const uri = fileNameToUri(file.path);
+            const doc = scanDocument(file.path);
+            if (!doc) {
+                return [];
+            }
+
+            return matches.flatMap(match => {
+                const start = templateExp.pos + (match.index ?? 0);
+                const end = start + tagLength;
+
+                const startPosition = offsetToPosition(doc, start);
+                const endPosition = offsetToPosition(doc, end);
+                return {
+                    uri: uri,
+                    range: Range.create(startPosition, endPosition)
+                }
+            })
+
+        })
     });
 
-    return undefined;
+    return locations;
 }
