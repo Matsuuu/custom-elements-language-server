@@ -43,8 +43,12 @@ export function documentSpanToLocation(documentSpan: ts.DocumentSpan): Location 
     const uri = fileNameToUri(documentSpan.fileName);
     const textDocument = scanDocument(documentSpan.fileName);
 
-    const contextSpan = documentSpan.contextSpan;
+    let contextSpan = documentSpan.contextSpan;
     if (contextSpan === undefined) {
+        contextSpan = documentSpan.textSpan;
+    }
+
+    if (contextSpan == undefined) {
         return { uri, range: ZERO_RANGE };
     }
 

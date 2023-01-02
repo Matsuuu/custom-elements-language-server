@@ -72,10 +72,14 @@ connection.onDefinition(definitionEvent => {
 });
 
 connection.onReferences((referencesEvent) => {
+    const usableData = textDocumentDataToUsableData(documents, referencesEvent);
     const references = getReferencesAtPosition(referencesEvent);
+    const languageService = getLanguageService(usableData.fileName, usableData.fileContent);
+
+    const lspReferences = languageService?.getReferencesAtPosition(usableData.fileName, usableData.position) ?? [];
     // Here we can't utilize the template literal language service
 
-    return references;
+    return [...references, ...lspReferences.map(documentSpanToLocation)];
     // return references?.map(documentSpanToLocation) ?? [];
     /*return [{
         uri: "file:///home/matsu/Projects/custom-elements-language-server/lib/html-template-literal-tsserver-plugin/example/src/foo.ts",
