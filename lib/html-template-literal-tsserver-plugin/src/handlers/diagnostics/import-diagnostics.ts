@@ -3,6 +3,7 @@ import tss from "typescript/lib/tsserverlibrary.js";
 import { LanguageService as HtmlLanguageService, Node } from "vscode-html-languageservice";
 import { findCustomElementDefinitionModule } from "../../cem/cem-helpers.js";
 import { getCEMBasePath, getLatestCEM } from "../../cem/cem-instance.js";
+import { getImportedDependencies } from "../../dependencies/dependency-package-resolver.js";
 import { resolveCustomElementTags } from "../../scanners/tag-scanner.js";
 import { getProgram } from "../../ts/sourcefile.js";
 
@@ -11,8 +12,10 @@ export function getImportDiagnostics(context: TemplateContext, htmlLanguageServi
     const program = getProgram(filePath);
     const sourceFiles = program.getSourceFiles();
     const sourceFileNames = sourceFiles.map(sf => sf.fileName);
+    const dependencyPackages = getImportedDependencies(sourceFiles);
 
     const cem = getLatestCEM();
+    //const dependencyCems = sourceFileNames.map()
     const customElementTagNodes = resolveCustomElementTags(htmlLanguageService, context);
     const basePath = getCEMBasePath();
 
