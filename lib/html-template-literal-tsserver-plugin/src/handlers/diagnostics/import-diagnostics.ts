@@ -20,6 +20,9 @@ export async function getImportDiagnostics(context: TemplateContext, htmlLanguag
         .map((dependencyPackage) => getDependencyCEM(dependencyPackage))
         .filter(depCEM => depCEM !== undefined);
 
+    // TODO: Somehow create a collection out of the CEM's and have them contain
+    // the dependencyinformation. Then iterate through them, searching for the actual information
+
     debugger;
 
     const customElementTagNodes = resolveCustomElementTags(htmlLanguageService, context);
