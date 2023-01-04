@@ -4,6 +4,7 @@ import { LanguageService as HtmlLanguageService } from "vscode-html-languageserv
 import { getGoToDefinitionEntries } from "./handlers/go-to-definition.js";
 import { getCompletionEntries } from "./handlers/completion.js";
 import { getQuickInfo } from "./handlers/quickinfo.js";
+import { getImportDiagnostics } from "./handlers/diagnostics/import-diagnostics.js";
 
 export class HTMLTemplateLiteralLanguageService implements TemplateLanguageService {
     constructor(private readonly typescript: typeof tss, private readonly htmlLanguageService: HtmlLanguageService) { }
@@ -22,6 +23,7 @@ export class HTMLTemplateLiteralLanguageService implements TemplateLanguageServi
 
     public getSemanticDiagnostics(context: TemplateContext): tss.Diagnostic[] {
         console.log("SEMANTIC DIAG");
+        const importDiagnostics = getImportDiagnostics(context, this.htmlLanguageService);
 
         return [];
     }

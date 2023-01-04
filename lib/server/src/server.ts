@@ -112,7 +112,6 @@ function onInitialize(params: InitializeParams) {
         console.log("Opened text doc");
 
         const fileName = e.document.uri.replace("file://", "");
-        debugger;
         initializeLanguageServiceForFile(fileName, e.document.getText());
     });
 
