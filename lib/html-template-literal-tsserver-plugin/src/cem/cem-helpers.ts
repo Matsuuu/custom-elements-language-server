@@ -55,6 +55,16 @@ export function scanCustomElementTagNames(manifest: Package) {
     });
 }
 
+export function findCustomElementDefinitionModule(manifest: Package, tagName: string) {
+    return manifest.modules?.filter(mod =>
+        mod.kind === "javascript-module" &&
+        mod.exports?.some(exp =>
+            exp.kind === "custom-element-definition" &&
+            exp.name === tagName
+        )
+    )?.[0] ?? undefined
+}
+
 export function findTagNameForClass(manifest: Package, className: string) {
     return manifest.modules?.filter(mod =>
         mod.kind === "javascript-module" &&

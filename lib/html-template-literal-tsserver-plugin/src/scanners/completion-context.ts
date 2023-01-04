@@ -1,7 +1,7 @@
 import { TemplateContext } from "typescript-template-language-service-decorator";
-import { createTextDocumentFromContext } from "./text-document.js";
 import { Position, LanguageService } from "vscode-html-languageservice";
 import pkg from "vscode-html-languageservice";
+import { createTextDocumentFromContext } from "../text-document.js";
 const { TokenType } = pkg;
 
 // Some of the context checks were borrowed from https://github.com/microsoft/vscode-html-languageservice/blob/main/src/services/htmlCompletion.ts
@@ -132,9 +132,9 @@ export function isEventNameAction(context: ActionContext): context is EventActio
     return context.kind === ActionContextKind.Event || context.kind === ActionContextKind.AtEvent;
 }
 
-export interface TagActionContext extends ActionContext {}
+export interface TagActionContext extends ActionContext { }
 
-export interface AttributeLikeActionContext extends ActionContext {}
+export interface AttributeLikeActionContext extends ActionContext { }
 
 export interface AttributeActionContext extends AttributeLikeActionContext {
     attributeName: string;

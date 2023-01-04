@@ -11,7 +11,7 @@ import {
     isTagAction,
     PropertyActionContext,
     resolveActionContext,
-} from "../completion-context.js";
+} from "../scanners/completion-context.js";
 import { getLatestCEM } from "../cem/cem-instance.js";
 import { findClassForTagName, findCustomElementDeclarationFromModule } from "../cem/cem-helpers.js";
 import { CustomElement, JavaScriptModule } from "custom-elements-manifest";

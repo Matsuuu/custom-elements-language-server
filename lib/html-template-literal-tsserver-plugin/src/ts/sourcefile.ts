@@ -1,4 +1,5 @@
 import ts from "typescript";
+import { findCustomElementDeclarations } from "../ast/identifier.js";
 import { benchmarkStart } from "../benchmark.js";
 
 const compilerHost = ts.createCompilerHost({}, true);
@@ -20,7 +21,6 @@ export function getSourceFile(baseOrFullPath: string, classPath?: string) {
 }
 
 export function getProgram(fullPath: string) {
-    // '/home/matsu/Projects/custom-elements-language-server/lib/html-template-literal-tsserver-plugin/example/package.json'
     const program = ts.createProgram({
         rootNames: [fullPath],
         options: {
@@ -29,39 +29,4 @@ export function getProgram(fullPath: string) {
         host: compilerHost,
     });
     return program;
-}
-
-export function getSourceFileWithImports(fullPath: string): Array<ts.SourceFile> {
-    const program = getProgram(fullPath);
-
-    const getSourceFilesBench = benchmarkStart("Get Sourcefiles");
-    const sourceFiles = program.getSourceFiles();
-    getSourceFilesBench();
-
-    const getSingleSourceBench = benchmarkStart("Get Sourcefiles");
-    const baseSourceFile = program.getSourceFile(fullPath);
-    getSingleSourceBench();
-
-    sourceFiles.forEach((sf) => {
-        const getTextBench = benchmarkStart("Get Full Text");
-        const a = sf.getFullText();
-        console.log(a.length);
-        getTextBench();
-    })
-
-    function fetchAndAddSourceFiles(importingSourceFile: ts.SourceFile | undefined) {
-        if (!importingSourceFile) return;
-
-        /*const info = ts.preProcessFile(importingSourceFile?.getFullText() ?? "", true, true);
-        info.importedFiles.forEach(importedFile => {
-            const sf = getSourceFile(fullPath + "/" + importedFile.fileName);
-            sourceFiles.push(sf);
-            fetchAndAddSourceFiles(sf);
-        });*/
-    }
-
-    fetchAndAddSourceFiles(baseSourceFile);
-
-
-    return [];
 }

@@ -26,6 +26,15 @@ export function findIdentifiers(classPath: string, basePath: string): Array<ts.I
     return findNodesByCondition(sourceFile, (node) => ts.isIdentifier(node));
 }
 
+export function findCustomElementDeclarations(sourceFile: ts.SourceFile): Array<ts.Node> {
+    return findNodesByCondition(sourceFile, isCustomElementDefinition);
+}
+
+export function isCustomElementDefinition(node: ts.Node) {
+    return ts.isPropertyAccessExpression(node) &&
+        (node.getText() === "window.customElements.define" || node.getText() === "customElements.define");
+}
+
 export function findTemplateExpressions(classPath: string, basePath: string): Array<ts.Node> {
     const sourceFile = getSourceFile(basePath, classPath);
     if (!sourceFile) {

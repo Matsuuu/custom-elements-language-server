@@ -18,6 +18,10 @@ export class CEMInstantiator {
         this.refreshCEM();
     }
 
+    public getProjectDirectory() {
+        return this._projectDirectory;
+    }
+
     private analyzeCEM(): Package | undefined {
         const packagePath = this._projectDirectory + "/package.json";
         if (!fs.existsSync(packagePath)) return;
@@ -54,6 +58,10 @@ export class CEMInstantiator {
 
 export function getCEMInstantiator() {
     return CEMInstantiator._instance;
+}
+
+export function getCEMBasePath() {
+    return getCEMInstantiator()?.getProjectDirectory() ?? "";
 }
 
 export function getLatestCEM() {

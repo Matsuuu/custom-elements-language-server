@@ -3,7 +3,7 @@ import { LanguageService as HtmlLanguageService } from "vscode-html-languageserv
 import tss from "typescript/lib/tsserverlibrary.js";
 import { createTextDocumentFromContext } from "../text-document.js";
 import { completionItemToCompletionEntry } from "../interop.js";
-import { isAttributeNameAction, isEndTagAction, isEventNameAction, isPropertyNameAction, isTagAction, resolveActionContext } from "../completion-context.js";
+import { isAttributeNameAction, isEndTagAction, isEventNameAction, isPropertyNameAction, isTagAction, resolveActionContext } from "../scanners/completion-context.js";
 import { getLatestCEM } from "../cem/cem-instance.js";
 import { findCustomElementTagLike, findDeclarationForTagName } from "../cem/cem-helpers.js";
 
