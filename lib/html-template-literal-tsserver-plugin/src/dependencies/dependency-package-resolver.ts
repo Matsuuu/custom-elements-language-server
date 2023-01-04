@@ -11,7 +11,8 @@ export function getImportedDependencies(sourceFiles: readonly ts.SourceFile[]) {
             continue;
         }
 
-        const pathMatcher = new RegExp(/.*node_modules\/(?<packageName>.*?)\//, "gi");
+        // TODO: Resolve @foo/bar paths
+        const pathMatcher = new RegExp(/.*node_modules\/(?<packageName>[^@].*?|@.*?\/.*?)\//, "gi");
         const result = pathMatcher.exec(path);
 
         const packagePath = result?.[0];
@@ -31,6 +32,5 @@ export function getImportedDependencies(sourceFiles: readonly ts.SourceFile[]) {
         };
     }
 
-    debugger;
     return packages;
 }
