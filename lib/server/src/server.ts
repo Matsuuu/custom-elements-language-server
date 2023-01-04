@@ -112,6 +112,7 @@ function onInitialize(params: InitializeParams) {
         console.log("Opened text doc");
 
         const fileName = e.document.uri.replace("file://", "");
+        debugger;
         initializeLanguageServiceForFile(fileName, e.document.getText());
     });
 
@@ -128,6 +129,10 @@ function onInitialize(params: InitializeParams) {
             declarationProvider: true,
             referencesProvider: true,
             definitionProvider: true,
+            // diagnosticProvider: {
+            //     interFileDependencies: false,
+            //     workspaceDiagnostics: false
+            // }
         },
     };
     if (hasWorkspaceFolderCapability) {
@@ -176,4 +181,8 @@ connection.onDidChangeTextDocument((params: DidChangeTextDocumentParams) => {
     const updatedDoc = TextDocument.update(textDoc, changes, textDoc?.version ?? 0 + 1);
 
     validateTextDocument(connection, textDoc, documentSettings);
+
+    const fileName = params.textDocument.uri.replace("file://", "");
+    const languageService = getLanguageService(fileName, textDoc.getText());
+    languageService?.getSemanticDiagnostics(fileName);
 });

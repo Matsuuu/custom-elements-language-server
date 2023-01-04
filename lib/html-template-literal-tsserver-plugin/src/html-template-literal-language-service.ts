@@ -19,4 +19,10 @@ export class HTMLTemplateLiteralLanguageService implements TemplateLanguageServi
     public getCompletionsAtPosition(context: TemplateContext, position: tss.LineAndCharacter): tss.CompletionInfo {
         return getCompletionEntries(context, position, this.htmlLanguageService);
     }
+
+    public getSemanticDiagnostics(context: TemplateContext): tss.Diagnostic[] {
+        console.log("SEMANTIC DIAG");
+
+        return [];
+    }
 }
