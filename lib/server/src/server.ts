@@ -1,5 +1,4 @@
 import {
-    Range,
     createConnection,
     DidChangeConfigurationNotification,
     DidChangeConfigurationParams,
@@ -8,7 +7,6 @@ import {
     InitializeResult,
     ProposedFeatures,
     TextDocumentSyncKind,
-    Position,
 } from "vscode-languageserver/node.js";
 import tss from "typescript/lib/tsserverlibrary.js";
 
@@ -22,15 +20,6 @@ import { getLanguageService, initializeLanguageServiceForFile } from "./language
 import { documentSpanToLocation, quickInfoToHover, textDocumentDataToUsableData } from "./transformers.js";
 import { documents, documentSettings } from "./text-documents.js";
 import { getReferencesAtPosition } from "./handlers/references.js";
-
-/**
- * ==============================================================================================0
- *
- * Quite a lot of this file's code is set up following the extension guide from visual studio code docs.
- * This  is just to provide a PoC before actually going head deep into development
- *
- * ==============================================================================================0
- */
 
 const connection = createConnection(ProposedFeatures.all);
 
