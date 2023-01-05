@@ -44,7 +44,3 @@ export async function getImportDiagnostics(context: TemplateContext, htmlLanguag
 
     return [];
 }
-
-function cemIsNotUndefined(cemData: CEMData | undefined): cemData is CEMData {
-    return cemData !== undefined;
-}
