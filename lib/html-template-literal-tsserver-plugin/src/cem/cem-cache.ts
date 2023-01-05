@@ -1,12 +1,11 @@
 import { getImportedDependencies } from "../dependencies/dependency-package-resolver.js";
+import { HTMLTemplateLiteralPlugin } from "../index.js";
 import { getProgram } from "../ts/sourcefile.js";
-import { CEMData } from "./cem-data.js";
-import { getDependencyCEM } from "./cem-fetcher.js";
-import { getLatestCEM } from "./cem-instance.js";
+import { CEMData, CEMInstance } from "./cem-data.js";
 
 export class CEMCollection {
-    public cems: Array<CEMData> = [];
-    public localCEM: CEMData | undefined;
+    public cems: Array<CEMInstance> = [];
+    public localCEM: CEMInstance | undefined;
 
     constructor(openFilePath: string) {
         const program = getProgram(openFilePath);
@@ -14,10 +13,12 @@ export class CEMCollection {
         const sourceFileNames = sourceFiles.map(sf => sf.fileName);
         const dependencyPackages = getImportedDependencies(sourceFiles);
 
-        const cemData = getLatestCEM();
+        const basePath = HTMLTemplateLiteralPlugin.projectDirectory;
+        const cemData = CEMInstance.fromLocalPath(basePath);
         const dependencyCems = Object.values(dependencyPackages)
-            .map((dependencyPackage) => getDependencyCEM(dependencyPackage))
-            .filter(cemIsNotUndefined);
+            .map(CEMInstance.fromDependency)
+            .filter(cemIsNotUndefined)
+            .filter(cemInstance => cemInstance.isValid());
 
         this.localCEM = cemData;
         this.cems = [cemData, ...dependencyCems].filter(cemIsNotUndefined);
@@ -31,8 +32,11 @@ export function getCEMData(openFilePath: string) {
     if (!CACHED_COLLECTION) {
         CACHED_COLLECTION = new CEMCollection(openFilePath);
     }
+    CACHED_COLLECTION.localCEM?.refresh();
+    // TODO: Figure out when dependencyCEM's might need updating
+    return CACHED_COLLECTION;
 }
 
-function cemIsNotUndefined(cemData: CEMData | undefined): cemData is CEMData {
-    return cemData !== undefined;
+function cemIsNotUndefined(cemInstance: CEMInstance | undefined): cemInstance is CEMInstance {
+    return cemInstance !== undefined;
 }

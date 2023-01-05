@@ -4,18 +4,21 @@ import { getLanguageService, LanguageService as HtmlLanguageService } from "vsco
 import { HTMLTemplateLiteralLanguageService } from "./html-template-literal-language-service.js";
 import { CEMInstantiator } from "./cem/cem-instance.js";
 
-class HTMLTemplateLiteralPlugin {
+export class HTMLTemplateLiteralPlugin {
+    public static projectDirectory: string;
+
     private _htmlLanguageService?: HtmlLanguageService;
     private _config = {};
     private _logger: tss.server.Logger | undefined;
     private _consumerInfo: tss.server.PluginCreateInfo | undefined;
     private _projectDirectory: string = "";
 
-    public constructor(private readonly _typescript: typeof tss) {}
+    public constructor(private readonly _typescript: typeof tss) { }
 
     public create(info: tss.server.PluginCreateInfo): tss.LanguageService {
         this.initialize(info);
         CEMInstantiator.init(info);
+        HTMLTemplateLiteralPlugin.projectDirectory = info.project.getCurrentDirectory();
         this._logger?.info("Starting up HTML Template Literal TSServer Plugin");
 
         const htmlTemplateLiteralLanguageService = new HTMLTemplateLiteralLanguageService(this._typescript, this.htmlLanguageService);

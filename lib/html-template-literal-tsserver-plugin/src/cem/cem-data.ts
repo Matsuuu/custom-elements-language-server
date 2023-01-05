@@ -1,5 +1,6 @@
 import { Package } from "custom-elements-manifest";
 import * as fs from "fs";
+import { ImportedDependency } from "../dependencies/dependency-package-resolver.js";
 
 export interface CEMData {
     cem: Package;
@@ -57,6 +58,13 @@ export class CEMInstance {
         this.packageJson = packageJson;
     }
 
+    refresh() {
+        if (!this.cemPath) return;
+
+        const cemFile = fs.readFileSync(this.cemPath, "utf8");
+        this.cem = JSON.parse(cemFile);
+    }
+
     static fromLocalPath(projectPath: string) {
 
         const packageJsonPath = projectPath + "/package.json";
@@ -71,12 +79,8 @@ export class CEMInstance {
         // TODO: Give a warning of missing entry, ask to add
         //
         let cemPath = projectPath + "/" + packageJson.customElements;
-        if (!fs.existsSync(cemPath)) {
+        if (!packageJson.customElements || !fs.existsSync(cemPath)) {
             cemPath = projectPath + "/" + "custom-elements.json";
-        }
-
-        if (!fs.existsSync(cemPath)) {
-            return;
         }
 
         return new CEMInstance({
@@ -87,7 +91,35 @@ export class CEMInstance {
         })
     }
 
-    static fromDependency(filePath: string) {
+    static fromDependency(dependency: ImportedDependency) {
 
+        // TODO: Could this and fromLocalPath be combined?
+        // TODO: Cache
+        const packageJsonPath = dependency.path + "package.json";
+        if (!fs.existsSync(packageJsonPath)) {
+            return undefined;
+        }
+
+        const packageJsonFile = fs.readFileSync(packageJsonPath, "utf-8");
+        const packageJson = JSON.parse(packageJsonFile);
+        const packageName = packageJson.name;
+
+
+        const cemPath = dependency.path + packageJson.customElements;
+        if (!packageJson.customElements || !fs.existsSync(cemPath)) {
+            return undefined;
+        }
+
+        return new CEMInstance({
+            cemPath,
+            packagePath: dependency.path,
+            packageJsonPath,
+            packageName
+        })
+    }
+
+    isValid(): boolean {
+        return this.cem !== undefined;
     }
 }
+
