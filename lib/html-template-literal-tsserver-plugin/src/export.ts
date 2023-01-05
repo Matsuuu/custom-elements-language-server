@@ -5,5 +5,6 @@ export {
 }
 
 export * from "./cem/cem-helpers.js";
-export * from "./cem/cem-instance.js";
+export * from "./cem/cem-data.js";
+export * from "./cem/cem-cache.js";
 export * from "./ast/identifier.js";

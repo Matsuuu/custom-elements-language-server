@@ -1,11 +1,13 @@
 import { getImportedDependencies } from "../dependencies/dependency-package-resolver.js";
 import { HTMLTemplateLiteralPlugin } from "../index.js";
 import { getProgram } from "../ts/sourcefile.js";
-import { CEMData, CEMInstance } from "./cem-data.js";
+import { CEMInstance } from "./cem-data.js";
+import { JavaScriptModule } from "custom-elements-manifest";
 
 export class CEMCollection {
     public cems: Array<CEMInstance> = [];
     public localCEM: CEMInstance | undefined;
+    private _modules: Array<JavaScriptModule> | undefined;
 
     constructor(openFilePath: string) {
         const program = getProgram(openFilePath);
@@ -24,6 +26,32 @@ export class CEMCollection {
         this.cems = [cemData, ...dependencyCems].filter(cemIsNotUndefined);
     }
 
+    public get modules() {
+        if (!this._modules) {
+            this._modules = this.cems.flatMap(instance => instance.cem?.modules ?? []);
+        }
+        return this._modules;
+    }
+
+    // TODO: Have modules but with references to which CEM they are from
+    public get modulesWithReferences() {
+        return [];
+
+    }
+
+    public refreshLocal() {
+        this.localCEM?.refresh();
+        this._modules = undefined;
+    }
+
+    public refresh() {
+        this.cems.forEach(cem => cem.refresh());
+        this._modules = undefined;
+    }
+
+    public hasData() {
+        return this.modules.length > 0;
+    }
 }
 
 let CACHED_COLLECTION: CEMCollection | undefined = undefined;
@@ -32,7 +60,7 @@ export function getCEMData(openFilePath: string) {
     if (!CACHED_COLLECTION) {
         CACHED_COLLECTION = new CEMCollection(openFilePath);
     }
-    CACHED_COLLECTION.localCEM?.refresh();
+    CACHED_COLLECTION.refreshLocal();
     // TODO: Figure out when dependencyCEM's might need updating
     return CACHED_COLLECTION;
 }

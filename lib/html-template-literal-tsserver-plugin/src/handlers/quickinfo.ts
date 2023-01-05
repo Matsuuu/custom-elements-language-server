@@ -5,24 +5,24 @@ import tss from "typescript/lib/tsserverlibrary.js";
 import { LanguageService as HtmlLanguageService } from "vscode-html-languageservice";
 import { getAttributeIdentifier, getClassIdentifier, getEventIdentifier, getPropertyIdentifier } from "../ast/identifier.js";
 import { findClassForTagName, findCustomElementDeclarationFromModule } from "../cem/cem-helpers.js";
-import { getLatestCEM } from "../cem/cem-instance.js";
 import { AttributeActionContext, EventActionContext, isAttributeNameAction, isEndTagAction, isEventNameAction, isPropertyNameAction, isTagAction, PropertyActionContext, resolveActionContext } from "../scanners/completion-context.js";
 import { getFileNameFromPath } from "../fs.js";
 import { getProjectBasePath } from "../template-context.js";
 import { getSourceFile } from "../ts/sourcefile.js";
 import { getAttributeDefinitionTextSpan, getClassDefinitionTextSpan, getEventDefinitionTextSpan } from "../ast/text-span.js";
 import { attributeNameVariantBuilder } from "../ast/ast.js";
+import { getCEMData } from "../export.js";
 
 export function getQuickInfo(context: TemplateContext, position: tss.LineAndCharacter, htmlLanguageService: HtmlLanguageService): tss.QuickInfo | undefined {
     const basePath = getProjectBasePath(context);
     const actionContext = resolveActionContext(htmlLanguageService, context, position);
-    const cemData = getLatestCEM();
+    const cemCollection = getCEMData(context.fileName);
 
-    if (!cemData) {
+    if (!cemCollection.hasData()) {
         return undefined;
     }
 
-    const matchingClass = findClassForTagName(cemData.cem, actionContext.tagName);
+    const matchingClass = findClassForTagName(cemCollection, actionContext.tagName);
     if (!matchingClass) {
         return undefined;
     }

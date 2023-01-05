@@ -4,8 +4,8 @@ import tss from "typescript/lib/tsserverlibrary.js";
 import { createTextDocumentFromContext } from "../text-document.js";
 import { completionItemToCompletionEntry } from "../interop.js";
 import { isAttributeNameAction, isEndTagAction, isEventNameAction, isPropertyNameAction, isTagAction, resolveActionContext } from "../scanners/completion-context.js";
-import { getLatestCEM } from "../cem/cem-instance.js";
 import { findCustomElementTagLike, findDeclarationForTagName } from "../cem/cem-helpers.js";
+import { getCEMData } from "../export.js";
 
 export function getCompletionEntries(context: TemplateContext, position: tss.LineAndCharacter, htmlLanguageService: HtmlLanguageService) {
     console.log("On completions");
@@ -15,10 +15,10 @@ export function getCompletionEntries(context: TemplateContext, position: tss.Lin
 
     const actionContext = resolveActionContext(htmlLanguageService, context, position);
 
-    const cemData = getLatestCEM();
+    const cemCollection = getCEMData(context.fileName);
     let cemCompletions: tss.CompletionEntry[] = [];
 
-    if (!cemData) {
+    if (!cemCollection) {
         return {
             isGlobalCompletion: false,
             isMemberCompletion: false,
@@ -27,10 +27,8 @@ export function getCompletionEntries(context: TemplateContext, position: tss.Lin
         };
     }
 
-    const cem = cemData.cem;
-
     if (isTagAction(actionContext)) {
-        const similiarTags = findCustomElementTagLike(cemData, actionContext.tagName);
+        const similiarTags = findCustomElementTagLike(cemCollection, actionContext.tagName);
         similiarTags.forEach(tag => {
             cemCompletions.push({ name: tag, kind: tss.ScriptElementKind.memberVariableElement, sortText: tag });
         });
@@ -44,7 +42,7 @@ export function getCompletionEntries(context: TemplateContext, position: tss.Lin
     }
 
     if (isAttributeNameAction(actionContext)) {
-        const classDeclaration = findDeclarationForTagName(cem, actionContext.tagName);
+        const classDeclaration = findDeclarationForTagName(cemCollection, actionContext.tagName);
         if (classDeclaration) {
             const attributes = classDeclaration.attributes;
             attributes?.forEach(attr => {
@@ -54,7 +52,7 @@ export function getCompletionEntries(context: TemplateContext, position: tss.Lin
     }
 
     if (isEventNameAction(actionContext)) {
-        const classDeclaration = findDeclarationForTagName(cem, actionContext.tagName);
+        const classDeclaration = findDeclarationForTagName(cemCollection, actionContext.tagName);
         if (classDeclaration) {
             const events = classDeclaration.events;
             events?.forEach(event => {
@@ -65,7 +63,7 @@ export function getCompletionEntries(context: TemplateContext, position: tss.Lin
     }
 
     if (isPropertyNameAction(actionContext)) {
-        const classDeclaration = findDeclarationForTagName(cem, actionContext.tagName);
+        const classDeclaration = findDeclarationForTagName(cemCollection, actionContext.tagName);
         if (classDeclaration) {
             const properties = classDeclaration?.members?.filter(mem => mem.kind === "field") ?? [];
             properties?.forEach(prop => {

@@ -1,15 +1,18 @@
-import { findIdentifiers, findTagNameForClass, findTemplateExpressions, getLatestCEM } from "html-template-literal-tsserver-plugin";
+import { findIdentifiers, findTagNameForClass, findTemplateExpressions, getCEMData } from "html-template-literal-tsserver-plugin";
 import tss from "typescript/lib/tsserverlibrary.js";
-import { ReferenceParams, Location, Position, Range } from "vscode-languageserver";
+import { ReferenceParams, Location, Range } from "vscode-languageserver";
 import { getProjectForCurrentFile } from "../language-services/language-services.js";
 import { documents, scanDocument } from "../text-documents.js";
 import { fileNameToUri, offsetToPosition, positionToOffset, textDocumentDataToUsableData } from "../transformers.js";
 
 export function getReferencesAtPosition(referenceParams: ReferenceParams) {
+    // TODO: This is an ugly method
+    //
     const usableData = textDocumentDataToUsableData(documents, referenceParams);
     const project = getProjectForCurrentFile(usableData.fileName, usableData.fileContent);
-    const cemData = getLatestCEM();
-    if (!cemData) {
+    const basePath = project?.getCurrentDirectory() ?? "";
+    const cemCollection = getCEMData(basePath);
+    if (!cemCollection.hasData()) {
         return [];
     }
     const openFilePath = referenceParams.textDocument.uri.replace("file://", "");
@@ -23,7 +26,7 @@ export function getReferencesAtPosition(referenceParams: ReferenceParams) {
         return [];
     }
 
-    const tagNameModule = findTagNameForClass(cemData.cem, referenceClass);
+    const tagNameModule = findTagNameForClass(cemCollection, referenceClass);
 
     const definition = tagNameModule.exports?.filter(exp => exp.kind === "custom-element-definition")?.[0];
     if (!definition) {

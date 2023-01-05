@@ -12,24 +12,24 @@ import {
     PropertyActionContext,
     resolveActionContext,
 } from "../scanners/completion-context.js";
-import { getLatestCEM } from "../cem/cem-instance.js";
 import { findClassForTagName, findCustomElementDeclarationFromModule } from "../cem/cem-helpers.js";
 import { CustomElement, JavaScriptModule } from "custom-elements-manifest";
 import { TemplateContext } from "typescript-template-language-service-decorator";
 import { getFileNameFromPath } from "../fs.js";
 import { getAttributeDefinitionTextSpan, getClassDefinitionTextSpan, getEventDefinitionTextSpan, getPropertyDefinitionTextSpan } from "../ast/text-span.js";
+import { getCEMData } from "../export.js";
 
 export function getGoToDefinitionEntries(context: TemplateContext, position: tss.LineAndCharacter, htmlLanguageService: HtmlLanguageService) {
     const basePath = getProjectBasePath(context);
     let definitionInfos: Array<ts.DefinitionInfo> = [];
     const actionContext = resolveActionContext(htmlLanguageService, context, position);
-    const cemData = getLatestCEM();
+    const cemCollection = getCEMData(context.fileName);
 
-    if (!cemData) {
+    if (!cemCollection.hasData()) {
         return [...definitionInfos];
     }
 
-    const matchingClass = findClassForTagName(cemData.cem, actionContext.tagName);
+    const matchingClass = findClassForTagName(cemCollection, actionContext.tagName);
     if (!matchingClass) {
         return [...definitionInfos];
     }

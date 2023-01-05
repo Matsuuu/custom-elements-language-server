@@ -1,5 +1,6 @@
 import { CustomElement, CustomElementDeclaration, Declaration, Export, JavaScriptModule, Module, Package } from "custom-elements-manifest";
-import { CEMData } from "./cem-data.js";
+import { CEMCollection } from "./cem-cache.js";
+import { CEMInstance } from "./cem-data.js";
 
 // Map<tagName, ClassModule>
 const CEMClassCache: Map<string, Module> = new Map();
@@ -7,8 +8,15 @@ const CEMClassCache: Map<string, Module> = new Map();
 // if there's a perf benefit from it
 let CEMCustomElementTagCache: Array<string> = [];
 
-export function findClassForTagName(manifest: Package, tagName: string): JavaScriptModule | undefined {
-    const declarationModule = manifest.modules.find(mod => moduleHasCustomElementExportByName(mod, tagName));
+interface CEMRef {
+    cem: CEMInstance;
+}
+
+export type JavaScriptModuleWithRef = JavaScriptModule & CEMRef;
+export type CustomElementWithRef = CustomElement & CEMRef;
+
+export function findClassForTagName(cemCollection: CEMCollection, tagName: string): JavaScriptModule | undefined {
+    const declarationModule = cemCollection.modules.find(mod => moduleHasCustomElementExportByName(mod, tagName));
     if (!declarationModule) return undefined;
 
     const declarationExport = declarationModule.exports?.find(exp => exportHasCustomElementExportByName(exp, tagName));
@@ -19,7 +27,7 @@ export function findClassForTagName(manifest: Package, tagName: string): JavaScr
 
     if (!classPath) return undefined;
 
-    const mod = findModuleByPath(manifest, classPath);
+    const mod = findModuleByPath(cemCollection, classPath);
     if (!mod) return undefined;
 
     CEMClassCache.set(tagName, mod);
@@ -34,8 +42,8 @@ export function findCustomElementDeclarationFromModule(mod: Module): CustomEleme
     return classDeclaration;
 }
 
-export function findDeclarationForTagName(manifest: Package, tagName: string): CustomElement | undefined {
-    const tagModule = findClassForTagName(manifest, tagName);
+export function findDeclarationForTagName(cemCollection: CEMCollection, tagName: string): CustomElement | undefined {
+    const tagModule = findClassForTagName(cemCollection, tagName);
     const classDeclaration = tagModule?.declarations?.find(d => (d as CustomElement).tagName === tagName);
     if (!isCustomElementDeclaration(classDeclaration)) {
         return undefined;
@@ -43,15 +51,14 @@ export function findDeclarationForTagName(manifest: Package, tagName: string): C
     return classDeclaration;
 }
 
-export function findCustomElementTagLike(cemData: CEMData, tagNamePart: string) {
+export function findCustomElementTagLike(cemCollection: CEMCollection, tagNamePart: string) {
     // TODO: Memoize this or something. Weakmaps maybe?
-    scanCustomElementTagNames(cemData);
+    scanCustomElementTagNames(cemCollection);
     return CEMCustomElementTagCache.filter(tag => tag.includes(tagNamePart));
 }
 
-export function scanCustomElementTagNames(cemData: CEMData) {
-    const manifest = cemData.cem;
-    const customElementDeclarations = manifest.modules.filter(mod => moduleHasCustomElementExport(mod));
+export function scanCustomElementTagNames(cemCollection: CEMCollection) {
+    const customElementDeclarations = cemCollection.modules.filter(mod => moduleHasCustomElementExport(mod));
     CEMCustomElementTagCache = customElementDeclarations.flatMap(decl => {
         return decl.exports?.filter(exportHasCustomElementExport).map(exp => exp.name) ?? [];
     });
@@ -67,8 +74,8 @@ export function findCustomElementDefinitionModule(manifest: Package, tagName: st
     )?.[0] ?? undefined
 }
 
-export function findTagNameForClass(manifest: Package, className: string) {
-    return manifest.modules?.filter(mod =>
+export function findTagNameForClass(cemCollection: CEMCollection, className: string) {
+    return cemCollection.modules.filter(mod =>
         mod.kind === "javascript-module" &&
         mod.exports?.some(exp =>
             exp.kind === "custom-element-definition" &&
@@ -93,8 +100,8 @@ export function exportHasCustomElementExportByName(modExport: Export, tagName: s
     return modExport.kind === "custom-element-definition" && modExport.name === tagName;
 }
 
-export function findModuleByPath(manifest: Package, path: string) {
-    return manifest.modules.find(mod => modulePathEquals(mod, path));
+export function findModuleByPath(cemCollection: CEMCollection, path: string) {
+    return cemCollection.modules.find(mod => modulePathEquals(mod, path));
 }
 
 export function modulePathEquals(mod: Module, path: string) {
