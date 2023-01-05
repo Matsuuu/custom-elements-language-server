@@ -12,7 +12,6 @@ export class CEMCollection {
     constructor(openFilePath: string) {
         const program = getProgram(openFilePath);
         const sourceFiles = program.getSourceFiles();
-        const sourceFileNames = sourceFiles.map(sf => sf.fileName);
         const dependencyPackages = getImportedDependencies(sourceFiles);
 
         const basePath = HTMLTemplateLiteralPlugin.projectDirectory;
