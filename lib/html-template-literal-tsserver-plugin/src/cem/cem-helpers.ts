@@ -16,6 +16,7 @@ export type JavaScriptModuleWithRef = JavaScriptModule & CEMRef;
 export type CustomElementWithRef = CustomElement & CEMRef;
 
 export function findClassForTagName(cemCollection: CEMCollection, tagName: string): JavaScriptModule | undefined {
+    // TODO: Cache and use it
     const declarationModule = cemCollection.modules.find(mod => moduleHasCustomElementExportByName(mod, tagName));
     if (!declarationModule) return undefined;
 
