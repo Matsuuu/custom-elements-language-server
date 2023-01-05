@@ -23,13 +23,13 @@ export function getGoToDefinitionEntries(context: TemplateContext, position: tss
     const basePath = getProjectBasePath(context);
     let definitionInfos: Array<ts.DefinitionInfo> = [];
     const actionContext = resolveActionContext(htmlLanguageService, context, position);
-    const cem = getLatestCEM();
+    const cemData = getLatestCEM();
 
-    if (!cem) {
+    if (!cemData) {
         return [...definitionInfos];
     }
 
-    const matchingClass = findClassForTagName(cem, actionContext.tagName);
+    const matchingClass = findClassForTagName(cemData.cem, actionContext.tagName);
     if (!matchingClass) {
         return [...definitionInfos];
     }

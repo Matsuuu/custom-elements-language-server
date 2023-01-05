@@ -1,4 +1,5 @@
 import { CustomElement, CustomElementDeclaration, Declaration, Export, JavaScriptModule, Module, Package } from "custom-elements-manifest";
+import { CEMData } from "./cem-data.js";
 
 // Map<tagName, ClassModule>
 const CEMClassCache: Map<string, Module> = new Map();
@@ -42,13 +43,14 @@ export function findDeclarationForTagName(manifest: Package, tagName: string): C
     return classDeclaration;
 }
 
-export function findCustomElementTagLike(manifest: Package, tagNamePart: string) {
+export function findCustomElementTagLike(cemData: CEMData, tagNamePart: string) {
     // TODO: Memoize this or something. Weakmaps maybe?
-    scanCustomElementTagNames(manifest);
+    scanCustomElementTagNames(cemData);
     return CEMCustomElementTagCache.filter(tag => tag.includes(tagNamePart));
 }
 
-export function scanCustomElementTagNames(manifest: Package) {
+export function scanCustomElementTagNames(cemData: CEMData) {
+    const manifest = cemData.cem;
     const customElementDeclarations = manifest.modules.filter(mod => moduleHasCustomElementExport(mod));
     CEMCustomElementTagCache = customElementDeclarations.flatMap(decl => {
         return decl.exports?.filter(exportHasCustomElementExport).map(exp => exp.name) ?? [];

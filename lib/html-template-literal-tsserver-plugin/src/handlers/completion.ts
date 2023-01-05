@@ -15,10 +15,10 @@ export function getCompletionEntries(context: TemplateContext, position: tss.Lin
 
     const actionContext = resolveActionContext(htmlLanguageService, context, position);
 
-    const cem = getLatestCEM();
+    const cemData = getLatestCEM();
     let cemCompletions: tss.CompletionEntry[] = [];
 
-    if (!cem) {
+    if (!cemData) {
         return {
             isGlobalCompletion: false,
             isMemberCompletion: false,
@@ -27,8 +27,10 @@ export function getCompletionEntries(context: TemplateContext, position: tss.Lin
         };
     }
 
+    const cem = cemData.cem;
+
     if (isTagAction(actionContext)) {
-        const similiarTags = findCustomElementTagLike(cem, actionContext.tagName);
+        const similiarTags = findCustomElementTagLike(cemData, actionContext.tagName);
         similiarTags.forEach(tag => {
             cemCompletions.push({ name: tag, kind: tss.ScriptElementKind.memberVariableElement, sortText: tag });
         });

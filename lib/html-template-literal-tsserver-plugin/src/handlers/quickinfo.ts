@@ -16,13 +16,13 @@ import { attributeNameVariantBuilder } from "../ast/ast.js";
 export function getQuickInfo(context: TemplateContext, position: tss.LineAndCharacter, htmlLanguageService: HtmlLanguageService): tss.QuickInfo | undefined {
     const basePath = getProjectBasePath(context);
     const actionContext = resolveActionContext(htmlLanguageService, context, position);
-    const cem = getLatestCEM();
+    const cemData = getLatestCEM();
 
-    if (!cem) {
+    if (!cemData) {
         return undefined;
     }
 
-    const matchingClass = findClassForTagName(cem, actionContext.tagName);
+    const matchingClass = findClassForTagName(cemData.cem, actionContext.tagName);
     if (!matchingClass) {
         return undefined;
     }

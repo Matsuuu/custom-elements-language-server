@@ -1,7 +1,8 @@
 import { ImportedDependency } from "../dependencies/dependency-package-resolver.js";
 import * as fs from "fs";
+import { CEMData } from "./cem-data.js";
 
-export function getDependencyCEM(dependency: ImportedDependency) {
+export function getDependencyCEM(dependency: ImportedDependency): CEMData | undefined {
     // TODO: Cache
     const packageJsonPath = dependency.path + "package.json";
     if (!fs.existsSync(packageJsonPath)) {
@@ -22,10 +23,20 @@ export function getDependencyCEM(dependency: ImportedDependency) {
     }
 
     const cemPath = dependency.path + customElementsManifestPath;
+    let cem;
     try {
-        return JSON.parse(fs.readFileSync(cemPath, "utf-8"));
+        cem = JSON.parse(fs.readFileSync(cemPath, "utf-8"));
     } catch (ex) {
         console.warn("customElements -entry  found but file wasn't found. Path: " + cemPath);
         return undefined;
+    }
+
+    return {
+        cem,
+        paths: {
+            cem: cemPath,
+            project: dependency.path
+        },
+        packageName: dependency.name
     }
 }

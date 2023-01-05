@@ -8,8 +8,8 @@ import { fileNameToUri, offsetToPosition, positionToOffset, textDocumentDataToUs
 export function getReferencesAtPosition(referenceParams: ReferenceParams) {
     const usableData = textDocumentDataToUsableData(documents, referenceParams);
     const project = getProjectForCurrentFile(usableData.fileName, usableData.fileContent);
-    const cem = getLatestCEM();
-    if (!cem) {
+    const cemData = getLatestCEM();
+    if (!cemData) {
         return [];
     }
     const openFilePath = referenceParams.textDocument.uri.replace("file://", "");
@@ -23,7 +23,7 @@ export function getReferencesAtPosition(referenceParams: ReferenceParams) {
         return [];
     }
 
-    const tagNameModule = findTagNameForClass(cem, referenceClass);
+    const tagNameModule = findTagNameForClass(cemData.cem, referenceClass);
 
     const definition = tagNameModule.exports?.filter(exp => exp.kind === "custom-element-definition")?.[0];
     if (!definition) {
