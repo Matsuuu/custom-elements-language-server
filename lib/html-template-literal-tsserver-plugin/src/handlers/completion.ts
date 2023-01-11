@@ -43,6 +43,8 @@ export function getCompletionEntries(context: TemplateContext, position: tss.Lin
                 tagDocumentation += tag.classInfo?.description;
             }
             //
+            // TODO: LabelDetails to other stuff too. 
+            // TODO: And format it
             cemCompletions.push({ name: tag.tagName, kind: tss.ScriptElementKind.memberVariableElement, sortText: tag.tagName, labelDetails: { description: tagDocumentation } });
         });
     }
