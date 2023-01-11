@@ -31,6 +31,15 @@ export function textDocumentDataToUsableData(documents: TextDocuments<TextDocume
     };
 }
 
+export function textSpanToRange(textDocument: TextDocument, textSpan: ts.TextSpan): Range {
+    const endOffset = textSpan.start + textSpan.length;
+
+    const startPosition = offsetToPosition(textDocument, textSpan.start);
+    const endPosition = offsetToPosition(textDocument, endOffset);
+
+    return Range.create(startPosition, endPosition)
+}
+
 export function offsetToPosition(document: TextDocument, offset: number): Position {
     return document.positionAt(offset) ?? Position.create(0, 0);
 }
@@ -52,23 +61,23 @@ export function documentSpanToLocation(documentSpan: ts.DocumentSpan): Location 
         return { uri, range: ZERO_RANGE };
     }
 
-    const endOffset = contextSpan.start + contextSpan.length;
-
-    const startPosition = offsetToPosition(textDocument, contextSpan.start);
-    const endPosition = offsetToPosition(textDocument, endOffset);
+    const range = textSpanToRange(textDocument, contextSpan);
 
     return {
         uri,
-        range: Range.create(startPosition, endPosition),
+        range
     };
 }
 
-export function quickInfoToHover(quickInfo: ts.QuickInfo | undefined): Hover | undefined {
+export function quickInfoToHover(fileName: string, quickInfo: ts.QuickInfo | undefined): Hover | undefined {
     if (!quickInfo) return undefined;
+
+    const textDocument = scanDocument(fileName);
+    const range = textSpanToRange(textDocument, quickInfo.textSpan);
 
     return {
         contents: quickInfo.documentation?.map(doc => doc.text) ?? [],
-        range: ZERO_RANGE
+        range
     }
 }
 

@@ -9,7 +9,7 @@ import { AttributeActionContext, EventActionContext, isAttributeNameAction, isEn
 import { getFileNameFromPath } from "../fs.js";
 import { getProjectBasePath } from "../template-context.js";
 import { getSourceFile } from "../ts/sourcefile.js";
-import { getAttributeDefinitionTextSpan, getClassDefinitionTextSpan, getEventDefinitionTextSpan } from "../ast/text-span.js";
+import { getAttributeDefinitionTextSpan, getClassDefinitionTextSpan, getEventDefinitionTextSpan, getPropertyDefinitionTextSpan } from "../ast/text-span.js";
 import { attributeNameVariantBuilder } from "../ast/ast.js";
 import { getCEMData } from "../export.js";
 
@@ -131,7 +131,7 @@ function getPropertyQuickInfo(basePath: any, matchingClass: JavaScriptModule, cl
         return undefined;
     }
 
-    const propertyDefinitionTextSpan = getAttributeDefinitionTextSpan(matchingClass, propertyName ?? "", basePath);
+    const propertyDefinitionTextSpan = getPropertyDefinitionTextSpan(matchingClass, propertyName ?? "", basePath);
     const commentRanges = ts.getLeadingCommentRanges(fileFullText, propertyDeclaration.pos);
     const quickInfo = commentRangesToStringArray(commentRanges, fileFullText);
 

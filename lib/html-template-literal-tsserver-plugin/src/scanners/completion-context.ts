@@ -1,4 +1,5 @@
 import { TemplateContext } from "typescript-template-language-service-decorator";
+import * as tss from "typescript/lib/tsserverlibrary.js";
 import { Position, LanguageService } from "vscode-html-languageservice";
 import pkg from "vscode-html-languageservice";
 import { createTextDocumentFromContext } from "../text-document.js";
@@ -26,6 +27,11 @@ export function resolveActionContext(languageService: LanguageService, context: 
     let currentTag = "";
     let token = scanner.scan();
     while (token !== TokenType.EOS && scanner.getTokenOffset() <= offset) {
+        const tokenOffset = scanner.getTokenOffset();
+        const tokenLength = scanner.getTokenLength();
+
+        const textSpan: tss.TextSpan = { start: tokenOffset, length: tokenLength };
+
         switch (token) {
             case TokenType.StartTag:
                 const tagName = scanner.getTokenText();
@@ -35,15 +41,15 @@ export function resolveActionContext(languageService: LanguageService, context: 
                     return {
                         kind: ActionContextKind.Tag,
                         tagName,
+                        textSpan
                     } as TagActionContext;
                 }
                 break;
             case TokenType.AttributeName:
                 if (scanner.getTokenOffset() <= offset && offset <= scanner.getTokenEnd()) {
                     const attributeName = scanner.getTokenText();
-                    return resolveAttributeKind(attributeName, currentTag);
+                    return resolveAttributeKind(attributeName, currentTag, textSpan);
                 }
-                //currentAttributeName = scanner.getTokenText();
                 break;
             case TokenType.AttributeValue:
                 if (scanner.getTokenOffset() <= offset && offset <= scanner.getTokenEnd()) {
@@ -57,6 +63,7 @@ export function resolveActionContext(languageService: LanguageService, context: 
                     return {
                         kind: ActionContextKind.EndTag,
                         tagName,
+                        textSpan
                     } as TagActionContext;
                 }
                 break;
@@ -70,10 +77,11 @@ export function resolveActionContext(languageService: LanguageService, context: 
     return {
         kind: ActionContextKind.NOOP,
         tagName: "",
+        textSpan: ZERO_TEXTSPAN
     };
 }
 
-function resolveAttributeKind(attributeName: string, currentTag: string) {
+function resolveAttributeKind(attributeName: string, currentTag: string, textSpan: tss.TextSpan) {
     const tagName = currentTag;
 
     if (attributeName.startsWith("@")) {
@@ -81,6 +89,7 @@ function resolveAttributeKind(attributeName: string, currentTag: string) {
             kind: ActionContextKind.AtEvent,
             eventName: attributeName.substring(1),
             tagName,
+            textSpan
         } as EventActionContext;
     }
 
@@ -89,6 +98,7 @@ function resolveAttributeKind(attributeName: string, currentTag: string) {
             kind: ActionContextKind.Event,
             eventName: attributeName,
             tagName,
+            textSpan
         } as EventActionContext;
     }
 
@@ -97,6 +107,7 @@ function resolveAttributeKind(attributeName: string, currentTag: string) {
             kind: ActionContextKind.PropertyName,
             propertyName: attributeName.substring(1),
             tagName,
+            textSpan
         } as PropertyActionContext;
     }
 
@@ -104,13 +115,17 @@ function resolveAttributeKind(attributeName: string, currentTag: string) {
         kind: ActionContextKind.AttributeName,
         attributeName,
         tagName,
+        textSpan
     } as AttributeActionContext;
 }
 
 export interface ActionContext {
     kind: ActionContextKind;
     tagName: string;
+    textSpan: tss.TextSpan;
 }
+
+const ZERO_TEXTSPAN: tss.TextSpan = { start: 0, length: 0 };
 
 export function isTagAction(context: ActionContext): context is TagActionContext {
     return context.kind === ActionContextKind.Tag;

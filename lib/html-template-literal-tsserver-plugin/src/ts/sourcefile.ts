@@ -5,8 +5,6 @@ const PROGRAM_CACHE = new Map<string, ts.Program>();
 const compilerHost = ts.createCompilerHost({}, true);
 
 export function getSourceFile(baseOrFullPath: string, classPath?: string) {
-    // TODO: Make some of these static / final ?
-    // TODO: Yeah we need to really cache this shit
     // TODO: Does `setParentNodes` slow this down much
     const fullClassPath = classPath === undefined ?
         baseOrFullPath :

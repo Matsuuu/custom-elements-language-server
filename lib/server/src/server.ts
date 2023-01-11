@@ -42,7 +42,10 @@ connection.onHover(hoverInfo => {
     const languageService = getLanguageService(usableData.fileName, usableData.fileContent);
 
     const quickInfo = languageService?.getQuickInfoAtPosition(usableData.fileName, usableData.position);
-    return quickInfoToHover(quickInfo);
+    if (quickInfo?.kind !== tss.ScriptElementKind.string) {
+        return undefined;
+    }
+    return quickInfoToHover(usableData.fileName, quickInfo);
 });
 
 // This handler provides the initial list of the completion items.
