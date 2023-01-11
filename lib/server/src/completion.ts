@@ -10,9 +10,7 @@ function wait(ms = 100) {
 }
 
 export async function getCompletionItems(textDocumentPosition: TextDocumentPositionParams): Promise<CompletionList> {
-    // TODO: Get rid of this wait
-    await wait(50); // Wait for the documents to update
-    console.log("On Completion");
+    await wait(50);
     const doc = documents.get(textDocumentPosition.textDocument.uri);
     if (!doc) return CompletionList.create();
 
@@ -33,10 +31,21 @@ function completionsToList(completions: ts.WithMetadata<ts.CompletionInfo> | und
 
 function completionEntryToCompletionItem(completionsEntry: ts.CompletionEntry): CompletionItem {
     // TODO: Fill the rest
-    return { label: completionsEntry.name, kind: CompletionItemKind.Class };
+    return {
+        label: completionsEntry.name,
+        kind: CompletionItemKind.Class,
+        documentation: completionsEntry.labelDetails?.description
+    };
 }
 
 export function getCompletionItemInfo(item: CompletionItem): CompletionItem {
+    console.log(item);
+    //const doc = documents.get(textDocumentPosition.textDocument.uri);
+    //if (!doc) return CompletionItem.create();
+
+    //const fileName = doc.uri.replace("file://", "");
+
+    //const languageService = getLanguageService(fileName, doc.getText());
     // TODO: Resolve these from items
     if (item.data === 1) {
         item.detail = "TypeScript details";

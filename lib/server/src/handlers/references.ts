@@ -7,6 +7,7 @@ import { fileNameToUri, offsetToPosition, positionToOffset, textDocumentDataToUs
 
 export function getReferencesAtPosition(referenceParams: ReferenceParams) {
     // TODO: This is an ugly method
+    // TODO: ... And needs caching
     //
     const usableData = textDocumentDataToUsableData(documents, referenceParams);
     const project = getProjectForCurrentFile(usableData.fileName, usableData.fileContent);

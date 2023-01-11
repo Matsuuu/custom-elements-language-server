@@ -6,7 +6,13 @@ import { CEMInstance } from "./cem-data.js";
 const CEMClassCache: Map<string, Module> = new Map();
 // TODO: Make this a map with Map<string, CustomElementDeclaration> or something similiar
 // if there's a perf benefit from it
-let CEMCustomElementTagCache: Array<string> = [];
+let CEMCustomElementTagCache = new Map<string, TagDeclarationInfo>();
+
+export interface TagDeclarationInfo {
+    module: JavaScriptModule, // TODO: Change to JavaScriptModuleWithRef ?
+    tagName: string;
+    classInfo?: CustomElementDeclaration;
+}
 
 interface CEMRef {
     cem: CEMInstance;
@@ -16,7 +22,7 @@ export type JavaScriptModuleWithRef = JavaScriptModule & CEMRef;
 export type CustomElementWithRef = CustomElement & CEMRef;
 
 export function findClassForTagName(cemCollection: CEMCollection, tagName: string): JavaScriptModule | undefined {
-    // TODO: Cache and use it
+    // TODO: Cache
     const declarationModule = cemCollection.modules.find(mod => moduleHasCustomElementExportByName(mod, tagName));
     if (!declarationModule) return undefined;
 
@@ -53,15 +59,28 @@ export function findDeclarationForTagName(cemCollection: CEMCollection, tagName:
 }
 
 export function findCustomElementTagLike(cemCollection: CEMCollection, tagNamePart: string) {
-    // TODO: Memoize this or something. Weakmaps maybe?
+    // TODO: No need to constantly scan
     scanCustomElementTagNames(cemCollection);
-    return CEMCustomElementTagCache.filter(tag => tag.includes(tagNamePart));
+    return [...CEMCustomElementTagCache.values()].filter(declInfo => declInfo.tagName.includes(tagNamePart));
 }
 
 export function scanCustomElementTagNames(cemCollection: CEMCollection) {
     const customElementDeclarations = cemCollection.modules.filter(mod => moduleHasCustomElementExport(mod));
-    CEMCustomElementTagCache = customElementDeclarations.flatMap(decl => {
-        return decl.exports?.filter(exportHasCustomElementExport).map(exp => exp.name) ?? [];
+
+    customElementDeclarations.forEach(mod => {
+        const tagName = mod.exports?.filter(exportHasCustomElementExport).map(exp => exp.name)[0];
+        if (tagName) {
+            const classInfo = findClassForTagName(cemCollection, tagName);
+            const classDeclaration = classInfo?.declarations
+                ?.filter(isCustomElementDeclaration)
+                .filter(decl => decl.tagName === tagName)[0];
+
+            CEMCustomElementTagCache.set(tagName, {
+                tagName,
+                module: mod,
+                classInfo: classDeclaration
+            });
+        }
     });
 }
 

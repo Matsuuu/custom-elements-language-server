@@ -28,9 +28,22 @@ export function getCompletionEntries(context: TemplateContext, position: tss.Lin
     }
 
     if (isTagAction(actionContext)) {
+
         const similiarTags = findCustomElementTagLike(cemCollection, actionContext.tagName);
         similiarTags.forEach(tag => {
-            cemCompletions.push({ name: tag, kind: tss.ScriptElementKind.memberVariableElement, sortText: tag });
+            // TODO: This tag documentation stuff is ugly
+            let tagDocumentation = "";
+            if (tag.classInfo?.summary) {
+                tagDocumentation += tag.classInfo?.summary;
+            }
+            if (tag.classInfo?.description) {
+                if (tagDocumentation.length > 0) {
+                    tagDocumentation += "\n\n";
+                }
+                tagDocumentation += tag.classInfo?.description;
+            }
+            //
+            cemCompletions.push({ name: tag.tagName, kind: tss.ScriptElementKind.memberVariableElement, sortText: tag.tagName, labelDetails: { description: tagDocumentation } });
         });
     }
 

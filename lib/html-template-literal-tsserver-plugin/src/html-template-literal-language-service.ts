@@ -21,6 +21,17 @@ export class HTMLTemplateLiteralLanguageService implements TemplateLanguageServi
         return getCompletionEntries(context, position, this.htmlLanguageService);
     }
 
+    public getCompletionEntryDetails?(context: TemplateContext, position: ts.LineAndCharacter, name: string): ts.CompletionEntryDetails {
+
+        debugger;
+        return {
+            name: "",
+            kind: tss.ScriptElementKind.parameterElement,
+            kindModifiers: "0",
+            displayParts: []
+        }
+    }
+
     public getSemanticDiagnostics(context: TemplateContext): tss.Diagnostic[] {
         console.log("SEMANTIC DIAG");
         const importDiagnostics = getImportDiagnostics(context, this.htmlLanguageService);
