@@ -6,11 +6,11 @@ import { findCustomElementDefinitionModule } from "../../cem/cem-helpers.js";
 import { getImportedDependencies } from "../../dependencies/dependency-package-resolver.js";
 import { HTMLTemplateLiteralPlugin } from "../../index.js";
 import { resolveCustomElementTags } from "../../scanners/tag-scanner.js";
-import { getProgram } from "../../ts/sourcefile.js";
+import { getOrCreateProgram } from "../../ts/sourcefile.js";
 
 export async function getImportDiagnostics(context: TemplateContext, htmlLanguageService: HtmlLanguageService) {
     const filePath = context.fileName;
-    const program = getProgram(filePath);
+    const program = getOrCreateProgram(filePath);
     const sourceFiles = program.getSourceFiles();
     const sourceFileNames = sourceFiles.map(sf => sf.fileName);
     const dependencyPackages = getImportedDependencies(sourceFiles);

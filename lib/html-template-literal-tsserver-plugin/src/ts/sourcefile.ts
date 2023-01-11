@@ -1,6 +1,6 @@
 import ts from "typescript";
-import { findCustomElementDeclarations } from "../ast/identifier.js";
-import { benchmarkStart } from "../benchmark.js";
+
+const PROGRAM_CACHE = new Map<string, ts.Program>();
 
 const compilerHost = ts.createCompilerHost({}, true);
 
@@ -12,7 +12,8 @@ export function getSourceFile(baseOrFullPath: string, classPath?: string) {
         baseOrFullPath :
         [baseOrFullPath, classPath].filter(p => p.trim().length > 0).join("/");
 
-    const program = getProgram(fullClassPath);
+
+    const program = getOrCreateProgram(fullClassPath);
 
     // NOTE: this makes everything slow as shit
     // program.getDeclarationDiagnostics();
@@ -20,7 +21,12 @@ export function getSourceFile(baseOrFullPath: string, classPath?: string) {
     return program.getSourceFile(fullClassPath);
 }
 
-export function getProgram(fullPath: string) {
+export function getOrCreateProgram(fullPath: string) {
+    if (PROGRAM_CACHE.has(fullPath)) {
+        console.log("Cache hit on getOrCreateProgram");
+        return PROGRAM_CACHE.get(fullPath) as ts.Program;
+    }
+
     const program = ts.createProgram({
         rootNames: [fullPath],
         options: {
@@ -28,5 +34,8 @@ export function getProgram(fullPath: string) {
         },
         host: compilerHost,
     });
+
+    PROGRAM_CACHE.set(fullPath, program);
+
     return program;
 }

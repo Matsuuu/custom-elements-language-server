@@ -1,6 +1,6 @@
 import { getImportedDependencies } from "../dependencies/dependency-package-resolver.js";
 import { HTMLTemplateLiteralPlugin } from "../index.js";
-import { getProgram } from "../ts/sourcefile.js";
+import { getOrCreateProgram } from "../ts/sourcefile.js";
 import { CEMInstance } from "./cem-data.js";
 import { JavaScriptModule } from "custom-elements-manifest";
 
@@ -10,7 +10,7 @@ export class CEMCollection {
     private _modules: Array<JavaScriptModule> | undefined;
 
     constructor(openFilePath: string) {
-        const program = getProgram(openFilePath);
+        const program = getOrCreateProgram(openFilePath);
         const sourceFiles = program.getSourceFiles();
         const dependencyPackages = getImportedDependencies(sourceFiles);
 
