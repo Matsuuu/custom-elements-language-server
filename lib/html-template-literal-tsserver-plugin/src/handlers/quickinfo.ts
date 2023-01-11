@@ -55,6 +55,9 @@ export function getQuickInfo(context: TemplateContext, position: tss.LineAndChar
 
 function getTagQuickInfo(basePath: string, matchingClass: JavaScriptModule, classDeclaration: CustomElement, actionContext: TagActionContext, fileFullText: string): tss.QuickInfo | undefined {
     const classIdentifier = getClassIdentifier(matchingClass.path, classDeclaration?.name, basePath,);
+    const cemClass = findClassForTagName(getCEMData(matchingClass.path), actionContext.tagName);
+    // TODO: Do the docs with the CEMClass instead of the classDeclaration if classDeclaration is missing.
+    // TODO: Implement this everywhere
     const classDeclarationNode = classIdentifier?.parent;
     if (!classDeclarationNode) {
         return undefined;
