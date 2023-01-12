@@ -83,9 +83,6 @@ export class CEMInstance {
     }
 
     static fromDependency(dependency: ImportedDependency) {
-
-        // TODO: Could this and fromLocalPath be combined?
-        // TODO: Cache
         const packageJsonPath = dependency.path + "package.json";
         if (!fs.existsSync(packageJsonPath)) {
             return undefined;

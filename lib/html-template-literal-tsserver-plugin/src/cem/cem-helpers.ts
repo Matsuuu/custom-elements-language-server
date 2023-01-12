@@ -84,8 +84,8 @@ export function scanCustomElementTagNames(cemCollection: CEMCollection) {
     });
 }
 
-export function findCustomElementDefinitionModule(manifest: Package, tagName: string) {
-    return manifest.modules?.filter(mod =>
+export function findCustomElementDefinitionModule(cemCollection: CEMCollection, tagName: string): JavaScriptModule | undefined {
+    return cemCollection.modules?.filter(mod =>
         mod.kind === "javascript-module" &&
         mod.exports?.some(exp =>
             exp.kind === "custom-element-definition" &&
@@ -129,8 +129,8 @@ export function modulePathEquals(mod: Module, path: string) {
     const modulePathAsJs = modulePath.replace(".ts", ".js");
     const withTrailingSlash = modulePath.startsWith("/") ? modulePath : "/" + modulePath;
     const withTrailingSlashAsJs = withTrailingSlash.replace(".ts", ".js");
-    // TODO: Ugly
-    return path === modulePath || path === modulePathAsJs || path === withTrailingSlash || path === withTrailingSlashAsJs;
+
+    return [modulePath, modulePathAsJs, withTrailingSlash, withTrailingSlashAsJs].some(p => p === path);
 }
 
 export function isCustomElementDeclaration(dec?: Declaration): dec is CustomElementDeclaration {

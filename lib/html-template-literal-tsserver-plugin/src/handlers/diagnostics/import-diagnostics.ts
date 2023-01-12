@@ -7,9 +7,11 @@ import { getImportedDependencies } from "../../dependencies/dependency-package-r
 import { HTMLTemplateLiteralPlugin } from "../../index.js";
 import { resolveCustomElementTags } from "../../scanners/tag-scanner.js";
 import { getOrCreateProgram } from "../../ts/sourcefile.js";
+import * as path from "path";
 
 export async function getImportDiagnostics(context: TemplateContext, htmlLanguageService: HtmlLanguageService) {
     const filePath = context.fileName;
+    const filePathWithoutFile = filePath.substring(0, filePath.lastIndexOf("/"));
     const program = getOrCreateProgram(filePath);
     const sourceFiles = program.getSourceFiles();
     const sourceFileNames = sourceFiles.map(sf => sf.fileName);
@@ -18,24 +20,56 @@ export async function getImportDiagnostics(context: TemplateContext, htmlLanguag
     // TODO: Somehow create a collection out of the CEM's and have them contain
     // the dependencyinformation. Then iterate through them, searching for the actual information
 
-    getCEMData(filePath);
+    const cemCollection = getCEMData(filePath);
+    if (!cemCollection.hasData()) {
+        return [];
+    }
 
     const customElementTagNodes = resolveCustomElementTags(htmlLanguageService, context);
     const basePath = HTMLTemplateLiteralPlugin.projectDirectory;
 
-    const notDefinedTags: Array<Node> = [];
+    const notDefinedTags: Array<NotDefinedTagInformation> = [];
 
-    /*if (cemData) {
-        for (const customElementTag of customElementTagNodes) {
-            if (!customElementTag.tag) continue;
-
-            const definition = findCustomElementDefinitionModule(cemData.cem, customElementTag.tag);
-            const fullImportPath = basePath + "/" + definition.path;
-            if (!sourceFileNames.includes(fullImportPath)) {
-                notDefinedTags.push(customElementTag);
-            }
+    for (const customElementTag of customElementTagNodes) {
+        if (!customElementTag.tag) {
+            continue;
         }
-    }*/
+
+        const definition = findCustomElementDefinitionModule(cemCollection, customElementTag.tag);
+        if (!definition) {
+            continue;
+        }
+        const fullImportPath = basePath + "/" + definition.path;
+        if (!sourceFileNames.includes(fullImportPath)) {
+
+            const importPathWithoutFile = fullImportPath.substring(0, fullImportPath.lastIndexOf("/"));
+            const importFileName = fullImportPath.substring(fullImportPath.lastIndexOf("/"));
+            const importFileNameAsJs = importFileName.replace(".ts", ".js");
+            let relativePathToImport = path.relative(filePathWithoutFile, importPathWithoutFile);
+            if (relativePathToImport.length <= 0) {
+                relativePathToImport = ".";
+            }
+
+            const relativeImportPath = relativePathToImport + importFileNameAsJs;
+            // TODO: Extract this to a method and handle node modules
+
+            notDefinedTags.push({
+                node: customElementTag,
+                fullImportPath: fullImportPath,
+                relativeImportPath: relativeImportPath
+            });
+        }
+    }
+
+    if (notDefinedTags.length > 0) {
+        debugger;
+    }
 
     return [];
+}
+
+interface NotDefinedTagInformation {
+    node: Node;
+    fullImportPath: string;
+    relativeImportPath: string;
 }

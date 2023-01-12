@@ -1,8 +1,9 @@
 import { html } from "lit-html";
-import "./importing-element.js";
+import "./importing-element.ts";
 import '@shoelace-style/shoelace/dist/components/button/button.js';
 
 export const temp = html`
+
     <example-project my-attribute="f" 
     project-name="foo" 
     .projectName="" 
@@ -24,3 +25,17 @@ export const temp = html`
         <span>Bar</span>
     </div>
 `;
+
+class Foo {
+    bar() {
+        console.log("Bin");
+    }
+}
+
+function doRender() {
+    return html`
+    <p>Foo</p>
+
+    <example-project project-name=""></example-project>
+    `;
+}

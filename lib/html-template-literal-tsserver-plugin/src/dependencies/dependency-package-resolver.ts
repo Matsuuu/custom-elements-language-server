@@ -11,7 +11,6 @@ export function getImportedDependencies(sourceFiles: readonly ts.SourceFile[]) {
             continue;
         }
 
-        // TODO: Resolve @foo/bar paths
         const pathMatcher = new RegExp(/.*node_modules\/(?<packageName>[^@].*?|@.*?\/.*?)\//, "gi");
         const result = pathMatcher.exec(path);
 
