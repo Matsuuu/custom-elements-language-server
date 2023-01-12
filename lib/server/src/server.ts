@@ -7,7 +7,8 @@ import {
     InitializeResult,
     ProposedFeatures,
     TextDocumentSyncKind,
-    Diagnostic
+    Diagnostic,
+    CodeActionParams
 } from "vscode-languageserver/node.js";
 import tss from "typescript/lib/tsserverlibrary.js";
 
@@ -132,10 +133,7 @@ function onInitialize(params: InitializeParams) {
             declarationProvider: true,
             referencesProvider: true,
             definitionProvider: true,
-            // diagnosticProvider: {
-            //     interFileDependencies: false,
-            //     workspaceDiagnostics: false
-            // }
+            codeActionProvider: true
         },
     };
     if (hasWorkspaceFolderCapability) {
@@ -194,3 +192,8 @@ connection.onDidChangeTextDocument((params: DidChangeTextDocumentParams) => {
 
     connection.sendDiagnostics({ uri: updatedDoc.uri, diagnostics: sendableDiagnostics });
 });
+
+connection.onCodeAction((params: CodeActionParams) => {
+    debugger;
+    return null;
+})

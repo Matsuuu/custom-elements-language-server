@@ -94,6 +94,7 @@ export function tsDiagnosticToDiagnostic(diagnostic: ts.Diagnostic): Diagnostic 
         range: Range.create(offsetToPosition(doc, start), offsetToPosition(doc, end)),
         severity: diagnosticCategoryToSeverity(diagnostic.category),
         source: "Custom Elements Language Server",
+        data: "Import package xyz.js"
     }
 }
 
