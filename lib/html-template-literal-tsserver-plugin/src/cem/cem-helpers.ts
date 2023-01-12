@@ -84,8 +84,8 @@ export function scanCustomElementTagNames(cemCollection: CEMCollection) {
     });
 }
 
-export function findCustomElementDefinitionModule(cemCollection: CEMCollection, tagName: string): JavaScriptModule | undefined {
-    return cemCollection.modules?.filter(mod =>
+export function findCustomElementDefinitionModule(cemCollection: CEMCollection, tagName: string): JavaScriptModuleWithRef | undefined {
+    return cemCollection.modulesWithReferences?.filter(mod =>
         mod.kind === "javascript-module" &&
         mod.exports?.some(exp =>
             exp.kind === "custom-element-definition" &&
@@ -136,4 +136,11 @@ export function modulePathEquals(mod: Module, path: string) {
 export function isCustomElementDeclaration(dec?: Declaration): dec is CustomElementDeclaration {
     if (!dec) return false;
     return (dec as CustomElementDeclaration).customElement !== undefined && (dec as CustomElementDeclaration).customElement;
+}
+
+export function addReferenceToModule(mod: JavaScriptModule, cem: CEMInstance): JavaScriptModuleWithRef {
+    return {
+        ...mod,
+        cem
+    }
 }

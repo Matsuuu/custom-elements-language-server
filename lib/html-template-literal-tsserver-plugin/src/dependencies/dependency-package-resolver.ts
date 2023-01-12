@@ -41,8 +41,6 @@ export function getDependencyPackagesWithCEMs(nodeModulesPath: string) {
     const packageDirectories = fs.readdirSync(nodeModulesPath);
     let packages: Record<string, ImportedDependency> = {};
 
-    debugger;
-
     for (const packageDir of packageDirectories) {
         const dependenciesWithinNamespace = [];
         const packageBase = `${nodeModulesPath}/${packageDir}/`;

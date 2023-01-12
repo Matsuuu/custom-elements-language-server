@@ -3,17 +3,18 @@ import { HTMLTemplateLiteralPlugin } from "../index.js";
 import { getOrCreateProgram } from "../ts/sourcefile.js";
 import { CEMInstance } from "./cem-data.js";
 import { JavaScriptModule } from "custom-elements-manifest";
+import { addReferenceToModule, JavaScriptModuleWithRef } from "./cem-helpers.js";
 
 export class CEMCollection {
     public cems: Array<CEMInstance> = [];
     public localCEM: CEMInstance | undefined;
     private _modules: Array<JavaScriptModule> | undefined;
+    private _modulesWithRefs: Array<JavaScriptModuleWithRef> | undefined;
 
     constructor(openFilePath: string) {
         const basePath = HTMLTemplateLiteralPlugin.projectDirectory;
         const program = getOrCreateProgram(openFilePath);
         const sourceFiles = program.getSourceFiles();
-        // const dependencyPackages = getImportedDependencies(sourceFiles);
         const dependencyPackages = getDependencyPackagesWithCEMs(basePath + "/node_modules");
         // const test = getDependencyPackagesWithCEMs(basePath + "/node_modules");
 
@@ -27,27 +28,34 @@ export class CEMCollection {
         this.cems = [cemData, ...dependencyCems].filter(cemIsNotUndefined);
     }
 
-    public get modules() {
+    public get modules(): Array<JavaScriptModule> {
         if (!this._modules) {
             this._modules = this.cems.flatMap(instance => instance.cem?.modules ?? []);
         }
         return this._modules;
     }
 
-    // TODO: Have modules but with references to which CEM they are from
-    public get modulesWithReferences() {
-        return [];
-
+    // TODO: Do we need both of these module getters? we should prefer this one
+    public get modulesWithReferences(): Array<JavaScriptModuleWithRef> {
+        if (!this._modulesWithRefs) {
+            this._modulesWithRefs = this.cems.flatMap(instance => {
+                const modules = instance.cem?.modules ?? [];
+                return modules.map(mod => addReferenceToModule(mod, instance));
+            });
+        }
+        return this._modulesWithRefs;
     }
 
     public refreshLocal() {
         this.localCEM?.refresh();
         this._modules = undefined;
+        this._modulesWithRefs = undefined;
     }
 
     public refresh() {
         this.cems.forEach(cem => cem.refresh());
         this._modules = undefined;
+        this._modulesWithRefs = undefined;
     }
 
     public hasData() {

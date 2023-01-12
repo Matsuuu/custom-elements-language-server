@@ -11,6 +11,7 @@ interface CEMInstanceBuilderData {
 
 export class CEMInstance {
     public cem: Package | undefined;
+    public cemFolderPath: string | undefined;
     public cemPath: string | undefined;
     public packagePath: string | undefined;
     public packageName: string | undefined;
@@ -43,6 +44,7 @@ export class CEMInstance {
 
         this.cem = cem;
         this.cemPath = builderData.cemPath;
+        this.cemFolderPath = this.cemPath.substring(0, this.cemPath.lastIndexOf("/"));
         this.packagePath = builderData.packagePath;
         this.packageName = builderData.packageName;
         this.packageJsonPath = builderData.packageJsonPath;
@@ -69,9 +71,9 @@ export class CEMInstance {
         // if (!packageJson.customElements) return;
         // TODO: Give a warning of missing entry, ask to add
         //
-        let cemPath = projectPath + "/" + packageJson.customElements;
+        let cemPath = `${projectPath}/${packageJson.customElements}`;
         if (!packageJson.customElements || !fs.existsSync(cemPath)) {
-            cemPath = projectPath + "/" + "custom-elements.json";
+            cemPath = `${projectPath}/custom-elements.json`;
         }
 
         return new CEMInstance({

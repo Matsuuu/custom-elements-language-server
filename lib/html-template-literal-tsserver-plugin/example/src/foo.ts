@@ -3,7 +3,6 @@ import "./importing-element.ts";
 
 export const temp = html`
 
-
     <example-project my-attribute="f" 
     project-name="foo" 
     .projectName="" 
@@ -13,7 +12,7 @@ export const temp = html`
     
 
     <sl-button size=""></sl-button>
-
+    
     <p>Foo</p>
  
     <img src="" />

@@ -39,11 +39,13 @@ export async function getImportDiagnostics(context: TemplateContext, htmlLanguag
         if (!definition) {
             continue;
         }
-        const fullImportPath = basePath + "/" + definition.path;
+        const cemInstanceRef = definition.cem;
+        const fullImportPath = `${cemInstanceRef.cemFolderPath}/${definition.path}`;
         if (!sourceFileNames.includes(fullImportPath)) {
 
             const relativeImportPath = resolveImportPath(fullImportPath, filePathWithoutFile);
 
+            debugger;
             // TODO: Okay now here we need the CEM to tell us the package it's for.
             // So that we can document the fullImportPath and relativeImportPath to work 
             // with node modulized paths.
@@ -73,7 +75,11 @@ function resolveImportPath(fullImportPath: string, filePathWithoutFile: string) 
         relativePathToImport = ".";
     }
 
-    const relativeImportPath = relativePathToImport + importFileNameAsJs;
+    let relativeImportPath = relativePathToImport + importFileNameAsJs;
+
+    if (relativeImportPath.includes("node_modules")) {
+        relativeImportPath = relativeImportPath.substring(relativeImportPath.indexOf("node_modules") + "node_modules/".length);
+    }
 
     return relativeImportPath;
 }
