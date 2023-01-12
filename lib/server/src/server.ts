@@ -8,7 +8,8 @@ import {
     ProposedFeatures,
     TextDocumentSyncKind,
     Diagnostic,
-    CodeActionParams
+    CodeActionParams,
+    CodeAction
 } from "vscode-languageserver/node.js";
 import tss from "typescript/lib/tsserverlibrary.js";
 
@@ -195,5 +196,18 @@ connection.onDidChangeTextDocument((params: DidChangeTextDocumentParams) => {
 
 connection.onCodeAction((params: CodeActionParams) => {
     debugger;
+
+    const codeAction: CodeAction = {
+        title: "Import xyz.js",
+        edit: {
+            // TODO: Get the import xyz.js from the language server. We have the data already.
+            // On top of that we need to
+            // 1. Find the ending position of import statements in the file
+            // 1.5 If there is no imports, give it the root (0,0)
+            // 2. Create a ready-name import. This should be easy as we are just side-effect importing (import "./my-element.js")
+            // 3. Parse that into a workspaceEdit or something of sorts
+        }
+    }
+
     return null;
 })
