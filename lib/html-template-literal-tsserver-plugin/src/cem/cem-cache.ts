@@ -1,4 +1,4 @@
-import { getImportedDependencies } from "../dependencies/dependency-package-resolver.js";
+import { getDependencyPackagesWithCEMs, getImportedDependencies } from "../dependencies/dependency-package-resolver.js";
 import { HTMLTemplateLiteralPlugin } from "../index.js";
 import { getOrCreateProgram } from "../ts/sourcefile.js";
 import { CEMInstance } from "./cem-data.js";
@@ -10,11 +10,13 @@ export class CEMCollection {
     private _modules: Array<JavaScriptModule> | undefined;
 
     constructor(openFilePath: string) {
+        const basePath = HTMLTemplateLiteralPlugin.projectDirectory;
         const program = getOrCreateProgram(openFilePath);
         const sourceFiles = program.getSourceFiles();
-        const dependencyPackages = getImportedDependencies(sourceFiles);
+        // const dependencyPackages = getImportedDependencies(sourceFiles);
+        const dependencyPackages = getDependencyPackagesWithCEMs(basePath + "/node_modules");
+        // const test = getDependencyPackagesWithCEMs(basePath + "/node_modules");
 
-        const basePath = HTMLTemplateLiteralPlugin.projectDirectory;
         const cemData = CEMInstance.fromLocalPath(basePath);
         const dependencyCems = Object.values(dependencyPackages)
             .map(CEMInstance.fromDependency)

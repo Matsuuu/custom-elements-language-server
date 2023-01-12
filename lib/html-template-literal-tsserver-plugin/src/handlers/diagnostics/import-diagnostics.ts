@@ -42,16 +42,15 @@ export async function getImportDiagnostics(context: TemplateContext, htmlLanguag
         const fullImportPath = basePath + "/" + definition.path;
         if (!sourceFileNames.includes(fullImportPath)) {
 
-            const importPathWithoutFile = fullImportPath.substring(0, fullImportPath.lastIndexOf("/"));
-            const importFileName = fullImportPath.substring(fullImportPath.lastIndexOf("/"));
-            const importFileNameAsJs = importFileName.replace(".ts", ".js");
-            let relativePathToImport = path.relative(filePathWithoutFile, importPathWithoutFile);
-            if (relativePathToImport.length <= 0) {
-                relativePathToImport = ".";
-            }
+            const relativeImportPath = resolveImportPath(fullImportPath, filePathWithoutFile);
 
-            const relativeImportPath = relativePathToImport + importFileNameAsJs;
-            // TODO: Extract this to a method and handle node modules
+            // TODO: Okay now here we need the CEM to tell us the package it's for.
+            // So that we can document the fullImportPath and relativeImportPath to work 
+            // with node modulized paths.
+            //
+            // CEM cache and the dependency loader already do the scanning and 
+            // checking for CEM packages so it should be kinda easy to implement there
+            // somewhere where we scan the CEM's
 
             notDefinedTags.push({
                 node: customElementTag,
@@ -61,11 +60,22 @@ export async function getImportDiagnostics(context: TemplateContext, htmlLanguag
         }
     }
 
-    if (notDefinedTags.length > 0) {
-        debugger;
+    return notDefinedTags;
+}
+
+function resolveImportPath(fullImportPath: string, filePathWithoutFile: string) {
+
+    const importPathWithoutFile = fullImportPath.substring(0, fullImportPath.lastIndexOf("/"));
+    const importFileName = fullImportPath.substring(fullImportPath.lastIndexOf("/"));
+    const importFileNameAsJs = importFileName.replace(".ts", ".js");
+    let relativePathToImport = path.relative(filePathWithoutFile, importPathWithoutFile);
+    if (relativePathToImport.length <= 0) {
+        relativePathToImport = ".";
     }
 
-    return [];
+    const relativeImportPath = relativePathToImport + importFileNameAsJs;
+
+    return relativeImportPath;
 }
 
 interface NotDefinedTagInformation {
