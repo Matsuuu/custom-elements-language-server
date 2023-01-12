@@ -3,19 +3,25 @@ import tss from "typescript/lib/tsserverlibrary.js";
 import { LanguageService as HtmlLanguageService, Node } from "vscode-html-languageservice";
 import { getCEMData } from "../../cem/cem-cache.js";
 import { findCustomElementDefinitionModule } from "../../cem/cem-helpers.js";
-import { getImportedDependencies } from "../../dependencies/dependency-package-resolver.js";
 import { HTMLTemplateLiteralPlugin } from "../../index.js";
 import { resolveCustomElementTags } from "../../scanners/tag-scanner.js";
 import { getOrCreateProgram } from "../../ts/sourcefile.js";
 import * as path from "path";
 
-export async function getImportDiagnostics(context: TemplateContext, htmlLanguageService: HtmlLanguageService) {
+export function getImportDiagnostics(context: TemplateContext, htmlLanguageService: HtmlLanguageService) {
     const filePath = context.fileName;
     const filePathWithoutFile = filePath.substring(0, filePath.lastIndexOf("/"));
     const program = getOrCreateProgram(filePath);
+    const sourceFile = program.getSourceFile(filePath);
+    // TODO: Might be that this gets all sourcefiles in the project
+    // and not just relative to the file. Needs some checking.
+    // Might lead to some false negatives.
     const sourceFiles = program.getSourceFiles();
     const sourceFileNames = sourceFiles.map(sf => sf.fileName);
-    const dependencyPackages = getImportedDependencies(sourceFiles);
+
+    if (!sourceFile) {
+        return [];
+    }
 
     // TODO: Somehow create a collection out of the CEM's and have them contain
     // the dependencyinformation. Then iterate through them, searching for the actual information
@@ -45,15 +51,6 @@ export async function getImportDiagnostics(context: TemplateContext, htmlLanguag
 
             const relativeImportPath = resolveImportPath(fullImportPath, filePathWithoutFile);
 
-            debugger;
-            // TODO: Okay now here we need the CEM to tell us the package it's for.
-            // So that we can document the fullImportPath and relativeImportPath to work 
-            // with node modulized paths.
-            //
-            // CEM cache and the dependency loader already do the scanning and 
-            // checking for CEM packages so it should be kinda easy to implement there
-            // somewhere where we scan the CEM's
-
             notDefinedTags.push({
                 node: customElementTag,
                 fullImportPath: fullImportPath,
@@ -62,7 +59,21 @@ export async function getImportDiagnostics(context: TemplateContext, htmlLanguag
         }
     }
 
-    return notDefinedTags;
+    const diagnostics = notDefinedTags.map(tag => notDefinedTagToDiagnostic(tag, sourceFile));
+
+    return diagnostics;
+}
+
+function notDefinedTagToDiagnostic(notDefinedTag: NotDefinedTagInformation, sourceFile: tss.SourceFile): tss.Diagnostic {
+    const startTagEnd = notDefinedTag.node.startTagEnd ?? notDefinedTag.node.start;
+    return {
+        category: tss.DiagnosticCategory.Warning,
+        code: 0, // TODO: What is this?
+        file: sourceFile,
+        start: notDefinedTag.node.start,
+        length: startTagEnd - notDefinedTag.node.start,
+        messageText: `Import missing for tag ${notDefinedTag.node.tag}.`
+    };
 }
 
 function resolveImportPath(fullImportPath: string, filePathWithoutFile: string) {

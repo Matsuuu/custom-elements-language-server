@@ -1,5 +1,5 @@
 import ts from "typescript";
-import { Hover, Location, Position, Range, TextDocumentPositionParams } from "vscode-languageserver";
+import { Hover, Location, Position, Range, TextDocumentPositionParams, Diagnostic, DiagnosticSeverity } from "vscode-languageserver";
 import { TextDocument } from "vscode-languageserver-textdocument";
 import { TextDocuments } from "vscode-languageserver/node.js";
 import { scanDocument } from "./text-documents.js";
@@ -79,6 +79,36 @@ export function quickInfoToHover(fileName: string, quickInfo: ts.QuickInfo | und
         contents: quickInfo.documentation?.map(doc => doc.text) ?? [],
         range
     }
+}
+
+export function tsDiagnosticToDiagnostic(diagnostic: ts.Diagnostic): Diagnostic | undefined {
+    const start = diagnostic.start ?? 0;
+    const end = start + (diagnostic.length ?? 0);
+    const doc = scanDocument(diagnostic.file?.fileName ?? '');
+    if (!doc) {
+        return undefined;
+    }
+
+    return {
+        message: diagnostic.messageText.toString(),
+        range: Range.create(offsetToPosition(doc, start), offsetToPosition(doc, end)),
+        severity: diagnosticCategoryToSeverity(diagnostic.category),
+        source: "Custom Elements Language Server",
+    }
+}
+
+function diagnosticCategoryToSeverity(category: ts.DiagnosticCategory) {
+    switch (category) {
+        case ts.DiagnosticCategory.Warning:
+            return DiagnosticSeverity.Warning;
+        case ts.DiagnosticCategory.Error:
+            return DiagnosticSeverity.Error;
+        case ts.DiagnosticCategory.Suggestion:// TODO: Check if suggestion should be information and vice versa
+            return DiagnosticSeverity.Hint;
+        case ts.DiagnosticCategory.Message:
+            return DiagnosticSeverity.Information;
+    }
+
 }
 
 const ZERO_RANGE = Range.create(Position.create(0, 0), Position.create(0, 0));

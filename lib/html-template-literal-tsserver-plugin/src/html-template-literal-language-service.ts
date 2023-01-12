@@ -36,6 +36,6 @@ export class HTMLTemplateLiteralLanguageService implements TemplateLanguageServi
         console.log("SEMANTIC DIAG");
         const importDiagnostics = getImportDiagnostics(context, this.htmlLanguageService);
 
-        return [];
+        return importDiagnostics;
     }
 }

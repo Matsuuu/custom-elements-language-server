@@ -7,6 +7,7 @@ import {
     InitializeResult,
     ProposedFeatures,
     TextDocumentSyncKind,
+    Diagnostic
 } from "vscode-languageserver/node.js";
 import tss from "typescript/lib/tsserverlibrary.js";
 
@@ -17,7 +18,7 @@ import { getCompletionItemInfo, getCompletionItems } from "./completion.js";
 import { validateTextDocument } from "./analyzer.js";
 import { DEFAULT_SETTINGS, LanguageServerSettings, setCapabilities, setGlobalSettings } from "./settings.js";
 import { getLanguageService, initializeLanguageServiceForFile } from "./language-services/language-services.js";
-import { documentSpanToLocation, quickInfoToHover, textDocumentDataToUsableData } from "./transformers.js";
+import { documentSpanToLocation, quickInfoToHover, textDocumentDataToUsableData, tsDiagnosticToDiagnostic } from "./transformers.js";
 import { documents, documentSettings } from "./text-documents.js";
 import { getReferencesAtPosition } from "./handlers/references.js";
 
@@ -174,6 +175,7 @@ function onDidChangeConfiguration(change: DidChangeConfigurationParams) {
 }
 
 connection.onDidChangeTextDocument((params: DidChangeTextDocumentParams) => {
+    // TODO: Diagnostiscs might get a bit mis-aligned
     console.log("OnDidChangeTextDocument");
     const docRef = params.textDocument;
     const changes = params.contentChanges;
@@ -185,6 +187,10 @@ connection.onDidChangeTextDocument((params: DidChangeTextDocumentParams) => {
     validateTextDocument(connection, textDoc, documentSettings);
 
     const fileName = params.textDocument.uri.replace("file://", "");
-    const languageService = getLanguageService(fileName, textDoc.getText());
-    languageService?.getSemanticDiagnostics(fileName);
+    const languageService = getLanguageService(fileName, updatedDoc.getText());
+    const diagnostics = languageService?.getSemanticDiagnostics(fileName);
+    const sendableDiagnostics: Array<Diagnostic> = diagnostics?.map(tsDiagnosticToDiagnostic)
+        .filter((diag): diag is Diagnostic => diag !== undefined) ?? []; // Stupid ts types
+
+    connection.sendDiagnostics({ uri: updatedDoc.uri, diagnostics: sendableDiagnostics });
 });
