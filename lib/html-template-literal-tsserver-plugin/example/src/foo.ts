@@ -1,5 +1,6 @@
 import { html } from "lit-html";
 import "./importing-element.ts";
+import "./example-project.js;"
 
 export const temp = html`
 
@@ -10,7 +11,6 @@ export const temp = html`
     @my-custom-event="">      
     </example-project>
     
-
     <sl-button size=""></sl-button>
     
   

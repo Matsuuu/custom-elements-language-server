@@ -9,18 +9,20 @@ import {
     TextDocumentSyncKind,
     Diagnostic,
     CodeActionParams,
-    CodeAction
+    CodeAction,
+    WorkspaceEdit,
+    Range
 } from "vscode-languageserver/node.js";
 import tss from "typescript/lib/tsserverlibrary.js";
 
 console.log("NODE VERSION: ", process.version);
 
-import { TextDocument } from "vscode-languageserver-textdocument";
+import { TextDocument, TextEdit } from "vscode-languageserver-textdocument";
 import { getCompletionItemInfo, getCompletionItems } from "./completion.js";
 import { validateTextDocument } from "./analyzer.js";
 import { DEFAULT_SETTINGS, LanguageServerSettings, setCapabilities, setGlobalSettings } from "./settings.js";
 import { getLanguageService, initializeLanguageServiceForFile } from "./language-services/language-services.js";
-import { documentSpanToLocation, quickInfoToHover, textDocumentDataToUsableData, tsDiagnosticToDiagnostic } from "./transformers.js";
+import { documentSpanToLocation, offsetToPosition, quickInfoToHover, textDocumentDataToUsableData, tsDiagnosticToDiagnostic } from "./transformers.js";
 import { documents, documentSettings } from "./text-documents.js";
 import { getReferencesAtPosition } from "./handlers/references.js";
 
@@ -174,8 +176,8 @@ function onDidChangeConfiguration(change: DidChangeConfigurationParams) {
 }
 
 connection.onDidChangeTextDocument((params: DidChangeTextDocumentParams) => {
-    // TODO: Diagnostiscs might get a bit mis-aligned
     console.log("OnDidChangeTextDocument");
+    // TODO: Diagnostiscs might get a bit mis-aligned
     const docRef = params.textDocument;
     const changes = params.contentChanges;
     const textDoc = documents.get(docRef.uri);
@@ -183,31 +185,57 @@ connection.onDidChangeTextDocument((params: DidChangeTextDocumentParams) => {
 
     const updatedDoc = TextDocument.update(textDoc, changes, textDoc?.version ?? 0 + 1);
 
+    runDiagnostics(params.textDocument.uri, updatedDoc);
+});
+
+function runDiagnostics(uri: string, textDoc: TextDocument) {
+
     validateTextDocument(connection, textDoc, documentSettings);
 
-    const fileName = params.textDocument.uri.replace("file://", "");
-    const languageService = getLanguageService(fileName, updatedDoc.getText());
+    const fileName = uri.replace("file://", "");
+    const languageService = getLanguageService(fileName, textDoc.getText());
     const diagnostics = languageService?.getSemanticDiagnostics(fileName);
     const sendableDiagnostics: Array<Diagnostic> = diagnostics?.map(tsDiagnosticToDiagnostic)
         .filter((diag): diag is Diagnostic => diag !== undefined) ?? []; // Stupid ts types
 
-    connection.sendDiagnostics({ uri: updatedDoc.uri, diagnostics: sendableDiagnostics });
-});
+    connection.sendDiagnostics({ uri: textDoc.uri, diagnostics: sendableDiagnostics });
+}
 
 connection.onCodeAction((params: CodeActionParams) => {
-    debugger;
+    const doc = params.textDocument;
+    const textDoc = documents.get(doc.uri);
+    if (!textDoc) {
+        return undefined;
+    }
 
-    const codeAction: CodeAction = {
-        title: "Import xyz.js",
-        edit: {
-            // TODO: Get the import xyz.js from the language server. We have the data already.
-            // On top of that we need to
-            // 1. Find the ending position of import statements in the file
-            // 1.5 If there is no imports, give it the root (0,0)
-            // 2. Create a ready-name import. This should be easy as we are just side-effect importing (import "./my-element.js")
-            // 3. Parse that into a workspaceEdit or something of sorts
+    const codeActions: Array<CodeAction> = [];
+
+    for (const diagnostic of params.context.diagnostics) {
+        if (diagnostic.source === "Custom Elements Language Server") {
+            // TODO: Make safe
+            const diagnosticData = diagnostic.data[0] as tss.DiagnosticRelatedInformation;
+            // TODO: Figure out to know between different diagnostics from our source
+
+            const importPositionOffset = diagnosticData.start ?? 0;
+
+            const workSpaceEdit: WorkspaceEdit = {
+                changes: {
+                    [params.textDocument.uri]: [
+                        {
+                            range: Range.create(offsetToPosition(textDoc, importPositionOffset), offsetToPosition(textDoc, importPositionOffset)),
+                            newText: diagnosticData.messageText as string
+                        }
+                    ]
+                }
+            }
+
+            codeActions.push({
+                title: "Import component from [FOO]",
+                edit: workSpaceEdit
+            })
+
         }
     }
 
-    return null;
+    return codeActions;
 })

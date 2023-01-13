@@ -80,14 +80,14 @@ function findImportDeclarationDestination(sourceFile: SourceFile) {
 
 function notDefinedTagToDiagnostic(notDefinedTag: NotDefinedTagInformation, sourceFile: tss.SourceFile, importOffset: number): tss.Diagnostic {
     const startTagEnd = notDefinedTag.node.startTagEnd ?? notDefinedTag.node.start;
-    const importStatement = `\nimport "${notDefinedTag.relativeImportPath};"`;
+    const importStatement = `\nimport "${notDefinedTag.relativeImportPath}";`;
     return {
         category: tss.DiagnosticCategory.Warning,
         code: 0, // TODO: What is this?
         file: sourceFile,
         start: notDefinedTag.node.start,
         length: startTagEnd - notDefinedTag.node.start,
-        messageText: `Import missing for tag ${notDefinedTag.node.tag}.`,
+        messageText: `Import missing tag ${notDefinedTag.node.tag}.`,
         relatedInformation: [{
             category: tss.DiagnosticCategory.Suggestion,
             code: 0, // TODO: What is this?
