@@ -201,6 +201,21 @@ function runDiagnostics(uri: string, textDoc: TextDocument) {
     connection.sendDiagnostics({ uri: textDoc.uri, diagnostics: sendableDiagnostics });
 }
 
+connection.onCodeActionResolve((codeAction: CodeAction) => {
+    const edit = codeAction.edit;
+    if (edit && edit.changes) {
+        const files = Object.keys(edit.changes);
+        for (const file of files) {
+            const textDoc = documents.get(file);
+            if (!textDoc) continue;
+
+            runDiagnostics(file, textDoc);
+        }
+    }
+
+    return codeAction;
+})
+
 connection.onCodeAction((params: CodeActionParams) => {
     const doc = params.textDocument;
     const textDoc = documents.get(doc.uri);

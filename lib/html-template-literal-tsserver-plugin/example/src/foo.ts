@@ -1,8 +1,9 @@
 import { html } from "lit-html";
 import "./importing-element.ts";
-import "./example-project.js;"
+import "./example-project.js";
 
 export const temp = html`
+
 
     <example-project my-attribute="f" 
     project-name="foo" 
