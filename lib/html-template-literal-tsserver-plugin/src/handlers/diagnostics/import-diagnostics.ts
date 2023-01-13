@@ -7,6 +7,7 @@ import { HTMLTemplateLiteralPlugin } from "../../index.js";
 import { resolveCustomElementTags } from "../../scanners/tag-scanner.js";
 import { getOrCreateProgram } from "../../ts/sourcefile.js";
 import * as path from "path";
+import { SourceFile } from "typescript";
 
 export function getImportDiagnostics(context: TemplateContext, htmlLanguageService: HtmlLanguageService) {
     const filePath = context.fileName;
@@ -55,14 +56,31 @@ export function getImportDiagnostics(context: TemplateContext, htmlLanguageServi
             });
         }
     }
+    const importOffset = findImportDeclarationDestination(sourceFile);
 
-    const diagnostics = notDefinedTags.map(tag => notDefinedTagToDiagnostic(tag, sourceFile));
+    const diagnostics = notDefinedTags.map(tag => notDefinedTagToDiagnostic(tag, sourceFile, importOffset));
 
     return diagnostics;
 }
 
-function notDefinedTagToDiagnostic(notDefinedTag: NotDefinedTagInformation, sourceFile: tss.SourceFile): tss.Diagnostic {
+function findImportDeclarationDestination(sourceFile: SourceFile) {
+    const root = sourceFile.getChildAt(0);
+    const rootLevelChildren = root.getChildren();
+    let lastImportStatementEnd = 0;
+    for (const child of rootLevelChildren) {
+        if (child.kind === tss.SyntaxKind.ImportDeclaration) {
+            lastImportStatementEnd = child.end;
+            continue;
+        }
+        break;
+    }
+
+    return lastImportStatementEnd;
+}
+
+function notDefinedTagToDiagnostic(notDefinedTag: NotDefinedTagInformation, sourceFile: tss.SourceFile, importOffset: number): tss.Diagnostic {
     const startTagEnd = notDefinedTag.node.startTagEnd ?? notDefinedTag.node.start;
+    const importStatement = `\nimport "${notDefinedTag.relativeImportPath};"`;
     return {
         category: tss.DiagnosticCategory.Warning,
         code: 0, // TODO: What is this?
@@ -73,10 +91,10 @@ function notDefinedTagToDiagnostic(notDefinedTag: NotDefinedTagInformation, sour
         relatedInformation: [{
             category: tss.DiagnosticCategory.Suggestion,
             code: 0, // TODO: What is this?
-            file: sourceFile,
-            start: notDefinedTag.node.start, // TODO: Import statement location
-            length: startTagEnd - notDefinedTag.node.start, // TODO: Import statement location
-            messageText: `\nimport "${notDefinedTag.relativeImportPath};"`,
+            file: undefined,
+            start: importOffset, // TODO: Import statement location
+            length: importStatement.length, // TODO: Import statement location
+            messageText: importStatement,
         }]
     };
 }
@@ -105,3 +123,4 @@ interface NotDefinedTagInformation {
     fullImportPath: string;
     relativeImportPath: string;
 }
+
