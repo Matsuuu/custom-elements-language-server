@@ -23,9 +23,6 @@ export function getImportDiagnostics(context: TemplateContext, htmlLanguageServi
         return [];
     }
 
-    // TODO: Somehow create a collection out of the CEM's and have them contain
-    // the dependencyinformation. Then iterate through them, searching for the actual information
-
     const cemCollection = getCEMData(filePath);
     if (!cemCollection.hasData()) {
         return [];
@@ -72,7 +69,15 @@ function notDefinedTagToDiagnostic(notDefinedTag: NotDefinedTagInformation, sour
         file: sourceFile,
         start: notDefinedTag.node.start,
         length: startTagEnd - notDefinedTag.node.start,
-        messageText: `Import missing for tag ${notDefinedTag.node.tag}.`
+        messageText: `Import missing for tag ${notDefinedTag.node.tag}.`,
+        relatedInformation: [{
+            category: tss.DiagnosticCategory.Suggestion,
+            code: 0, // TODO: What is this?
+            file: sourceFile,
+            start: notDefinedTag.node.start, // TODO: Import statement location
+            length: startTagEnd - notDefinedTag.node.start, // TODO: Import statement location
+            messageText: `\nimport "${notDefinedTag.relativeImportPath};"`,
+        }]
     };
 }
 
