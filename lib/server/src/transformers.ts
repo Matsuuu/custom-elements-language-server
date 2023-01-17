@@ -81,17 +81,16 @@ export function quickInfoToHover(fileName: string, quickInfo: ts.QuickInfo | und
     }
 }
 
-export function tsDiagnosticToDiagnostic(diagnostic: ts.Diagnostic): Diagnostic | undefined {
+export function tsDiagnosticToDiagnostic(diagnostic: ts.Diagnostic, textDoc: TextDocument): Diagnostic | undefined {
     const start = diagnostic.start ?? 0;
     const end = start + (diagnostic.length ?? 0);
-    const doc = scanDocument(diagnostic.file?.fileName ?? '');
-    if (!doc) {
+    if (!textDoc) {
         return undefined;
     }
 
     return {
         message: diagnostic.messageText.toString(),
-        range: Range.create(offsetToPosition(doc, start), offsetToPosition(doc, end)),
+        range: Range.create(offsetToPosition(textDoc, start), offsetToPosition(textDoc, end)),
         severity: diagnosticCategoryToSeverity(diagnostic.category),
         source: "Custom Elements Language Server",
         data: diagnostic.relatedInformation

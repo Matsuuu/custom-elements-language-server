@@ -4,17 +4,15 @@ import "./example-project.js";
 
 export const temp = html`
 
-
     <example-project my-attribute="f" 
     project-name="foo" 
     .projectName="" 
     .color="#ff094"
     @my-custom-event="">      
     </example-project>
-    
+
     <sl-button size=""></sl-button>
     
-  
     <p>Foo</p>
  
     <img src="" />

@@ -33,7 +33,6 @@ export class HTMLTemplateLiteralLanguageService implements TemplateLanguageServi
     }
 
     public getSemanticDiagnostics(context: TemplateContext): tss.Diagnostic[] {
-        console.log("SEMANTIC DIAG");
         const importDiagnostics = getImportDiagnostics(context, this.htmlLanguageService);
 
         return importDiagnostics;

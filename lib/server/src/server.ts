@@ -25,6 +25,7 @@ import { getLanguageService, initializeLanguageServiceForFile } from "./language
 import { documentSpanToLocation, offsetToPosition, quickInfoToHover, textDocumentDataToUsableData, tsDiagnosticToDiagnostic } from "./transformers.js";
 import { documents, documentSettings } from "./text-documents.js";
 import { getReferencesAtPosition } from "./handlers/references.js";
+import { wait } from "./wait.js";
 
 const connection = createConnection(ProposedFeatures.all);
 
@@ -188,14 +189,14 @@ connection.onDidChangeTextDocument((params: DidChangeTextDocumentParams) => {
     runDiagnostics(params.textDocument.uri, updatedDoc);
 });
 
-function runDiagnostics(uri: string, textDoc: TextDocument) {
+async function runDiagnostics(uri: string, textDoc: TextDocument) {
 
     validateTextDocument(connection, textDoc, documentSettings);
 
     const fileName = uri.replace("file://", "");
     const languageService = getLanguageService(fileName, textDoc.getText());
     const diagnostics = languageService?.getSemanticDiagnostics(fileName);
-    const sendableDiagnostics: Array<Diagnostic> = diagnostics?.map(tsDiagnosticToDiagnostic)
+    const sendableDiagnostics: Array<Diagnostic> = diagnostics?.map(diag => tsDiagnosticToDiagnostic(diag, textDoc))
         .filter((diag): diag is Diagnostic => diag !== undefined) ?? []; // Stupid ts types
 
     connection.sendDiagnostics({ uri: textDoc.uri, diagnostics: sendableDiagnostics });

@@ -4,7 +4,6 @@ const PROGRAM_CACHE = new Map<string, ts.Program>();
 
 export function getOrCreateProgram(fullPath: string) {
     if (PROGRAM_CACHE.has(fullPath)) {
-        console.log("Cache hit on getOrCreateProgram");
         return PROGRAM_CACHE.get(fullPath) as ts.Program;
     }
 

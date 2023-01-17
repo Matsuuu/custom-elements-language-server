@@ -19,8 +19,8 @@ export async function validateTextDocument(
     let m: RegExpExecArray | null;
 
     let diagnostics: Diagnostic[] = [];
-    while ((m = pattern.exec(text))) {
-        /*let diagnostic: Diagnostic = {
+    /*while ((m = pattern.exec(text))) {
+        let diagnostic: Diagnostic = {
             severity: DiagnosticSeverity.Warning,
             range: {
                 start: textDocument.positionAt(m.index),
@@ -47,7 +47,7 @@ export async function validateTextDocument(
                 },
             ];
         }
-        diagnostics.push(diagnostic);*/
-    }
+        diagnostics.push(diagnostic);
+    }*/
 
 }

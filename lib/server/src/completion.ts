@@ -4,10 +4,7 @@ import { CompletionItem, CompletionItemKind, CompletionList, TextDocumentPositio
 
 import { getLanguageService } from "./language-services/language-services.js";
 import { documents } from "./text-documents.js";
-
-function wait(ms = 100) {
-    return new Promise(resolve => setTimeout(resolve, ms));
-}
+import { wait } from "./wait.js";
 
 export async function getCompletionItems(textDocumentPosition: TextDocumentPositionParams): Promise<CompletionList> {
     await wait(50);
