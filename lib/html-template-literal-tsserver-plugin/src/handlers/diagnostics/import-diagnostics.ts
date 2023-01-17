@@ -20,6 +20,8 @@ export function getImportDiagnostics(context: TemplateContext, htmlLanguageServi
     const sourceFiles = program.getSourceFiles();
     const sourceFileNames = sourceFiles.map(sf => sf.fileName);
 
+    getAllImportedSourceFiles(sourceFile);
+
     if (!sourceFile) {
         return [];
     }
@@ -87,13 +89,13 @@ function notDefinedTagToDiagnostic(notDefinedTag: NotDefinedTagInformation, sour
         file: sourceFile,
         start: notDefinedTag.node.start,
         length: startTagEnd - notDefinedTag.node.start,
-        messageText: `Import missing tag ${notDefinedTag.node.tag}.`,
+        messageText: `Tag ${notDefinedTag.node.tag} has not been imported.`,
         relatedInformation: [{
             category: tss.DiagnosticCategory.Suggestion,
             code: 0, // TODO: What is this?
             file: undefined,
-            start: importOffset, // TODO: Import statement location
-            length: importStatement.length, // TODO: Import statement location
+            start: importOffset,
+            length: importStatement.length,
             messageText: importStatement,
         }]
     };
@@ -122,5 +124,14 @@ interface NotDefinedTagInformation {
     node: Node;
     fullImportPath: string;
     relativeImportPath: string;
+}
+
+function getAllImportedSourceFiles(sourceFile: SourceFile | undefined) {
+    if (!sourceFile) return [];
+    // TODO: Figure out what files / imports are in scope and what are not.
+    //
+    // Could tss.preProcessFile be used?
+
+    return []
 }
 
