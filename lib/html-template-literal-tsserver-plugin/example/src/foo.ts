@@ -1,8 +1,8 @@
 import { html } from "lit-html";
+import { repeat } from "lit/directives/repeat.js";
 import "./importing-element.js";
 
 export const temp = html`
-
 
     <example-project my-attribute="f" 
     project-name="foo" 
@@ -24,6 +24,8 @@ export const temp = html`
     <div class="foo">
         <span>Bar</span>
     </div>
+
+    ${repeat([1, 2], num => html`<p>${num}</p>`)}
 `;
 
 class Foo {

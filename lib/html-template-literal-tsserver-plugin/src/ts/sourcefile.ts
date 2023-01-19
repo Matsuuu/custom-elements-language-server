@@ -49,18 +49,24 @@ export function getAllFilesAssociatedWithSourceFile(sourceFile: ts.SourceFile, b
         const fileInfo = ts.preProcessFile(sf.getFullText());
         const imports = fileInfo.importedFiles;
         for (const importRef of imports) {
-            const importFilePath = importRef.fileName;
+            const importFilePath = importRef.fileName
+            let absoluteImportPath;
             if (isDependencyImport(importFilePath)) {
                 // TODO: Handle dependency packages.
                 // One handler for base import, other for file imports
+                if (importFilePath.includes(".js")) {
+                    absoluteImportPath = path.resolve(basePath, "node_modules", importFilePath);
+                } else {
+                    absoluteImportPath = ""; // TODO: Resolve base import file from package.json main/module
+                }
             } else {
-                const importPath = path.resolve(getFilePathFolder(sf.fileName), importFilePath);
+                absoluteImportPath = path.resolve(getFilePathFolder(sf.fileName), importFilePath);
                 debugger;
             }
 
             debugger;
 
-            const importSourceFile = getSourceFile(importFilePath);
+            const importSourceFile = getSourceFile(absoluteImportPath);
             if (!importSourceFile) {
                 continue;
             }
@@ -71,3 +77,4 @@ export function getAllFilesAssociatedWithSourceFile(sourceFile: ts.SourceFile, b
 
     processFileAndAddImports(sourceFile);
 }
+
