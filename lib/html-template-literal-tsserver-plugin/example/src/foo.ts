@@ -1,9 +1,8 @@
 import { html } from "lit-html";
 import "./importing-element.js";
-import "@shoelace-style/shoelace/dist/components/button/button.js";
-import "./example-project.js";
 
 export const temp = html`
+
 
     <example-project my-attribute="f" 
     project-name="foo" 
@@ -11,10 +10,7 @@ export const temp = html`
     .color="#ff094"
     @my-custom-event="">      
     </example-project>
-    
 
-  
-  
     <sl-button size=""></sl-button>
     
     <p>Foo</p>

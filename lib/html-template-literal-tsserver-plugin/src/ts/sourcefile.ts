@@ -1,4 +1,6 @@
 import ts from "typescript";
+import { getFilePathFolder, isDependencyImport, resolveImportPath } from "../handlers/diagnostics/imports.js";
+import * as path from "path";
 
 const PROGRAM_CACHE = new Map<string, ts.Program>();
 
@@ -33,4 +35,39 @@ export function getSourceFile(baseOrFullPath: string, classPath?: string) {
     // program.getDeclarationDiagnostics();
 
     return program.getSourceFile(fullClassPath);
+}
+
+export function getAllFilesAssociatedWithSourceFile(sourceFile: ts.SourceFile, basePath: string) {
+
+    const analyzedFiles: Record<string, ts.SourceFile> = {};
+
+    function processFileAndAddImports(sf: ts.SourceFile) {
+        if (analyzedFiles[sf.fileName]) {
+            return;
+        }
+        analyzedFiles[sf.fileName] = sf;
+        const fileInfo = ts.preProcessFile(sf.getFullText());
+        const imports = fileInfo.importedFiles;
+        for (const importRef of imports) {
+            const importFilePath = importRef.fileName;
+            if (isDependencyImport(importFilePath)) {
+                // TODO: Handle dependency packages.
+                // One handler for base import, other for file imports
+            } else {
+                const importPath = path.resolve(getFilePathFolder(sf.fileName), importFilePath);
+                debugger;
+            }
+
+            debugger;
+
+            const importSourceFile = getSourceFile(importFilePath);
+            if (!importSourceFile) {
+                continue;
+            }
+
+            processFileAndAddImports(importSourceFile);
+        }
+    }
+
+    processFileAndAddImports(sourceFile);
 }

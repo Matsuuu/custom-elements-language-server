@@ -5,22 +5,26 @@ import { getCEMData } from "../../cem/cem-cache.js";
 import { findCustomElementDefinitionModule } from "../../cem/cem-helpers.js";
 import { HTMLTemplateLiteralPlugin } from "../../index.js";
 import { resolveCustomElementTags } from "../../scanners/tag-scanner.js";
-import { getOrCreateProgram } from "../../ts/sourcefile.js";
-import * as path from "path";
+import { getAllFilesAssociatedWithSourceFile, getOrCreateProgram } from "../../ts/sourcefile.js";
 import { SourceFile } from "typescript";
+import { getFilePathFolder, resolveImportPath } from "./imports.js";
 
 export function getImportDiagnostics(context: TemplateContext, htmlLanguageService: HtmlLanguageService) {
     const filePath = context.fileName;
-    const filePathWithoutFile = filePath.substring(0, filePath.lastIndexOf("/"));
+    const filePathWithoutFile = getFilePathFolder(filePath);
     const program = getOrCreateProgram(filePath);
+    const basePath = HTMLTemplateLiteralPlugin.projectDirectory;
     const sourceFile = program.getSourceFile(filePath);
+    if (!sourceFile) {
+        return [];
+    }
+
+    const associatedFiles = getAllFilesAssociatedWithSourceFile(sourceFile, basePath);
     // TODO: Might be that this gets all sourcefiles in the project
     // and not just relative to the file. Needs some checking.
     // Might lead to some false negatives.
     const sourceFiles = program.getSourceFiles();
     const sourceFileNames = sourceFiles.map(sf => sf.fileName);
-
-    getAllImportedSourceFiles(sourceFile);
 
     if (!sourceFile) {
         return [];
@@ -32,7 +36,6 @@ export function getImportDiagnostics(context: TemplateContext, htmlLanguageServi
     }
 
     const customElementTagNodes = resolveCustomElementTags(htmlLanguageService, context);
-    const basePath = HTMLTemplateLiteralPlugin.projectDirectory;
 
     const notDefinedTags: Array<NotDefinedTagInformation> = [];
 
@@ -101,37 +104,8 @@ function notDefinedTagToDiagnostic(notDefinedTag: NotDefinedTagInformation, sour
     };
 }
 
-function resolveImportPath(fullImportPath: string, filePathWithoutFile: string) {
-
-    const importPathWithoutFile = fullImportPath.substring(0, fullImportPath.lastIndexOf("/"));
-    const importFileName = fullImportPath.substring(fullImportPath.lastIndexOf("/"));
-    const importFileNameAsJs = importFileName.replace(".ts", ".js");
-    let relativePathToImport = path.relative(filePathWithoutFile, importPathWithoutFile);
-    if (relativePathToImport.length <= 0) {
-        relativePathToImport = ".";
-    }
-
-    let relativeImportPath = relativePathToImport + importFileNameAsJs;
-
-    if (relativeImportPath.includes("node_modules")) {
-        relativeImportPath = relativeImportPath.substring(relativeImportPath.indexOf("node_modules") + "node_modules/".length);
-    }
-
-    return relativeImportPath;
-}
-
 interface NotDefinedTagInformation {
     node: Node;
     fullImportPath: string;
     relativeImportPath: string;
 }
-
-function getAllImportedSourceFiles(sourceFile: SourceFile | undefined) {
-    if (!sourceFile) return [];
-    // TODO: Figure out what files / imports are in scope and what are not.
-    //
-    // Could tss.preProcessFile be used?
-
-    return []
-}
-
