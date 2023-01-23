@@ -2,11 +2,11 @@
     "paths": ["lib/**"],
     "exclude": ["example", "./lib/html-template-literal-tsserver-plugin/example", "./lib/server/test-project"],
     "compilerOptions": {
-        "target": "ESNext" /* Set the JavaScript language version for emitted JavaScript and include compatible library declarations. */,
-        "module": "ESNext" /* Specify what module code is generated. */,
+        "target": "ESNext",
+        "module": "ESNext",
         "moduleResolution": "nodenext",
-        "outDir": "./out" /* Specify an output folder for all emitted files. */,
-        "skipLibCheck": true /* Skip type checking all .d.ts files. */,
+        "outDir": "./out",        
+        "skipLibCheck": true,
         "declaration": true,
 
         "experimentalDecorators": true,
