@@ -1,6 +1,6 @@
 {
     "paths": ["src/**"],
-    "exclude": ["example", "out", "test-project"],
+    "exclude": ["usage-testing-project", "out"],
     "compilerOptions": {
         "target": "ESNext" /* Set the JavaScript language version for emitted JavaScript and include compatible library declarations. */,
         "module": "ESNext" /* Specify what module code is generated. */,

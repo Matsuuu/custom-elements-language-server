@@ -1,6 +1,6 @@
 {
     "paths": ["lib/**"],
-    "exclude": ["example", "./lib/html-template-literal-tsserver-plugin/example", "./lib/server/test-project"],
+    "exclude": ["./lib/server/usage-testing-project", "./usage-testing-project"],
     "compilerOptions": {
         "target": "ESNext",
         "module": "ESNext",
