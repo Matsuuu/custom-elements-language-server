@@ -6,7 +6,6 @@ import { LanguageClient, LanguageClientOptions, ServerOptions, TransportKind } f
 let client: LanguageClient;
 
 export function activate(context: ExtensionContext) {
-    // The server is implemented in node
     console.log("Initializing LS");
     let serverModule = context.asAbsolutePath(path.join("lib", "server", "out", "server.js"));
     // The debug options for the server
@@ -33,7 +32,9 @@ export function activate(context: ExtensionContext) {
         ],
         synchronize: {
             // Notify the server about file changes to '.clientrc files contained in the workspace
-            fileEvents: workspace.createFileSystemWatcher("**/.clientrc"),
+            fileEvents: [
+                workspace.createFileSystemWatcher("**/.clientrc")
+            ]
         },
     };
 
