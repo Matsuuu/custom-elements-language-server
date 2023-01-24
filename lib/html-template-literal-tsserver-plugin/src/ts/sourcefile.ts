@@ -1,8 +1,10 @@
 import ts from "typescript";
 import { getFilePathFolder, isDependencyImport, resolveImportPath } from "../handlers/diagnostics/imports.js";
 import * as path from "path";
+import * as fs from "fs";
 
 const PROGRAM_CACHE = new Map<string, ts.Program>();
+const PACKAGE_MAIN_FILE_CACHE = new Map<string, string>();
 
 export function getOrCreateProgram(fullPath: string) {
     if (PROGRAM_CACHE.has(fullPath)) {
@@ -48,11 +50,13 @@ export function getAllFilesAssociatedWithSourceFile(sourceFile: ts.SourceFile, b
         analyzedFiles[currentSourceFile.fileName] = currentSourceFile;
         const fileInfo = ts.preProcessFile(currentSourceFile.getFullText());
         const imports = fileInfo.importedFiles;
+
         for (const importReference of imports) {
             const importFilePath = importReference.fileName
             const absoluteImportPath = resolveAbsoluteFileToImport(importFilePath, basePath, currentSourceFile);
-
-            debugger;
+            if (!absoluteImportPath) {
+                continue;
+            }
 
             const importSourceFile = getSourceFile(absoluteImportPath);
             if (!importSourceFile) {
@@ -68,16 +72,26 @@ export function getAllFilesAssociatedWithSourceFile(sourceFile: ts.SourceFile, b
 
 function resolveAbsoluteFileToImport(importFilePath: string, basePath: string, sourceFile: ts.SourceFile) {
 
-    if (isDependencyImport(importFilePath)) {
-        // TODO: Handle dependency packages.
-        // One handler for base import, other for file imports
-        if (importFilePath.includes(".js")) {
-            return path.resolve(basePath, "node_modules", importFilePath);
-        } else {
-            return ""; // TODO: Resolve base import file from package.json main/module
-        }
-    } else {
+    if (!isDependencyImport(importFilePath)) {
         return path.resolve(getFilePathFolder(sourceFile.fileName), importFilePath);
     }
+
+    // TODO: Handle dependency packages.
+    // One handler for base import, other for file imports
+    if (importFilePath.includes(".js")) {
+        return path.resolve(basePath, "node_modules", importFilePath);
+    }
+
+    const packagePath = path.resolve(basePath, "node_modules", importFilePath);
+    const dependencyPackageJsonPath = packagePath + "/package.json";
+    if (!fs.existsSync(dependencyPackageJsonPath)) {
+        // TODO: Handle this? Is it needed?
+        debugger;
+        return undefined;
+    }
+    const dependencyPackageJson = JSON.parse(fs.readFileSync(dependencyPackageJsonPath, "utf8"));
+    const mainFilePath: string = dependencyPackageJson.main;
+
+    return packagePath + "/" + mainFilePath; // TODO: Resolve base import file from package.json main/module
 }
 

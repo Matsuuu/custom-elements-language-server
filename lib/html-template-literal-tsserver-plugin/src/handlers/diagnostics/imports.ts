@@ -12,7 +12,6 @@ export function resolveImportPath(fullImportPath: string, filePathWithoutFile: s
 
     let relativeImportPath = relativePathToImport + importFileNameAsJs;
 
-    debugger;
     if (relativeImportPath.includes("node_modules")) {
         relativeImportPath = relativeImportPath.substring(relativeImportPath.indexOf("node_modules") + "node_modules/".length);
     }
