@@ -10,12 +10,13 @@ export const temp = html`
     .color="#ff094"
     @my-custom-event="">      
     </example-project>
-  
 
+    
     <sl-button size=""></sl-button>
     
     <p>Foo</p>
  
+
     <img src="" />
 
     <input type="text" />
@@ -26,7 +27,6 @@ export const temp = html`
         <span>Bar</span>
     </div>
 
-    ${repeat([1, 2], num => html`<p>${num}</p>`)}
 `;
 
 class Foo {

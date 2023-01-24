@@ -8,6 +8,7 @@ import { resolveCustomElementTags } from "../../scanners/tag-scanner.js";
 import { getAllFilesAssociatedWithSourceFile, getOrCreateProgram } from "../../ts/sourcefile.js";
 import { SourceFile } from "typescript";
 import { getFilePathFolder, resolveImportPath } from "./imports.js";
+import { CODE_ACTIONS } from "../enum/code-actions.js";
 
 export function getImportDiagnostics(context: TemplateContext, htmlLanguageService: HtmlLanguageService) {
     const filePath = context.fileName;
@@ -88,7 +89,7 @@ function notDefinedTagToDiagnostic(notDefinedTag: NotDefinedTagInformation, sour
     const importStatement = `\nimport "${notDefinedTag.relativeImportPath}";`;
     return {
         category: tss.DiagnosticCategory.Warning,
-        code: 0, // TODO: What is this?
+        code: CODE_ACTIONS.IMPORT, // TODO: What is this?
         file: sourceFile,
         start: notDefinedTag.node.start,
         length: startTagEnd - notDefinedTag.node.start,

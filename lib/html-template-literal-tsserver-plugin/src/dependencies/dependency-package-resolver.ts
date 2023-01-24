@@ -88,6 +88,10 @@ function getPackageName(packagePath: string) {
 
 function getImportedDependencyWithCEMIfPresent(packageBase: string, dependencyName: string) {
     try {
+        if (!fs.existsSync(packageBase + "/package.json")) {
+            return undefined;
+        }
+
         const packageJson = fs.readFileSync(packageBase + "/package.json", "utf8");
         const packageJsonJson = JSON.parse(packageJson);
         if (packageJsonJson.customElements) {

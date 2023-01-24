@@ -26,6 +26,7 @@ import { documentSpanToLocation, offsetToPosition, quickInfoToHover, textDocumen
 import { documents, documentSettings } from "./text-documents.js";
 import { getReferencesAtPosition } from "./handlers/references.js";
 import { wait } from "./wait.js";
+import { getCodeActionsForParams } from "./handlers/code-actions.js";
 
 const connection = createConnection(ProposedFeatures.all);
 
@@ -224,34 +225,7 @@ connection.onCodeAction((params: CodeActionParams) => {
         return undefined;
     }
 
-    const codeActions: Array<CodeAction> = [];
-
-    for (const diagnostic of params.context.diagnostics) {
-        if (diagnostic.source === "Custom Elements Language Server") {
-            // TODO: Make safe
-            const diagnosticData = diagnostic.data[0] as tss.DiagnosticRelatedInformation;
-            // TODO: Figure out to know between different diagnostics from our source
-
-            const importPositionOffset = diagnosticData.start ?? 0;
-
-            const workSpaceEdit: WorkspaceEdit = {
-                changes: {
-                    [params.textDocument.uri]: [
-                        {
-                            range: Range.create(offsetToPosition(textDoc, importPositionOffset), offsetToPosition(textDoc, importPositionOffset)),
-                            newText: diagnosticData.messageText as string
-                        }
-                    ]
-                }
-            }
-
-            codeActions.push({
-                title: "Import component from [FOO]",
-                edit: workSpaceEdit
-            })
-
-        }
-    }
+    const codeActions = getCodeActionsForParams(params, textDoc);
 
     return codeActions;
 })
