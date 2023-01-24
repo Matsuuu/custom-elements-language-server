@@ -62,7 +62,7 @@ export function getGoToDefinitionEntries(context: TemplateContext, position: tss
 function getTagDefinitionsEntries(basePath: string, matchingClass: JavaScriptModuleWithRef, classDeclaration: CustomElement, fileName: string) {
     const classDefinitionTextSpan = getClassDefinitionTextSpan(matchingClass, classDeclaration?.name ?? "", basePath);
     const packagePath = matchingClass.cem.cemFolderPath + "/" + matchingClass.path;
-    // TODO: Point to the .d.ts file
+    // TODO: Point to the .d.ts file ? Let's try it out
 
     return [
         {
@@ -80,12 +80,12 @@ function getTagDefinitionsEntries(basePath: string, matchingClass: JavaScriptMod
 function getAttributeDefinitionEntries(
     actionContext: AttributeActionContext,
     basePath: string,
-    matchingClass: JavaScriptModule,
+    matchingClass: JavaScriptModuleWithRef,
     classDeclaration: CustomElement,
     fileName: string,
 ) {
-    // TODO: Implement the ref version as in tag above
     const attributeDefinitionTextSpan = getAttributeDefinitionTextSpan(matchingClass, actionContext.attributeName ?? "", basePath);
+    const packagePath = matchingClass.cem.cemFolderPath + "/" + matchingClass.path;
 
     return [
         {
@@ -93,7 +93,7 @@ function getAttributeDefinitionEntries(
             kind: tss.ScriptElementKind.classElement,
             containerName: fileName ?? "",
             containerKind: tss.ScriptElementKind.moduleElement,
-            fileName: basePath + "/" + matchingClass?.path ?? "",
+            fileName: packagePath,
             textSpan: attributeDefinitionTextSpan,
             contextSpan: attributeDefinitionTextSpan,
         },
@@ -103,12 +103,12 @@ function getAttributeDefinitionEntries(
 function getPropertyDefinitionEntries(
     actionContext: PropertyActionContext,
     basePath: string,
-    matchingClass: JavaScriptModule,
+    matchingClass: JavaScriptModuleWithRef,
     classDeclaration: CustomElement,
     fileName: string,
 ) {
-    // TODO: Implement the ref version as in tag above
     const propertyDefinitionTextSpan = getPropertyDefinitionTextSpan(matchingClass, actionContext.propertyName ?? "", basePath);
+    const packagePath = matchingClass.cem.cemFolderPath + "/" + matchingClass.path;
 
     return [
         {
@@ -116,7 +116,7 @@ function getPropertyDefinitionEntries(
             kind: tss.ScriptElementKind.classElement,
             containerName: fileName ?? "",
             containerKind: tss.ScriptElementKind.moduleElement,
-            fileName: basePath + "/" + matchingClass?.path ?? "",
+            fileName: packagePath,
             textSpan: propertyDefinitionTextSpan,
             contextSpan: propertyDefinitionTextSpan,
         },
@@ -126,12 +126,12 @@ function getPropertyDefinitionEntries(
 function getEventDefinitionEntries(
     actionContext: EventActionContext,
     basePath: string,
-    matchingClass: JavaScriptModule,
+    matchingClass: JavaScriptModuleWithRef,
     classDeclaration: CustomElement,
     fileName: string,
 ) {
-    // TODO: Implement the ref version as in tag above
     const eventDefinitionTextSpan = getEventDefinitionTextSpan(matchingClass, actionContext.eventName ?? "", basePath);
+    const packagePath = matchingClass.cem.cemFolderPath + "/" + matchingClass.path;
 
     return [
         {
@@ -139,7 +139,7 @@ function getEventDefinitionEntries(
             kind: tss.ScriptElementKind.classElement,
             containerName: fileName ?? "",
             containerKind: tss.ScriptElementKind.moduleElement,
-            fileName: basePath + "/" + matchingClass?.path ?? "",
+            fileName: packagePath,
             textSpan: eventDefinitionTextSpan,
             contextSpan: eventDefinitionTextSpan,
         },
