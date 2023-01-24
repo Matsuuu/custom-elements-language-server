@@ -5,11 +5,11 @@ import { getCEMData } from "../../cem/cem-cache.js";
 import { findCustomElementDefinitionModule } from "../../cem/cem-helpers.js";
 import { HTMLTemplateLiteralPlugin } from "../../index.js";
 import { resolveCustomElementTags } from "../../scanners/tag-scanner.js";
-import { getAllFilesAssociatedWithSourceFile, getSourceFile } from "../../ts/sourcefile.js";
+import { getAllFilesAssociatedWithSourceFile, getOrCreateProgram, getSourceFile } from "../../ts/sourcefile.js";
 import { SourceFile } from "typescript";
 import { getFilePathFolder, resolveImportPath } from "./imports.js";
 import { CODE_ACTIONS } from "../enum/code-actions.js";
-import { getPathAsJsFile, getPathAsTsFile } from "../../ts/filepath-transformers.js";
+import { getPathAsDtsFile, getPathAsJsFile, getPathAsTsFile } from "../../ts/filepath-transformers.js";
 
 export function getImportDiagnostics(context: TemplateContext, htmlLanguageService: HtmlLanguageService) {
     const filePath = context.fileName;
@@ -21,6 +21,9 @@ export function getImportDiagnostics(context: TemplateContext, htmlLanguageServi
         return [];
     }
 
+    const prog = getOrCreateProgram(filePath);
+    const allSources = prog.getSourceFiles();
+    const sfNames = allSources.map(sf => sf.fileName);
     const associatedFiles = getAllFilesAssociatedWithSourceFile(sourceFile, basePath);
     // TODO: Might be that this gets all sourcefiles in the project
     // and not just relative to the file. Needs some checking.
@@ -72,8 +75,9 @@ export function getImportDiagnostics(context: TemplateContext, htmlLanguageServi
 function sourceFilesContainFilePath(sourceFiles: string[], fileToFind: string) {
     const jsVariant = getPathAsJsFile(fileToFind);
     const tsVariant = getPathAsTsFile(fileToFind);
+    const dtsVariant = getPathAsDtsFile(fileToFind);
 
-    return sourceFiles.includes(jsVariant) || sourceFiles.includes(tsVariant);
+    return sourceFiles.includes(jsVariant) || sourceFiles.includes(tsVariant) || sourceFiles.includes(dtsVariant);
 }
 
 function findImportDeclarationDestination(sourceFile: SourceFile) {

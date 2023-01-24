@@ -5,3 +5,7 @@ export function getPathAsJsFile(path: string) {
 export function getPathAsTsFile(path: string) {
     return path.replace(/\.js$/, ".ts");
 }
+
+export function getPathAsDtsFile(path: string) {
+    return path.replace(/\.(js|ts)$/, ".d.ts");
+}

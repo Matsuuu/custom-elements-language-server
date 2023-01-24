@@ -2,7 +2,7 @@ import ts from "typescript";
 import { getFilePathFolder, isDependencyImport, resolveImportPath } from "../handlers/diagnostics/imports.js";
 import * as path from "path";
 import * as fs from "fs";
-import { getPathAsJsFile, getPathAsTsFile } from "./filepath-transformers.js";
+import { getPathAsDtsFile, getPathAsJsFile, getPathAsTsFile } from "./filepath-transformers.js";
 import { HTMLTemplateLiteralLanguageService } from "../html-template-literal-language-service.js";
 
 const PROGRAM_CACHE = new Map<string, ts.Program>();
@@ -84,7 +84,8 @@ export function getAllFilesAssociatedWithSourceFile(sourceFile: ts.SourceFile, b
 function tryGetSourceFileForImport(absoluteImportPath: string) {
     return [
         getSourceFile(getPathAsJsFile(absoluteImportPath)),
-        getSourceFile(getPathAsTsFile(absoluteImportPath))
+        getSourceFile(getPathAsTsFile(absoluteImportPath)),
+        getSourceFile(getPathAsDtsFile(absoluteImportPath))
     ].filter(file => file !== undefined)[0];
 }
 
