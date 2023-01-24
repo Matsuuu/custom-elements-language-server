@@ -18,7 +18,7 @@ export class LanguageServiceManager {
      * Try to get the plugged in language service instance of project
      * using the config file path (e.g. /home/matsu/Project/foo/tsconfig.json).
      * */
-    private getOrCreateLanguageService(projectConfigFilePath: string) {
+    private getOrCreateLanguageService(projectConfigFilePath: string, project: tss.server.Project) {
         if (this._languageServiceCache.has(projectConfigFilePath)) {
             return this._languageServiceCache.get(projectConfigFilePath);
         }
@@ -28,7 +28,7 @@ export class LanguageServiceManager {
             throw new Error("Failed to initialize Plugin Creation Info");
         }
 
-        const templateLiteralTSServerPlugin = plugin({ typescript: tss });
+        const templateLiteralTSServerPlugin = plugin({ typescript: tss, project });
         const languageService = templateLiteralTSServerPlugin.create(pluginCreateInfo);
 
         if (!languageService) {
@@ -55,7 +55,7 @@ export class LanguageServiceManager {
 
         const configFilePath = project.canonicalConfigFilePath;
 
-        return this.getOrCreateLanguageService(configFilePath);
+        return this.getOrCreateLanguageService(configFilePath, project);
     }
 
     public getProjectForCurrentFile(fileName: string, fileContent: string) {

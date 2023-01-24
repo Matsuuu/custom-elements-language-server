@@ -3,6 +3,7 @@ import { getFilePathFolder, isDependencyImport, resolveImportPath } from "../han
 import * as path from "path";
 import * as fs from "fs";
 import { getPathAsJsFile, getPathAsTsFile } from "./filepath-transformers.js";
+import { HTMLTemplateLiteralLanguageService } from "../html-template-literal-language-service.js";
 
 const PROGRAM_CACHE = new Map<string, ts.Program>();
 const PACKAGE_MAIN_FILE_CACHE = new Map<string, string>();
@@ -31,14 +32,14 @@ export function getSourceFile(baseOrFullPath: string, classPath?: string) {
         baseOrFullPath :
         [baseOrFullPath, classPath].filter(p => p.trim().length > 0).join("/");
 
-
-    const program = getOrCreateProgram(fullClassPath);
+    const program = HTMLTemplateLiteralLanguageService.project;
 
     // NOTE: this makes everything slow as shit
     // program.getDeclarationDiagnostics();
 
+    // @ts-ignore
     const sourceFile = program.getSourceFile(fullClassPath);
-    const content = sourceFile?.getText();
+
     return sourceFile;
 }
 
@@ -59,7 +60,6 @@ export function getAllFilesAssociatedWithSourceFile(sourceFile: ts.SourceFile, b
             const importFilePath = importReference.fileName
             const absoluteImportPath = resolveAbsoluteFileToImport(importFilePath, basePath, currentSourceFile);
             if (!absoluteImportPath) {
-                debugger;
                 continue;
             }
             if (analyzedFiles[absoluteImportPath]) {
@@ -68,7 +68,6 @@ export function getAllFilesAssociatedWithSourceFile(sourceFile: ts.SourceFile, b
 
             const importSourceFile = tryGetSourceFileForImport(absoluteImportPath);
             if (!importSourceFile) {
-                debugger;
                 continue;
             }
 

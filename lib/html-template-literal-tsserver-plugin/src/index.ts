@@ -12,14 +12,14 @@ export class HTMLTemplateLiteralPlugin {
     private _consumerInfo: tss.server.PluginCreateInfo | undefined;
     private _projectDirectory: string = "";
 
-    public constructor(private readonly _typescript: typeof tss) { }
+    public constructor(private readonly _typescript: typeof tss, private readonly _project: tss.server.Project) { }
 
     public create(info: tss.server.PluginCreateInfo): tss.LanguageService {
         this.initialize(info);
         HTMLTemplateLiteralPlugin.projectDirectory = info.project.getCurrentDirectory();
         this._logger?.info("Starting up HTML Template Literal TSServer Plugin");
 
-        const htmlTemplateLiteralLanguageService = new HTMLTemplateLiteralLanguageService(this._typescript, this.htmlLanguageService);
+        const htmlTemplateLiteralLanguageService = new HTMLTemplateLiteralLanguageService(this._typescript, this.htmlLanguageService, this._project);
 
         const languageService = decorateWithTemplateLanguageService(
             this._typescript,
@@ -59,4 +59,4 @@ export class HTMLTemplateLiteralPlugin {
     }
 }
 
-export default (mod: { typescript: typeof tss }) => new HTMLTemplateLiteralPlugin(mod.typescript);
+export default (mod: { typescript: typeof tss, project: tss.server.Project }) => new HTMLTemplateLiteralPlugin(mod.typescript, mod.project);

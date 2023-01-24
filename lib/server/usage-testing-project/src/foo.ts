@@ -1,6 +1,8 @@
 import { html } from "lit-html";
 import { repeat } from "lit/directives/repeat.js";
 import "./importing-element.js";
+import "./example-project.js";
+import "@shoelace-style/shoelace/dist/components/button/button.js";
 
 export const temp = html`
 
@@ -17,6 +19,7 @@ export const temp = html`
     
     <img src="" />
 
+  
     <input type="text" />
 
     <textarea cols="40"></textarea>

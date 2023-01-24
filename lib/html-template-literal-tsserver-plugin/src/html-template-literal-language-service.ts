@@ -7,7 +7,11 @@ import { getQuickInfo } from "./handlers/quickinfo.js";
 import { getImportDiagnostics } from "./handlers/diagnostics/import-diagnostics.js";
 
 export class HTMLTemplateLiteralLanguageService implements TemplateLanguageService {
-    constructor(private readonly typescript: typeof tss, private readonly htmlLanguageService: HtmlLanguageService) { }
+    public static project: tss.server.Project;
+
+    constructor(private readonly typescript: typeof tss, private readonly htmlLanguageService: HtmlLanguageService, project: tss.server.Project) {
+        HTMLTemplateLiteralLanguageService.project = project;
+    }
 
     getDefinitionAtPosition(context: TemplateContext, position: ts.LineAndCharacter): ts.DefinitionInfo[] {
         return getGoToDefinitionEntries(context, position, this.htmlLanguageService);

@@ -196,11 +196,11 @@ async function runDiagnostics(uri: string, textDoc: TextDocument) {
     const fileName = uri.replace("file://", "");
     const languageService = getLanguageService(fileName, textDoc.getText());
 
-    // const diagnostics = languageService?.getSemanticDiagnostics(fileName);
-    // const sendableDiagnostics: Array<Diagnostic> = diagnostics?.map(diag => tsDiagnosticToDiagnostic(diag, textDoc))
-    //     .filter((diag): diag is Diagnostic => diag !== undefined) ?? []; // Stupid ts types
+    const diagnostics = languageService?.getSemanticDiagnostics(fileName);
+    const sendableDiagnostics: Array<Diagnostic> = diagnostics?.map(diag => tsDiagnosticToDiagnostic(diag, textDoc))
+        .filter((diag): diag is Diagnostic => diag !== undefined) ?? []; // Stupid ts types
 
-    // connection.sendDiagnostics({ uri: textDoc.uri, diagnostics: sendableDiagnostics });
+    connection.sendDiagnostics({ uri: textDoc.uri, diagnostics: sendableDiagnostics });
 }
 
 connection.onCodeActionResolve((codeAction: CodeAction) => {
