@@ -41,28 +41,16 @@ export function getAllFilesAssociatedWithSourceFile(sourceFile: ts.SourceFile, b
 
     const analyzedFiles: Record<string, ts.SourceFile> = {};
 
-    function processFileAndAddImports(sf: ts.SourceFile) {
-        if (analyzedFiles[sf.fileName]) {
+    function processFileAndAddImports(currentSourceFile: ts.SourceFile) {
+        if (analyzedFiles[currentSourceFile.fileName]) {
             return;
         }
-        analyzedFiles[sf.fileName] = sf;
-        const fileInfo = ts.preProcessFile(sf.getFullText());
+        analyzedFiles[currentSourceFile.fileName] = currentSourceFile;
+        const fileInfo = ts.preProcessFile(currentSourceFile.getFullText());
         const imports = fileInfo.importedFiles;
-        for (const importRef of imports) {
-            const importFilePath = importRef.fileName
-            let absoluteImportPath;
-            if (isDependencyImport(importFilePath)) {
-                // TODO: Handle dependency packages.
-                // One handler for base import, other for file imports
-                if (importFilePath.includes(".js")) {
-                    absoluteImportPath = path.resolve(basePath, "node_modules", importFilePath);
-                } else {
-                    absoluteImportPath = ""; // TODO: Resolve base import file from package.json main/module
-                }
-            } else {
-                absoluteImportPath = path.resolve(getFilePathFolder(sf.fileName), importFilePath);
-                debugger;
-            }
+        for (const importReference of imports) {
+            const importFilePath = importReference.fileName
+            const absoluteImportPath = resolveAbsoluteFileToImport(importFilePath, basePath, currentSourceFile);
 
             debugger;
 
@@ -76,5 +64,20 @@ export function getAllFilesAssociatedWithSourceFile(sourceFile: ts.SourceFile, b
     }
 
     processFileAndAddImports(sourceFile);
+}
+
+function resolveAbsoluteFileToImport(importFilePath: string, basePath: string, sourceFile: ts.SourceFile) {
+
+    if (isDependencyImport(importFilePath)) {
+        // TODO: Handle dependency packages.
+        // One handler for base import, other for file imports
+        if (importFilePath.includes(".js")) {
+            return path.resolve(basePath, "node_modules", importFilePath);
+        } else {
+            return ""; // TODO: Resolve base import file from package.json main/module
+        }
+    } else {
+        return path.resolve(getFilePathFolder(sourceFile.fileName), importFilePath);
+    }
 }
 

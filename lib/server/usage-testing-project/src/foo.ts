@@ -4,8 +4,6 @@ import "./importing-element.js";
 
 export const temp = html`
 
-
-
     <example-project my-attribute="f" 
     project-name="foo" 
     .projectName="" 
