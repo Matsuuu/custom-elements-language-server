@@ -5,6 +5,8 @@ import { getAttributeIdentifier, getClassIdentifier, getEventIdentifier, getProp
 
 export const ZERO_TEXT_SPAN = ts.createTextSpan(0, 0);
 
+// TODO: We might need to implement the package aware things here too
+
 export function getClassDefinitionTextSpan(mod: JavaScriptModule, className: string, basePath: string): ts.TextSpan {
     const classIdentifier = getClassIdentifier(mod.path, className, basePath);
     if (!classIdentifier) {
