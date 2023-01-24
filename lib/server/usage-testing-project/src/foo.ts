@@ -2,7 +2,6 @@ import { html } from "lit-html";
 import { repeat } from "lit/directives/repeat.js";
 import "./importing-element.js";
 import "./example-project.js";
-import "@shoelace-style/shoelace/dist/components/button/button.js";
 
 export const temp = html`
 
@@ -12,7 +11,9 @@ export const temp = html`
     .color="#ff094"
     @my-custom-event="">      
     </example-project>
-    
+
+    <example-project project-name="foo"></example-project>
+
     <sl-button size=""></sl-button>
     
     <p>Foo</p>

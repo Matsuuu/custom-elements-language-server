@@ -21,8 +21,6 @@ export function getImportDiagnostics(context: TemplateContext, htmlLanguageServi
         return [];
     }
 
-    const data = sourceFile?.getText();
-
     const associatedFiles = getAllFilesAssociatedWithSourceFile(sourceFile, basePath);
     // TODO: Might be that this gets all sourcefiles in the project
     // and not just relative to the file. Needs some checking.
