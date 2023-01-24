@@ -91,6 +91,7 @@ export function tsDiagnosticToDiagnostic(diagnostic: ts.Diagnostic, textDoc: Tex
     return {
         message: diagnostic.messageText.toString(),
         range: Range.create(offsetToPosition(textDoc, start), offsetToPosition(textDoc, end)),
+        code: diagnostic.code,
         severity: diagnosticCategoryToSeverity(diagnostic.category),
         source: "Custom Elements Language Server",
         data: diagnostic.relatedInformation

@@ -1,3 +1,3 @@
 export const CODE_ACTIONS = {
-    IMPORT: 0
+    IMPORT: 1
 }
