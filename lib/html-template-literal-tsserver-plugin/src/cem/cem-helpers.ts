@@ -22,7 +22,7 @@ interface CEMRef {
 export type JavaScriptModuleWithRef = JavaScriptModule & CEMRef;
 export type CustomElementWithRef = CustomElement & CEMRef;
 
-export function findClassForTagName(cemCollection: CEMCollection, tagName: string): JavaScriptModule | undefined {
+export function findClassForTagName(cemCollection: CEMCollection, tagName: string): JavaScriptModuleWithRef | undefined {
     // TODO: Cache
     const declarationModule = cemCollection.modules.find(mod => moduleHasCustomElementExportByName(mod, tagName));
     if (!declarationModule) return undefined;
@@ -122,7 +122,7 @@ export function exportHasCustomElementExportByName(modExport: Export, tagName: s
 }
 
 export function findModuleByPath(cemCollection: CEMCollection, path: string) {
-    return cemCollection.modules.find(mod => modulePathEquals(mod, path));
+    return cemCollection.modulesWithReferences.find(mod => modulePathEquals(mod, path));
 }
 
 export function modulePathEquals(mod: Module, path: string) {

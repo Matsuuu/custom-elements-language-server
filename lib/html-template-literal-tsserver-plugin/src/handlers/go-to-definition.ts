@@ -12,7 +12,7 @@ import {
     PropertyActionContext,
     resolveActionContext,
 } from "../scanners/completion-context.js";
-import { findClassForTagName, findCustomElementDeclarationFromModule } from "../cem/cem-helpers.js";
+import { findClassForTagName, findCustomElementDeclarationFromModule, JavaScriptModuleWithRef } from "../cem/cem-helpers.js";
 import { CustomElement, JavaScriptModule } from "custom-elements-manifest";
 import { TemplateContext } from "typescript-template-language-service-decorator";
 import { getFileNameFromPath } from "../fs.js";
@@ -59,8 +59,10 @@ export function getGoToDefinitionEntries(context: TemplateContext, position: tss
     return [...definitionInfos];
 }
 
-function getTagDefinitionsEntries(basePath: string, matchingClass: JavaScriptModule, classDeclaration: CustomElement, fileName: string) {
+function getTagDefinitionsEntries(basePath: string, matchingClass: JavaScriptModuleWithRef, classDeclaration: CustomElement, fileName: string) {
     const classDefinitionTextSpan = getClassDefinitionTextSpan(matchingClass, classDeclaration?.name ?? "", basePath);
+    const packagePath = matchingClass.cem.cemFolderPath + "/" + matchingClass.path;
+    // TODO: Point to the .d.ts file
 
     return [
         {
@@ -68,7 +70,7 @@ function getTagDefinitionsEntries(basePath: string, matchingClass: JavaScriptMod
             kind: tss.ScriptElementKind.classElement,
             containerName: fileName ?? "",
             containerKind: tss.ScriptElementKind.moduleElement,
-            fileName: basePath + "/" + matchingClass?.path ?? "",
+            fileName: packagePath,
             textSpan: classDefinitionTextSpan,
             contextSpan: classDefinitionTextSpan,
         },
@@ -82,6 +84,7 @@ function getAttributeDefinitionEntries(
     classDeclaration: CustomElement,
     fileName: string,
 ) {
+    // TODO: Implement the ref version as in tag above
     const attributeDefinitionTextSpan = getAttributeDefinitionTextSpan(matchingClass, actionContext.attributeName ?? "", basePath);
 
     return [
@@ -104,6 +107,7 @@ function getPropertyDefinitionEntries(
     classDeclaration: CustomElement,
     fileName: string,
 ) {
+    // TODO: Implement the ref version as in tag above
     const propertyDefinitionTextSpan = getPropertyDefinitionTextSpan(matchingClass, actionContext.propertyName ?? "", basePath);
 
     return [
@@ -126,6 +130,7 @@ function getEventDefinitionEntries(
     classDeclaration: CustomElement,
     fileName: string,
 ) {
+    // TODO: Implement the ref version as in tag above
     const eventDefinitionTextSpan = getEventDefinitionTextSpan(matchingClass, actionContext.eventName ?? "", basePath);
 
     return [
