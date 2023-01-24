@@ -2,6 +2,7 @@ import ts from "typescript";
 import { getFilePathFolder, isDependencyImport, resolveImportPath } from "../handlers/diagnostics/imports.js";
 import * as path from "path";
 import * as fs from "fs";
+import { getPathAsJsFile, getPathAsTsFile } from "./filepath-transformers.js";
 
 const PROGRAM_CACHE = new Map<string, ts.Program>();
 const PACKAGE_MAIN_FILE_CACHE = new Map<string, string>();
@@ -36,7 +37,9 @@ export function getSourceFile(baseOrFullPath: string, classPath?: string) {
     // NOTE: this makes everything slow as shit
     // program.getDeclarationDiagnostics();
 
-    return program.getSourceFile(fullClassPath);
+    const sourceFile = program.getSourceFile(fullClassPath);
+    const content = sourceFile?.getText();
+    return sourceFile;
 }
 
 export function getAllFilesAssociatedWithSourceFile(sourceFile: ts.SourceFile, basePath: string) {
@@ -52,14 +55,20 @@ export function getAllFilesAssociatedWithSourceFile(sourceFile: ts.SourceFile, b
         const imports = fileInfo.importedFiles;
 
         for (const importReference of imports) {
+            // TODO: for node modules, cache the found connections
             const importFilePath = importReference.fileName
             const absoluteImportPath = resolveAbsoluteFileToImport(importFilePath, basePath, currentSourceFile);
             if (!absoluteImportPath) {
+                debugger;
+                continue;
+            }
+            if (analyzedFiles[absoluteImportPath]) {
                 continue;
             }
 
-            const importSourceFile = getSourceFile(absoluteImportPath);
+            const importSourceFile = tryGetSourceFileForImport(absoluteImportPath);
             if (!importSourceFile) {
+                debugger;
                 continue;
             }
 
@@ -68,6 +77,15 @@ export function getAllFilesAssociatedWithSourceFile(sourceFile: ts.SourceFile, b
     }
 
     processFileAndAddImports(sourceFile);
+
+    return Object.keys(analyzedFiles);
+}
+
+function tryGetSourceFileForImport(absoluteImportPath: string) {
+    return [
+        getSourceFile(getPathAsJsFile(absoluteImportPath)),
+        getSourceFile(getPathAsTsFile(absoluteImportPath))
+    ].filter(file => file !== undefined)[0];
 }
 
 function resolveAbsoluteFileToImport(importFilePath: string, basePath: string, sourceFile: ts.SourceFile) {
@@ -76,8 +94,6 @@ function resolveAbsoluteFileToImport(importFilePath: string, basePath: string, s
         return path.resolve(getFilePathFolder(sourceFile.fileName), importFilePath);
     }
 
-    // TODO: Handle dependency packages.
-    // One handler for base import, other for file imports
     if (importFilePath.includes(".js")) {
         return path.resolve(basePath, "node_modules", importFilePath);
     }
@@ -92,6 +108,6 @@ function resolveAbsoluteFileToImport(importFilePath: string, basePath: string, s
     const dependencyPackageJson = JSON.parse(fs.readFileSync(dependencyPackageJsonPath, "utf8"));
     const mainFilePath: string = dependencyPackageJson.main;
 
-    return packagePath + "/" + mainFilePath; // TODO: Resolve base import file from package.json main/module
+    return packagePath + "/" + mainFilePath;
 }
 

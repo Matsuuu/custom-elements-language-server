@@ -21,7 +21,7 @@ import { TextDocument, TextEdit } from "vscode-languageserver-textdocument";
 import { getCompletionItemInfo, getCompletionItems } from "./completion.js";
 import { validateTextDocument } from "./analyzer.js";
 import { DEFAULT_SETTINGS, LanguageServerSettings, setCapabilities, setGlobalSettings } from "./settings.js";
-import { getLanguageService, initializeLanguageServiceForFile } from "./language-services/language-services.js";
+import { getLanguageService, updateLanguageServiceForFile } from "./language-services/language-services.js";
 import { documentSpanToLocation, offsetToPosition, quickInfoToHover, textDocumentDataToUsableData, tsDiagnosticToDiagnostic } from "./transformers.js";
 import { documents, documentSettings } from "./text-documents.js";
 import { getReferencesAtPosition } from "./handlers/references.js";
@@ -122,7 +122,7 @@ function onInitialize(params: InitializeParams) {
         console.log("Opened text doc");
 
         const fileName = e.document.uri.replace("file://", "");
-        initializeLanguageServiceForFile(fileName, e.document.getText());
+        updateLanguageServiceForFile(fileName, e.document.getText());
     });
 
     connection.onShutdown(() => { });
@@ -193,14 +193,14 @@ connection.onDidChangeTextDocument((params: DidChangeTextDocumentParams) => {
 async function runDiagnostics(uri: string, textDoc: TextDocument) {
 
     validateTextDocument(connection, textDoc, documentSettings);
-
     const fileName = uri.replace("file://", "");
     const languageService = getLanguageService(fileName, textDoc.getText());
-    const diagnostics = languageService?.getSemanticDiagnostics(fileName);
-    const sendableDiagnostics: Array<Diagnostic> = diagnostics?.map(diag => tsDiagnosticToDiagnostic(diag, textDoc))
-        .filter((diag): diag is Diagnostic => diag !== undefined) ?? []; // Stupid ts types
 
-    connection.sendDiagnostics({ uri: textDoc.uri, diagnostics: sendableDiagnostics });
+    // const diagnostics = languageService?.getSemanticDiagnostics(fileName);
+    // const sendableDiagnostics: Array<Diagnostic> = diagnostics?.map(diag => tsDiagnosticToDiagnostic(diag, textDoc))
+    //     .filter((diag): diag is Diagnostic => diag !== undefined) ?? []; // Stupid ts types
+
+    // connection.sendDiagnostics({ uri: textDoc.uri, diagnostics: sendableDiagnostics });
 }
 
 connection.onCodeActionResolve((codeAction: CodeAction) => {

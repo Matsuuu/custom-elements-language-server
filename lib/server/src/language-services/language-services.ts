@@ -77,7 +77,7 @@ export function getLanguageService(fileName: string, fileContent: string) {
     return getLanguageServiceManagerInstance().getLanguageServiceForCurrentFile(fileName, fileContent);
 }
 
-export function initializeLanguageServiceForFile(fileName: string, fileContent: string) {
+export function updateLanguageServiceForFile(fileName: string, fileContent: string) {
     getLanguageServiceManagerInstance().getLanguageServiceForCurrentFile(fileName, fileContent);
 }
 

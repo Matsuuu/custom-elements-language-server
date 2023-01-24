@@ -1,4 +1,5 @@
 import { CustomElement, CustomElementDeclaration, Declaration, Export, JavaScriptModule, Module, Package } from "custom-elements-manifest";
+import { getPathAsJsFile } from "../ts/filepath-transformers.js";
 import { CEMCollection } from "./cem-cache.js";
 import { CEMInstance } from "./cem-data.js";
 
@@ -126,9 +127,9 @@ export function findModuleByPath(cemCollection: CEMCollection, path: string) {
 
 export function modulePathEquals(mod: Module, path: string) {
     const modulePath = mod.path;
-    const modulePathAsJs = modulePath.replace(".ts", ".js");
+    const modulePathAsJs = getPathAsJsFile(modulePath);
     const withTrailingSlash = modulePath.startsWith("/") ? modulePath : "/" + modulePath;
-    const withTrailingSlashAsJs = withTrailingSlash.replace(".ts", ".js");
+    const withTrailingSlashAsJs = getPathAsJsFile(withTrailingSlash);
 
     return [modulePath, modulePathAsJs, withTrailingSlash, withTrailingSlashAsJs].some(p => p === path);
 }

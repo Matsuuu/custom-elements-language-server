@@ -23,7 +23,6 @@ export class HTMLTemplateLiteralLanguageService implements TemplateLanguageServi
 
     public getCompletionEntryDetails?(context: TemplateContext, position: ts.LineAndCharacter, name: string): ts.CompletionEntryDetails {
 
-        debugger;
         return {
             name: "",
             kind: tss.ScriptElementKind.parameterElement,

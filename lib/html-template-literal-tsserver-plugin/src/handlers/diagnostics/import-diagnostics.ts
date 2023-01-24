@@ -5,27 +5,29 @@ import { getCEMData } from "../../cem/cem-cache.js";
 import { findCustomElementDefinitionModule } from "../../cem/cem-helpers.js";
 import { HTMLTemplateLiteralPlugin } from "../../index.js";
 import { resolveCustomElementTags } from "../../scanners/tag-scanner.js";
-import { getAllFilesAssociatedWithSourceFile, getOrCreateProgram } from "../../ts/sourcefile.js";
+import { getAllFilesAssociatedWithSourceFile, getSourceFile } from "../../ts/sourcefile.js";
 import { SourceFile } from "typescript";
 import { getFilePathFolder, resolveImportPath } from "./imports.js";
 import { CODE_ACTIONS } from "../enum/code-actions.js";
+import { getPathAsJsFile, getPathAsTsFile } from "../../ts/filepath-transformers.js";
 
 export function getImportDiagnostics(context: TemplateContext, htmlLanguageService: HtmlLanguageService) {
     const filePath = context.fileName;
     const filePathWithoutFile = getFilePathFolder(filePath);
-    const program = getOrCreateProgram(filePath);
     const basePath = HTMLTemplateLiteralPlugin.projectDirectory;
-    const sourceFile = program.getSourceFile(filePath);
+    const sourceFile = getSourceFile(filePath);
+
     if (!sourceFile) {
         return [];
     }
+
+    const data = sourceFile?.getText();
 
     const associatedFiles = getAllFilesAssociatedWithSourceFile(sourceFile, basePath);
     // TODO: Might be that this gets all sourcefiles in the project
     // and not just relative to the file. Needs some checking.
     // Might lead to some false negatives.
-    const sourceFiles = program.getSourceFiles();
-    const sourceFileNames = sourceFiles.map(sf => sf.fileName);
+    const sourceFileNames = associatedFiles;
 
     if (!sourceFile) {
         return [];
@@ -51,7 +53,7 @@ export function getImportDiagnostics(context: TemplateContext, htmlLanguageServi
         }
         const cemInstanceRef = definition.cem;
         const fullImportPath = `${cemInstanceRef.cemFolderPath}/${definition.path}`;
-        if (!sourceFileNames.includes(fullImportPath)) {
+        if (!sourceFilesContainFilePath(sourceFileNames, fullImportPath)) {
 
             const relativeImportPath = resolveImportPath(fullImportPath, filePathWithoutFile);
 
@@ -67,6 +69,13 @@ export function getImportDiagnostics(context: TemplateContext, htmlLanguageServi
     const diagnostics = notDefinedTags.map(tag => notDefinedTagToDiagnostic(tag, sourceFile, importOffset));
 
     return diagnostics;
+}
+
+function sourceFilesContainFilePath(sourceFiles: string[], fileToFind: string) {
+    const jsVariant = getPathAsJsFile(fileToFind);
+    const tsVariant = getPathAsTsFile(fileToFind);
+
+    return sourceFiles.includes(jsVariant) || sourceFiles.includes(tsVariant);
 }
 
 function findImportDeclarationDestination(sourceFile: SourceFile) {

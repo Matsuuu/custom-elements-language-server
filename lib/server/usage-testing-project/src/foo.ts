@@ -11,12 +11,10 @@ export const temp = html`
     @my-custom-event="">      
     </example-project>
     
-  
     <sl-button size=""></sl-button>
     
     <p>Foo</p>
- 
-
+    
     <img src="" />
 
     <input type="text" />

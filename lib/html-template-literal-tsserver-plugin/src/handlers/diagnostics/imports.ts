@@ -1,10 +1,11 @@
 import * as path from "path";
+import { getPathAsJsFile } from "../../ts/filepath-transformers.js";
 
 export function resolveImportPath(fullImportPath: string, filePathWithoutFile: string) {
 
     const importPathWithoutFile = fullImportPath.substring(0, fullImportPath.lastIndexOf("/"));
     const importFileName = fullImportPath.substring(fullImportPath.lastIndexOf("/"));
-    const importFileNameAsJs = importFileName.replace(".ts", ".js");
+    const importFileNameAsJs = getPathAsJsFile(importFileName);
     let relativePathToImport = path.relative(filePathWithoutFile, importPathWithoutFile);
     if (relativePathToImport.length <= 0) {
         relativePathToImport = ".";
@@ -24,5 +25,5 @@ export function getFilePathFolder(filePath: string) {
 }
 
 export function isDependencyImport(importPath: string) {
-    return importPath.substring(0, 1).match(/[a-zA-Z]/) !== null;
+    return importPath.substring(0, 1).match(/[a-zA-Z@]/) !== null;
 }
