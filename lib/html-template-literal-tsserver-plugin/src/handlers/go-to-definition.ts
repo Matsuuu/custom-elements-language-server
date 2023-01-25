@@ -34,6 +34,10 @@ export function getGoToDefinitionEntries(context: TemplateContext, position: tss
         return [...definitionInfos];
     }
 
+    if (matchingClass.cem.isDependency) {
+        matchingClass.path = matchingClass.path.replace(/\.(js|ts)$/, ".d.ts");
+    }
+
     const fileName = getFileNameFromPath(matchingClass?.path);
     const classDeclaration = findCustomElementDeclarationFromModule(matchingClass);
     if (!classDeclaration) {
