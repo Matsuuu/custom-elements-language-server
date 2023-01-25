@@ -34,8 +34,6 @@ export function getGoToDefinitionEntries(context: TemplateContext, position: tss
         return [...definitionInfos];
     }
 
-    debugger;
-
     const fileName = getFileNameFromPath(matchingClass?.path);
     const classDeclaration = findCustomElementDeclarationFromModule(matchingClass);
     if (!classDeclaration) {
