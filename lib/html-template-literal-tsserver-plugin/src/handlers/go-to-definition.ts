@@ -34,6 +34,8 @@ export function getGoToDefinitionEntries(context: TemplateContext, position: tss
         return [...definitionInfos];
     }
 
+    debugger;
+
     const fileName = getFileNameFromPath(matchingClass?.path);
     const classDeclaration = findCustomElementDeclarationFromModule(matchingClass);
     if (!classDeclaration) {
@@ -62,7 +64,6 @@ export function getGoToDefinitionEntries(context: TemplateContext, position: tss
 function getTagDefinitionsEntries(basePath: string, matchingClass: JavaScriptModuleWithRef, classDeclaration: CustomElement, fileName: string) {
     const classDefinitionTextSpan = getClassDefinitionTextSpan(matchingClass, classDeclaration?.name ?? "", basePath);
     let packagePath = matchingClass.cem.cemFolderPath + "/" + matchingClass.path;
-    packagePath = packagePath.replace(/\.(js|ts)$/, ".d.ts");
     // TODO: Point to the .d.ts file ? Let's try it out
 
     return [

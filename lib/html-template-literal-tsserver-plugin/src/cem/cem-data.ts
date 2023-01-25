@@ -17,6 +17,7 @@ export class CEMInstance {
     public packageName: string | undefined;
     public packageJsonPath: string | undefined;
     public packageJson: Object | undefined;
+    public isDependency: boolean = false;
 
     constructor(builderData: CEMInstanceBuilderData) {
 
@@ -43,6 +44,7 @@ export class CEMInstance {
         const cem = JSON.parse(cemFile);
 
         this.cem = cem;
+        this.isDependency = builderData.packageJsonPath.includes("node_modules");
         this.cemPath = builderData.cemPath;
         this.cemFolderPath = this.cemPath.substring(0, this.cemPath.lastIndexOf("/"));
         this.packagePath = builderData.packagePath;
