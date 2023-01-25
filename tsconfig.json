@@ -1,6 +1,6 @@
 {
     "paths": ["lib/**"],
-    "exclude": ["./lib/server/usage-testing-project", "./usage-testing-project"],
+    "exclude": ["./lib/server/usage-testing-project"],
     "compilerOptions": {
         "target": "ESNext",
         "module": "ESNext",
