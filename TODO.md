@@ -1,3 +1,10 @@
+# Current worklist
+
+- Fork and extend the scanner to make JS in HTML not break it
+- Optimize and rewrite to to References
+- Cache more
+- Add unclosed html tags diagnostics
+
 # List of todo items before release
 
 - Fix template literal scanner to support JS in HTML
@@ -18,6 +25,7 @@
         - Missing import
         - Unclosed HTML tags
         - Else?
+        - Invalid attribute/property values?
 
 
 
