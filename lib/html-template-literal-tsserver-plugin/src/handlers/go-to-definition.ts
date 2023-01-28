@@ -20,7 +20,6 @@ import { getAttributeDefinitionTextSpan, getClassDefinitionTextSpan, getEventDef
 import { getCEMData } from "../export.js";
 
 export function getGoToDefinitionEntries(context: TemplateContext, position: tss.LineAndCharacter, htmlLanguageService: HtmlLanguageService) {
-    const basePath = getProjectBasePath(context);
     let definitionInfos: Array<ts.DefinitionInfo> = [];
     const actionContext = resolveActionContext(htmlLanguageService, context, position);
     const cemCollection = getCEMData(context.fileName);
@@ -37,6 +36,7 @@ export function getGoToDefinitionEntries(context: TemplateContext, position: tss
     if (matchingClass.cem.isDependency) {
         matchingClass.path = matchingClass.path.replace(/\.(js|ts)$/, ".d.ts");
     }
+    const basePath = matchingClass.cem.cemFolderPath ?? getProjectBasePath(context);
 
     const fileName = getFileNameFromPath(matchingClass?.path);
     const classDeclaration = findCustomElementDeclarationFromModule(matchingClass);
