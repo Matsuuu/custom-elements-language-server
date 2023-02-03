@@ -31,6 +31,11 @@ function completionEntryToCompletionItem(completionsEntry: ts.CompletionEntry): 
     if (insertText.startsWith("/")) {
         insertText = insertText.substring(1);
     }
+    if (insertText.match(/^@\w+-/)) {
+        const match = insertText.match(/^@\w+-/);
+        insertText = insertText.replace(match?.at(0) || '', "");
+
+    }
     // TODO: Fill the rest
     return {
         label: completionsEntry.name,
