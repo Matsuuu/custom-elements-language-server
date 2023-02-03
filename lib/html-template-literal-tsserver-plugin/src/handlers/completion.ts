@@ -53,7 +53,6 @@ export function getCompletionEntries(context: TemplateContext, position: tss.Lin
         // NOTE: This is done by vscode automatically?
         // Check if it's done everywhere and then do a check on completions if
         // the closing tag is already present.
-        //
     }
 
     if (isAttributeNameAction(actionContext)) {

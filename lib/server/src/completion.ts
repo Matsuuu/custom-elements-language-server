@@ -27,11 +27,16 @@ function completionsToList(completions: ts.WithMetadata<ts.CompletionInfo> | und
 }
 
 function completionEntryToCompletionItem(completionsEntry: ts.CompletionEntry): CompletionItem {
+    let insertText = completionsEntry.name;
+    if (insertText.startsWith("/")) {
+        insertText = insertText.substring(1);
+    }
     // TODO: Fill the rest
     return {
         label: completionsEntry.name,
         kind: CompletionItemKind.Class,
-        documentation: completionsEntry.labelDetails?.description
+        documentation: completionsEntry.labelDetails?.description,
+        insertText: insertText
     };
 }
 
