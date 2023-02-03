@@ -6,7 +6,8 @@ export function createTextDocumentFromContext(context: TemplateContext): TextDoc
         uri: "html-template-literal-tsserver-plugin/embedded.html",
         languageId: "html",
         version: 1,
-        getText: () => context.text,
+        // getText: () => context.text,
+        getText: () => context.rawText,
         positionAt: (offset: number) => {
             return context.toPosition(offset);
         },
