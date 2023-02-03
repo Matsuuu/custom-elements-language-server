@@ -1,15 +1,16 @@
 import { TemplateContext } from "typescript-template-language-service-decorator";
 import * as tss from "typescript/lib/tsserverlibrary.js";
 import { Position, LanguageService } from "vscode-html-languageservice";
-import pkg from "vscode-html-languageservice";
 import { createTextDocumentFromContext } from "../text-document.js";
+import { createScanner } from "./parsers/html-scanner.js";
+import pkg from "vscode-html-languageservice";
 const { TokenType } = pkg;
 
 // Some of the context checks were borrowed from https://github.com/microsoft/vscode-html-languageservice/blob/main/src/services/htmlCompletion.ts
 
 export function resolveActionContext(languageService: LanguageService, context: TemplateContext, position: Position): ActionContext {
     const document = createTextDocumentFromContext(context);
-    const scanner = languageService.createScanner(document.getText());
+    const scanner = createScanner(document.getText());
     const offset = document.offsetAt(position);
     // NOTE: Currently there's some issues with using this scanner
     // as it breaks on tag implementations using non javascript escaped
@@ -27,6 +28,15 @@ export function resolveActionContext(languageService: LanguageService, context: 
     let currentTag = "";
     let token = scanner.scan();
     while (token !== TokenType.EOS && scanner.getTokenOffset() <= offset) {
+        const tokenInfo = {
+            offset: scanner.getTokenOffset(),
+            length: scanner.getTokenLength(),
+            end: scanner.getTokenEnd(),
+            text: scanner.getTokenText(),
+            type: scanner.getTokenType(),
+            error: scanner.getTokenError(),
+            state: scanner.getScannerState(),
+        };
         const tokenOffset = scanner.getTokenOffset();
         const tokenLength = scanner.getTokenLength();
 
