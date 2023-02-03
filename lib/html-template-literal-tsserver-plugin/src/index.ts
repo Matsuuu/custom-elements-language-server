@@ -49,7 +49,7 @@ export class HTMLTemplateLiteralPlugin {
     private getTemplateSettings() {
         return {
             get tags() {
-                return ["html", "htm"];
+                return ["html", "htm", "template"];
             },
             enableForStringWithSubstitutions: true,
             getSubstitutions: (templateString: any, spans: any): string => {
