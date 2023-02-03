@@ -13,12 +13,11 @@ export const temp = html`
     @my-custom-event=${() => {console.log("foo")}}
     ></example-project>
 
-    <example-project 
+    <example-project
       project-name="foo"
     ></example-project>
 
     <sl-button size=""></sl-button>
-    
   
     <sl-input @sl-blur=${() => {}}></sl-input>
 
