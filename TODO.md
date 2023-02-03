@@ -1,6 +1,5 @@
 # Current worklist
 
-- Fork and extend the scanner to make JS in HTML not break it
 - Optimize and rewrite to to References
 - Cache more
 - Add unclosed html tags diagnostics

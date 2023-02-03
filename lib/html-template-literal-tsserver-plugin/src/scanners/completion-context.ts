@@ -15,15 +15,6 @@ export function resolveActionContext(languageService: LanguageService, context: 
     let currentTag = "";
     let token = scanner.scan();
     while (token !== TokenType.EOS && scanner.getTokenOffset() <= offset) {
-        const tokenInfo = {
-            offset: scanner.getTokenOffset(),
-            length: scanner.getTokenLength(),
-            end: scanner.getTokenEnd(),
-            text: scanner.getTokenText(),
-            type: scanner.getTokenType(),
-            error: scanner.getTokenError(),
-            state: scanner.getScannerState(),
-        };
         const tokenOffset = scanner.getTokenOffset();
         const tokenLength = scanner.getTokenLength();
 
