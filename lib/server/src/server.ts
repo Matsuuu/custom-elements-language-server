@@ -79,16 +79,24 @@ connection.onReferences((referencesEvent) => {
     // Here we can't utilize the template literal language service
 
     return [...references, ...lspReferences.map(documentSpanToLocation)];
-    // return references?.map(documentSpanToLocation) ?? [];
-    /*return [{
-        uri: "file:///home/matsu/Projects/custom-elements-language-server/lib/html-template-literal-tsserver-plugin/example/src/foo.ts",
-        range: Range.create(Position.create(0, 0), Position.create(0, 10))
-    }]*/
 });
 
 // Make the text document manager listen on the connection
 // for open, change and close text document events
 documents.listen(connection);
+
+documents.onDidClose(e => {
+    documentSettings.delete(e.document.uri);
+});
+
+documents.onDidOpen(e => {
+    console.log("Opened text doc");
+
+    const fileName = e.document.uri.replace("file://", "");
+    updateLanguageServiceForFile(fileName, e.document.getText());
+
+    runDiagnostics(e.document.uri, e.document);
+});
 
 // Listen on the connection
 connection.listen();
@@ -97,7 +105,6 @@ function onInitialize(params: InitializeParams) {
     let capabilities = params.capabilities;
 
     console.log("Initialize start");
-    // TODO: Figure out these
     // Does the client support the `workspace/configuration` request?
     // If not, we fall back using global settings.
     hasConfigurationCapability = !!(capabilities.workspace && !!capabilities.workspace.configuration);
@@ -114,23 +121,11 @@ function onInitialize(params: InitializeParams) {
         hasDiagnosticRelatedInformationCapability,
     });
 
-    documents.onDidClose(e => {
-        documentSettings.delete(e.document.uri);
-    });
-
-    documents.onDidOpen(e => {
-        console.log("Opened text doc");
-
-        const fileName = e.document.uri.replace("file://", "");
-        updateLanguageServiceForFile(fileName, e.document.getText());
-    });
-
     connection.onShutdown(() => { });
 
     const result: InitializeResult = {
         capabilities: {
             textDocumentSync: TextDocumentSyncKind.Full,
-            // Tell the client that this server supports code completion.
             completionProvider: {
                 resolveProvider: true,
             },
@@ -179,7 +174,6 @@ function onDidChangeConfiguration(change: DidChangeConfigurationParams) {
 
 connection.onDidChangeTextDocument((params: DidChangeTextDocumentParams) => {
     console.log("OnDidChangeTextDocument");
-    // TODO: Diagnostiscs might get a bit mis-aligned
     const docRef = params.textDocument;
     const changes = params.contentChanges;
     const textDoc = documents.get(docRef.uri);
