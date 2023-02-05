@@ -167,9 +167,6 @@ function onDidChangeConfiguration(change: DidChangeConfigurationParams) {
     } else {
         setGlobalSettings(<LanguageServerSettings>(change.settings.languageServerExample || DEFAULT_SETTINGS));
     }
-
-    // Revalidate all open text documents
-    documents.all().forEach(textDocument => validateTextDocument(connection, textDocument, documentSettings));
 }
 
 connection.onDidChangeTextDocument((params: DidChangeTextDocumentParams) => {
@@ -186,7 +183,6 @@ connection.onDidChangeTextDocument((params: DidChangeTextDocumentParams) => {
 
 async function runDiagnostics(uri: string, textDoc: TextDocument) {
 
-    validateTextDocument(connection, textDoc, documentSettings);
     const fileName = uri.replace("file://", "");
     const languageService = getLanguageService(fileName, textDoc.getText());
 
