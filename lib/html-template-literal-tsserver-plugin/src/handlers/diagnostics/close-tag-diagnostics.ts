@@ -15,18 +15,17 @@ export function getMissingCloseTagDiagnostics(context: TemplateContext, htmlLang
 
     return customElementTagNodes
         .filter(nodeIsNotClosed)
-        .map(node => nonClosedTagToDiagnostic(node, sourceFile));
+        .map(node => nonClosedTagToDiagnostic(node, sourceFile, context.node.pos));
 }
 
 function nodeIsNotClosed(node: Node) {
     return node.endTagStart === undefined;
 }
 
-function nonClosedTagToDiagnostic(node: Node, sourceFile: tss.SourceFile): tss.Diagnostic {
+function nonClosedTagToDiagnostic(node: Node, sourceFile: tss.SourceFile, htmlContextOffset: number): tss.Diagnostic {
     const startTagEnd = node.startTagEnd ?? node.start;
-    const closingSnippet = `Close the tag ${node.tag}`;
-    // TODO: Get closingTagPosition
-    const closingTagOffset = startTagEnd + 1;
+    const closingSnippet = `Add closing tag </${node.tag}>`;
+    const closingTagOffset = (node.startTagEnd || 0) + 1;
     return {
         category: tss.DiagnosticCategory.Warning,
         code: CODE_ACTIONS.CLOSE_TAG,
@@ -38,7 +37,7 @@ function nonClosedTagToDiagnostic(node: Node, sourceFile: tss.SourceFile): tss.D
             category: tss.DiagnosticCategory.Suggestion,
             code: 0,
             file: undefined,
-            start: closingTagOffset,
+            start: htmlContextOffset + closingTagOffset,
             length: (node.tag?.length || 0) + 3, // <, > and /
             messageText: closingSnippet,
         }]

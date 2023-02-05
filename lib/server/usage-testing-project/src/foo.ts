@@ -9,10 +9,11 @@ export const temp = html`
     .projectName="" 
     .color="#ff094"
     @my-custom-event=${() => {console.log("foo")}}
-    ></example-project>
+    >
 
 
     <example-project>
+        
 
     <sl-button size=""></sl-button>
   

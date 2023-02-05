@@ -14,7 +14,11 @@ export function getCodeActionsForParams(params: CodeActionParams, textDoc: TextD
 
         switch (diagnostic.code) {
             case CODE_ACTIONS.IMPORT:
-                codeActions.push(generateImportCodeAction(diagnostic, params, textDoc))
+                codeActions.push(generateImportCodeAction(diagnostic, params, textDoc));
+                break;
+            case CODE_ACTIONS.CLOSE_TAG:
+                codeActions.push(generateCloseTagCodeAction(diagnostic, params, textDoc));
+                break;
         }
     }
 
@@ -42,6 +46,35 @@ function generateImportCodeAction(diagnostic: Diagnostic, params: CodeActionPara
 
     return {
         title: `Import component from ${packagePath}`,
+        edit: workSpaceEdit
+    };
+}
+
+
+function generateCloseTagCodeAction(diagnostic: Diagnostic, params: CodeActionParams, textDoc: TextDocument) {
+    // TODO: Make type safe
+    const diagnosticData = diagnostic.data[0] as tss.DiagnosticRelatedInformation;
+
+    const tagPositionOffset = diagnosticData.start ?? 0;
+    const messageText = diagnosticData.messageText as string;
+    // TODO: Figure a better way to pass this info between these layers. Maybe more 
+    // DiagnosticRelatedInformation objects with one for the message and one for 
+    // the actual payload
+    const tag = messageText.substring(messageText.indexOf("<"), messageText.indexOf(">") + 1);
+
+    const workSpaceEdit: WorkspaceEdit = {
+        changes: {
+            [params.textDocument.uri]: [
+                {
+                    range: Range.create(offsetToPosition(textDoc, tagPositionOffset), offsetToPosition(textDoc, tagPositionOffset)),
+                    newText: tag
+                }
+            ]
+        }
+    }
+
+    return {
+        title: messageText,
         edit: workSpaceEdit
     };
 }
