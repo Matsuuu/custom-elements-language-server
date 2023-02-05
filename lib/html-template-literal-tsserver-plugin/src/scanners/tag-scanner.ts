@@ -2,7 +2,7 @@ import { TemplateContext } from "typescript-template-language-service-decorator"
 import { LanguageService, Node } from "vscode-html-languageservice";
 import { createTextDocumentFromContext } from "../text-document.js";
 
-export function resolveCustomElementTags(languageService: LanguageService, context: TemplateContext): Array<Node> {
+export function getCustomElementTagsInContext(languageService: LanguageService, context: TemplateContext): Array<Node> {
     // TODO: Cache these too. Some kind of a WeakMap with the document.
     // This will be called multiple times per diagnostics call
     const document = createTextDocumentFromContext(context);

@@ -19,7 +19,6 @@ console.log("NODE VERSION: ", process.version);
 
 import { TextDocument, TextEdit } from "vscode-languageserver-textdocument";
 import { getCompletionItemInfo, getCompletionItems } from "./completion.js";
-import { validateTextDocument } from "./analyzer.js";
 import { DEFAULT_SETTINGS, LanguageServerSettings, setCapabilities, setGlobalSettings } from "./settings.js";
 import { getLanguageService, updateLanguageServiceForFile } from "./language-services/language-services.js";
 import { documentSpanToLocation, offsetToPosition, quickInfoToHover, textDocumentDataToUsableData, tsDiagnosticToDiagnostic } from "./transformers.js";

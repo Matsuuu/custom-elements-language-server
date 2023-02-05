@@ -4,7 +4,7 @@ import { LanguageService as HtmlLanguageService, Node } from "vscode-html-langua
 import { getCEMData } from "../../cem/cem-cache.js";
 import { findCustomElementDefinitionModule } from "../../cem/cem-helpers.js";
 import { HTMLTemplateLiteralPlugin } from "../../index.js";
-import { resolveCustomElementTags } from "../../scanners/tag-scanner.js";
+import { getCustomElementTagsInContext } from "../../scanners/tag-scanner.js";
 import { getAllFilesAssociatedWithSourceFile, getOrCreateProgram, getSourceFile } from "../../ts/sourcefile.js";
 import { SourceFile } from "typescript";
 import { getFilePathFolder, resolveImportPath } from "./imports.js";
@@ -39,7 +39,7 @@ export function getImportDiagnostics(context: TemplateContext, htmlLanguageServi
         return [];
     }
 
-    const customElementTagNodes = resolveCustomElementTags(htmlLanguageService, context);
+    const customElementTagNodes = getCustomElementTagsInContext(htmlLanguageService, context);
 
     const notDefinedTags: Array<NotDefinedTagInformation> = [];
 
