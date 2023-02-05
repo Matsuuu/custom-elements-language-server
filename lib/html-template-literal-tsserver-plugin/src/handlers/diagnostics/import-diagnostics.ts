@@ -11,7 +11,7 @@ import { getFilePathFolder, resolveImportPath } from "./imports.js";
 import { CODE_ACTIONS } from "../enum/code-actions.js";
 import { getPathAsDtsFile, getPathAsJsFile, getPathAsTsFile } from "../../ts/filepath-transformers.js";
 
-export function getImportDiagnostics(context: TemplateContext, htmlLanguageService: HtmlLanguageService) {
+export function getImportDiagnostics(context: TemplateContext, htmlLanguageService: HtmlLanguageService): tss.Diagnostic[] {
     const filePath = context.fileName;
     const filePathWithoutFile = getFilePathFolder(filePath);
     const basePath = HTMLTemplateLiteralPlugin.projectDirectory;
@@ -100,14 +100,14 @@ function notDefinedTagToDiagnostic(notDefinedTag: NotDefinedTagInformation, sour
     const importStatement = `\nimport "${notDefinedTag.relativeImportPath}";`;
     return {
         category: tss.DiagnosticCategory.Warning,
-        code: CODE_ACTIONS.IMPORT, // TODO: What is this?
+        code: CODE_ACTIONS.IMPORT,
         file: sourceFile,
         start: notDefinedTag.node.start,
         length: startTagEnd - notDefinedTag.node.start,
         messageText: `Tag ${notDefinedTag.node.tag} has not been imported.`,
         relatedInformation: [{
             category: tss.DiagnosticCategory.Suggestion,
-            code: 0, // TODO: What is this?
+            code: 0,
             file: undefined,
             start: importOffset,
             length: importStatement.length,

@@ -5,6 +5,7 @@ import { getGoToDefinitionEntries } from "./handlers/go-to-definition.js";
 import { getCompletionEntries } from "./handlers/completion.js";
 import { getQuickInfo } from "./handlers/quickinfo.js";
 import { getImportDiagnostics } from "./handlers/diagnostics/import-diagnostics.js";
+import { getMissingCloseTagDiagnostics } from "./handlers/diagnostics/close-tag-diagnostics.js";
 
 export class HTMLTemplateLiteralLanguageService implements TemplateLanguageService {
     public static project: tss.server.Project;
@@ -37,9 +38,11 @@ export class HTMLTemplateLiteralLanguageService implements TemplateLanguageServi
 
     public getSemanticDiagnostics(context: TemplateContext): tss.Diagnostic[] {
         const importDiagnostics = getImportDiagnostics(context, this.htmlLanguageService);
+        const nonClosedTagDiagnostics = getMissingCloseTagDiagnostics(context, this.htmlLanguageService);
 
         return [
-            ...importDiagnostics
+            ...importDiagnostics,
+            ...nonClosedTagDiagnostics
         ];
     }
 }
