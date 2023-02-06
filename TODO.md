@@ -1,7 +1,5 @@
 # Current worklist
 
-- Hover info for dependencies
-- Go To Def on dependencies range
 - Cache more
 - Release
 
