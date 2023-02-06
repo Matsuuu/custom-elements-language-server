@@ -55,9 +55,6 @@ export function getQuickInfo(context: TemplateContext, position: tss.LineAndChar
 
 function getTagQuickInfo(basePath: string, matchingClass: JavaScriptModule, classDeclaration: CustomElement, actionContext: TagActionContext, fileFullText: string): tss.QuickInfo | undefined {
     const classIdentifier = getClassIdentifier(matchingClass.path, classDeclaration?.name, basePath,);
-    const cemClass = findClassForTagName(getCEMData(matchingClass.path), actionContext.tagName);
-    // TODO: Do the docs with the CEMClass instead of the classDeclaration if classDeclaration is missing.
-    // TODO: Implement this everywhere
 
     let quickInfo: string = "";
     let className: string = "";
@@ -68,7 +65,6 @@ function getTagQuickInfo(basePath: string, matchingClass: JavaScriptModule, clas
         quickInfo = commentRangesToStringArray(commentRanges, fileFullText);
         className = classIdentifier.getText();
     } else {
-        const classDeclaration = cemClass?.declarations?.find(decl => decl.kind === "class");
         quickInfo = classDeclaration?.summary || "";
         className = classDeclaration?.name || '';
     }
@@ -101,12 +97,17 @@ function getAttributeQuickInfo(basePath: any, matchingClass: JavaScriptModule, c
     const attributeVariants = attributeNameVariantBuilder(attributeName);
     const attributeIdentifier = getAttributeIdentifier(matchingClass.path, attributeName, basePath);
     const attributeDeclaration = attributeIdentifier?.parent;
-    if (!attributeDeclaration) {
-        return undefined;
+
+    let quickInfo: string = "";
+
+    if (attributeDeclaration) {
+        const commentRanges = ts.getLeadingCommentRanges(fileFullText, attributeDeclaration.pos);
+        quickInfo = commentRangesToStringArray(commentRanges, fileFullText);
+    } else {
+        const cemAttribute = classDeclaration.attributes?.find(attr => attr.name === attributeName);
+        quickInfo = cemAttribute?.summary || '';
     }
 
-    const commentRanges = ts.getLeadingCommentRanges(fileFullText, attributeDeclaration.pos);
-    const quickInfo = commentRangesToStringArray(commentRanges, fileFullText);
 
     const attributeNameDocumentation = [
         "```typescript",
