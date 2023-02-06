@@ -20,7 +20,7 @@ export const temp = html`
 
     <sl-button .size="" variant=""></sl-button>
   
-    <sl-input @sl-blur=${() => { }}></sl-input>
+    <sl-input @sl-blur="${() => { }}"></sl-input>
 
     <p>Foo</p>
     
