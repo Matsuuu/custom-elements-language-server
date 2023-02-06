@@ -9,22 +9,19 @@ import {
     TextDocumentSyncKind,
     Diagnostic,
     CodeActionParams,
-    CodeAction,
-    WorkspaceEdit,
-    Range
+    CodeAction
 } from "vscode-languageserver/node.js";
 import tss from "typescript/lib/tsserverlibrary.js";
 
 console.log("NODE VERSION: ", process.version);
 
-import { TextDocument, TextEdit } from "vscode-languageserver-textdocument";
+import { TextDocument } from "vscode-languageserver-textdocument";
 import { getCompletionItemInfo, getCompletionItems } from "./completion.js";
 import { DEFAULT_SETTINGS, LanguageServerSettings, setCapabilities, setGlobalSettings } from "./settings.js";
 import { getLanguageService, updateLanguageServiceForFile } from "./language-services/language-services.js";
-import { documentSpanToLocation, offsetToPosition, quickInfoToHover, textDocumentDataToUsableData, tsDiagnosticToDiagnostic } from "./transformers.js";
+import { documentSpanToLocation, quickInfoToHover, textDocumentDataToUsableData, tsDiagnosticToDiagnostic } from "./transformers.js";
 import { documents, documentSettings } from "./text-documents.js";
 import { getReferencesAtPosition } from "./handlers/references.js";
-import { wait } from "./wait.js";
 import { getCodeActionsForParams } from "./handlers/code-actions.js";
 
 const connection = createConnection(ProposedFeatures.all);
