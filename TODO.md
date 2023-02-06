@@ -1,9 +1,7 @@
 # Current worklist
 
-- Optimize and rewrite go to References
 - Hover info for dependencies
 - Go To Def on dependencies range
-- Optimize go to ref and make sure it works on neovim
 - Cache more
 - Release
 

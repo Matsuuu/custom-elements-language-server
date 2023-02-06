@@ -9,6 +9,7 @@ export function getReferencesAtPosition(referenceParams: ReferenceParams) {
     // TODO: This is an ugly method
     // TODO: ... And needs caching
     //
+    console.time("Start part");
     const usableData = textDocumentDataToUsableData(documents, referenceParams);
     const project = getProjectForCurrentFile(usableData.fileName, usableData.fileContent);
     const basePath = project?.getCurrentDirectory() ?? "";
@@ -16,6 +17,7 @@ export function getReferencesAtPosition(referenceParams: ReferenceParams) {
     if (!cemCollection.hasData()) {
         return [];
     }
+
     const openFilePath = referenceParams.textDocument.uri.replace("file://", "");
     const openDoc = scanDocument(openFilePath);
     const identifiers = findIdentifiers(openFilePath, "");
@@ -37,7 +39,9 @@ export function getReferencesAtPosition(referenceParams: ReferenceParams) {
     const tagName = definition.name;
 
     const fileContentMap: any = {};
+    console.timeEnd("Start part");
 
+    console.time("Project part");
     const filesUsingTag = project?.getRootScriptInfos().filter(file => {
         const templateExpressions = findTemplateExpressions(file.path, "");
         const contentAreas = templateExpressions.map(exp => exp.getText());
@@ -50,6 +54,9 @@ export function getReferencesAtPosition(referenceParams: ReferenceParams) {
         return contains;
     }) ?? [];
 
+    console.timeEnd("Project part");
+
+    console.time("Locations part");
     const locations: Array<Location> = filesUsingTag?.flatMap(file => {
         const templateExpressions: Array<tss.Node> = fileContentMap[file.path].templateExpressions;
         return templateExpressions.flatMap((templateExp) => {
@@ -76,6 +83,8 @@ export function getReferencesAtPosition(referenceParams: ReferenceParams) {
 
         })
     });
+
+    console.timeEnd("Locations part");
 
     return locations;
 }
