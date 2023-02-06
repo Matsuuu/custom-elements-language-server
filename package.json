@@ -75,8 +75,10 @@
     "scripts": {
         "dev": "concurrently \"cd lib/server && npm start\" \"cd lib/html-template-literal-tsserver-plugin && npm start\"",
         "build:server": "cd lib/server && npm run build",
+        "build:template-plugin": "cd lib/html-template-literal-tsserver-plugin && npm run build",
         "install:server": "cd lib/server && npm install -g .",
-        "format": "npx prettier --write ."
+        "format": "npx prettier --write .",
+        "localinstall": "npm run build:template-plugin && npm run build:server && npm run install:server"
     },
     "devDependencies": {
         "concurrently": "^7.5.0"

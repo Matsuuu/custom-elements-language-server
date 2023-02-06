@@ -8,10 +8,10 @@ export const temp = html`
     project-name="foo" 
     .projectName="" 
     .color="#ff094"
-    @my-custom-event="${() => {console.log('foo')}}"
+    @my-custom-event="${() => { console.log('foo') }}"
     ></example-project>
     
-
+    <example-project></example-project>
 
 
     <example-project>
@@ -19,7 +19,7 @@ export const temp = html`
 
     <sl-button size=""></sl-button>
   
-    <sl-input @sl-blur=${() => {}}></sl-input>
+    <sl-input @sl-blur=${() => { }}></sl-input>
 
     <p>Foo</p>
     

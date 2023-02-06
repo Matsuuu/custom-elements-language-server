@@ -1,8 +1,10 @@
 # Current worklist
 
 - Optimize and rewrite go to References
+- Hover info for dependencies
+- Go To Def on dependencies range
+- Optimize go to ref and make sure it works on neovim
 - Cache more
-- Add unclosed html tags diagnostics
 - Release
 
 # List of todo items before release
@@ -21,7 +23,7 @@
     - Hover effects
     - Diagnostics
         - Missing import X
-        - Unclosed HTML tags
+        - Unclosed HTML tags X
         - Else?
         - Invalid attribute/property values?
 
