@@ -175,14 +175,19 @@ function getEventQuickInfo(basePath: any, matchingClass: JavaScriptModule, class
     const eventName = actionContext.eventName;
     const eventIdentifier = getEventIdentifier(matchingClass.path, eventName, basePath);
     const eventDeclaration = eventIdentifier?.parent;
-    if (!eventDeclaration) {
-        return undefined;
+
+    let quickInfo: string = "";
+
+    if (eventDeclaration) {
+        const commentRanges = ts.getLeadingCommentRanges(fileFullText, eventDeclaration.pos);
+        quickInfo = commentRangesToStringArray(commentRanges, fileFullText);
+    } else {
+        const event = classDeclaration.events?.find(event => event.name === eventName);
+        quickInfo = event?.description || '';
     }
 
-    const commentRanges = ts.getLeadingCommentRanges(fileFullText, eventDeclaration.pos);
-    const quickInfo = commentRangesToStringArray(commentRanges, fileFullText);
 
-    const attributeNameDocumentation = [
+    const eventNameDocumentation = [
         "```typescript",
         "(event) " + eventName,
         "```"
@@ -194,7 +199,7 @@ function getEventQuickInfo(basePath: any, matchingClass: JavaScriptModule, class
         textSpan: actionContext.textSpan,
         documentation: [
             {
-                text: attributeNameDocumentation,
+                text: eventNameDocumentation,
                 kind: tss.SymbolDisplayPartKind.className.toString()
             },
             {
