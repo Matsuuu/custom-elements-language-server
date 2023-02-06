@@ -136,12 +136,17 @@ function getPropertyQuickInfo(basePath: any, matchingClass: JavaScriptModule, cl
     const propertyName = actionContext.propertyName;
     const propertyIdentifier = getPropertyIdentifier(matchingClass.path, propertyName, basePath);
     const propertyDeclaration = propertyIdentifier?.parent;
-    if (!propertyDeclaration) {
-        return undefined;
+
+    let quickInfo: string = "";
+
+    if (propertyDeclaration) {
+        const commentRanges = ts.getLeadingCommentRanges(fileFullText, propertyDeclaration.pos);
+        quickInfo = commentRangesToStringArray(commentRanges, fileFullText);
+    } else {
+        const property = classDeclaration.members?.find(member => member.kind === "field" && member.name === propertyName);
+        quickInfo = property?.description || '';
     }
 
-    const commentRanges = ts.getLeadingCommentRanges(fileFullText, propertyDeclaration.pos);
-    const quickInfo = commentRangesToStringArray(commentRanges, fileFullText);
 
     const propertyNameDocumentation = [
         "```typescript",
