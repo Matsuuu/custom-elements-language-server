@@ -58,17 +58,24 @@ function getTagQuickInfo(basePath: string, matchingClass: JavaScriptModule, clas
     const cemClass = findClassForTagName(getCEMData(matchingClass.path), actionContext.tagName);
     // TODO: Do the docs with the CEMClass instead of the classDeclaration if classDeclaration is missing.
     // TODO: Implement this everywhere
-    const classDeclarationNode = classIdentifier?.parent;
-    if (!classDeclarationNode) {
-        return undefined;
-    }
 
-    const commentRanges = ts.getLeadingCommentRanges(fileFullText, classDeclarationNode.pos);
-    const quickInfo = commentRangesToStringArray(commentRanges, fileFullText);
+    let quickInfo: string = "";
+    let className: string = "";
+
+    const classDeclarationNode = classIdentifier?.parent;
+    if (classDeclarationNode) {
+        const commentRanges = ts.getLeadingCommentRanges(fileFullText, classDeclarationNode.pos);
+        quickInfo = commentRangesToStringArray(commentRanges, fileFullText);
+        className = classIdentifier.getText();
+    } else {
+        const classDeclaration = cemClass?.declarations?.find(decl => decl.kind === "class");
+        quickInfo = classDeclaration?.summary || "";
+        className = classDeclaration?.name || '';
+    }
 
     const classNameDocumentation = [
         "```typescript",
-        "class " + classIdentifier.getText(),
+        "class " + className,
         "```"
     ].join("\n");
 
