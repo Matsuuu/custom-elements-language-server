@@ -18,7 +18,7 @@
         "onLanguage:typescript",
         "onLanguage:html"
     ],
-    "main": "./lib/client/vscode/out/extension",
+    "main": "./dist/client/vscode/src/extension.js",
     "contributes": {
         "configuration": {
             "type": "object",

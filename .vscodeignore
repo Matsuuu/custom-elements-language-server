@@ -1,10 +1,7 @@
 .github
 .git
 .vscode
-lib/client
-!lib/client/vscode
+lib
 node_modules
-*.ts
 src
-lib/server/usage-testing-project
 
