@@ -1,0 +1,10 @@
+.github
+.git
+.vscode
+lib/client
+!lib/client/vscode
+node_modules
+*.ts
+src
+lib/server/usage-testing-project
+
