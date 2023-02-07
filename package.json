@@ -1,11 +1,11 @@
 {
     "name": "custom-elements-languageserver-project",
-    "description": "A language server example",
-    "author": "Microsoft Corporation",
+    "description": "A language server for Custom Elements and Web Components",
+    "author": "Matsuuu <huhta.matias@gmail.com>",
     "license": "MIT",
     "type": "module",
     "version": "0.0.1",
-    "publisher": "vscode-samples",
+    "publisher": "Matsuuu",
     "categories": [],
     "keywords": [
         "multi-root ready"
@@ -74,8 +74,10 @@
     },
     "scripts": {
         "dev": "concurrently \"cd lib/server && npm start\" \"cd lib/html-template-literal-tsserver-plugin && npm start\"",
+        "build:client": "cd lib/client/vscode && npm run build",
         "build:server": "cd lib/server && npm run build",
         "build:template-plugin": "cd lib/html-template-literal-tsserver-plugin && npm run build",
+        "build:all": "npm run build:client && npm run build:template-plugin && npm run build:client",
         "install:server": "cd lib/server && npm install -g .",
         "format": "npx prettier --write .",
         "localinstall": "npm run build:template-plugin && npm run build:server && npm run install:server"
