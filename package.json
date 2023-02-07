@@ -14,6 +14,7 @@
         "vscode": "^1.63.0"
     },
     "activationEvents": [
+        "onLanguage:plaintext",
         "onLanguage:javascript",
         "onLanguage:typescript",
         "onLanguage:html"
@@ -81,7 +82,8 @@
         "install:server": "cd lib/server && npm install -g .",
         "format": "npx prettier --write .",
         "localinstall": "npm run build:template-plugin && npm run build:server && npm run install:server",
-        "package": "esbuild ./lib/client/vscode/src/extension.ts ./lib/server/src/server.ts --bundle --platform=node --external:vscode --outdir=dist"
+        "bundle": "esbuild ./lib/client/vscode/src/extension.ts ./lib/server/src/server.ts --bundle --platform=node --external:vscode --outdir=dist",
+        "package": "vsce package"
     },
     "devDependencies": {
         "concurrently": "^7.5.0",

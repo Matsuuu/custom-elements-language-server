@@ -7,7 +7,8 @@ let client: LanguageClient;
 
 export function activate(context: ExtensionContext) {
     console.log("Initializing LS");
-    let serverModule = context.asAbsolutePath(path.join("lib", "server", "out", "server.js"));
+    // let serverModule = context.asAbsolutePath(path.join("lib", "server", "out", "server.js"));
+    let serverModule = context.asAbsolutePath(path.join("dist", "server", "src", "server.js"));
     // The debug options for the server
     // --inspect=6009: runs the server in Node's Inspector mode so VS Code can attach to the server for debugging
     let debugOptions = { execArgv: ["--nolazy", "--inspect=6009"] };
