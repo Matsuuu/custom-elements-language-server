@@ -14,6 +14,19 @@
             }
         },
         {
+            "type": "extensionHost",
+            "request": "launch",
+            "name": "Launch Client Native",
+            "localRoot": "${workspaceRoot}",
+            "runtimeExecutable": "${execPath}",
+            "args": ["--extensionDevelopmentPath=${workspaceRoot}"],
+            "outFiles": ["$./out/**/*.js"],
+            "preLaunchTask": {
+                "type": "npm",
+                "script": "package:vscode"
+            }
+        },
+        {
             "type": "node",
             "request": "attach",
             "name": "Attach to Server",
