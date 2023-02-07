@@ -83,7 +83,8 @@
         "localinstall": "npm run build:template-plugin && npm run build:server && npm run install:server"
     },
     "devDependencies": {
-        "concurrently": "^7.5.0"
+        "concurrently": "^7.5.0",
+        "esbuild": "^0.17.6"
     },
     "types": "./lib/client/vscode/out/extension.d.ts",
     "directories": {
