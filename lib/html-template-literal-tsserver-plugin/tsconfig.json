@@ -2,11 +2,10 @@
     "paths": ["src/**"],
     "exclude": ["example", "out", "test-project"],
     "compilerOptions": {
-        "target": "ESNext" /* Set the JavaScript language version for emitted JavaScript and include compatible library declarations. */,
-        "module": "ESNext" /* Specify what module code is generated. */,
+        "target": "ESNext",
+        "module": "ESNext",
         "moduleResolution": "nodenext",
-        "sourceMap": true /* Create source map files for emitted JavaScript files. */,
-        "outDir": "./out" /* Specify an output folder for all emitted files. */,
+        "outDir": "./out",
         "declaration": true,
 
         "experimentalDecorators": true,

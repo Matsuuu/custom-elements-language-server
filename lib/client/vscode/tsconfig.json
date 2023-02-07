@@ -2,12 +2,11 @@
     "paths": ["src/**"],
     "exclude": ["example", "out", "test-project"],
     "compilerOptions": {
-        "target": "ESNext" /* Set the JavaScript language version for emitted JavaScript and include compatible library declarations. */,
-        "module": "commonjs" /* Specify what module code is generated. */,
+        "target": "ESNext",
+        "module": "commonjs",
         "moduleResolution": "nodenext",
-        "sourceMap": true /* Create source map files for emitted JavaScript files. */,
-        "outDir": "./out" /* Specify an output folder for all emitted files. */,
-        "skipLibCheck": true /* Skip type checking all .d.ts files. */,
+        "outDir": "./out",
+        "skipLibCheck": true,
         "declaration": true,
 
         "experimentalDecorators": true,
@@ -21,6 +20,9 @@
         "alwaysStrict": true,
         "noImplicitReturns": true,
         "allowUnreachableCode": true,
-        "sourceMap": true
+        "sourceMap": true,
+        "lib": [
+            "node"
+        ]
     }
 }
