@@ -1,6 +1,8 @@
 # Current worklist
 
 - Cache more
+- Support HTML files (might have to push this one further)
+- Inform the user of a missing CEM setup
 - Release
 
 # List of todo items before release
