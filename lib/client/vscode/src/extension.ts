@@ -6,7 +6,6 @@ import { LanguageClient, LanguageClientOptions, ServerOptions, TransportKind } f
 let client: LanguageClient;
 
 export function activate(context: ExtensionContext) {
-    window.showInformationMessage('Hello World!');
     console.log("Initializing LS");
     // let serverModule = context.asAbsolutePath(path.join("lib", "server", "out", "server.js"));
     let serverModule = context.asAbsolutePath(path.join("dist", "server", "src", "server.js"));
