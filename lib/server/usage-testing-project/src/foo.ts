@@ -11,8 +11,8 @@ export const temp = html`
     .color="#ff094"
     @my-custom-event="${() => { console.log('foo') }}"
     ></example-project>
-    
-    <example-project></example-project>
+
+    <example-project>
 
 
     <example-project>

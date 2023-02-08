@@ -7,6 +7,7 @@ import { documents } from "./text-documents.js";
 import { wait } from "./wait.js";
 
 export async function getCompletionItems(textDocumentPosition: TextDocumentPositionParams): Promise<CompletionList> {
+    console.log("On Completion");
     await wait(50);
     const doc = documents.get(textDocumentPosition.textDocument.uri);
     if (!doc) return CompletionList.create();

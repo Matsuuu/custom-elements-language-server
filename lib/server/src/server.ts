@@ -41,6 +41,7 @@ connection.onDidChangeWatchedFiles(_change => {
 });
 
 connection.onHover(hoverInfo => {
+    console.log("Hover");
     const usableData = textDocumentDataToUsableData(documents, hoverInfo);
     const languageService = getLanguageService(usableData.fileName, usableData.fileContent);
 
@@ -82,7 +83,6 @@ documents.onDidClose(e => {
 
 documents.onDidOpen(e => {
     console.log("Opened text doc");
-
     const fileName = e.document.uri.replace("file://", "");
     updateLanguageServiceForFile(fileName, e.document.getText());
 

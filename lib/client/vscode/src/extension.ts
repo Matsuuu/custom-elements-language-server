@@ -27,6 +27,7 @@ export function activate(context: ExtensionContext) {
     // Options to control the language client
     let clientOptions: LanguageClientOptions = {
         documentSelector: [
+            { scheme: "file", language: "plaintext" },
             { scheme: "file", language: "html" },
             { scheme: "file", language: "typescript" },
             { scheme: "file", language: "javascript" }, // TODO: Need to add jsx etc.?

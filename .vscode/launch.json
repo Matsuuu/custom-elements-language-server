@@ -20,10 +20,10 @@
             "localRoot": "${workspaceRoot}",
             "runtimeExecutable": "${execPath}",
             "args": ["--extensionDevelopmentPath=${workspaceRoot}"],
-            "outFiles": ["$./out/**/*.js"],
+            "outFiles": ["$./dist/client/vscode/**/*.js"],
             "preLaunchTask": {
                 "type": "npm",
-                "script": "package:vscode"
+                "script": "watch"
             }
         },
         {
@@ -39,6 +39,10 @@
         {
             "name": "Client + Server",
             "configurations": ["Launch Client", "Attach to Server"]
+        },
+        {
+            "name": "Native Client + Server",
+            "configurations": ["Launch Client Native", "Attach to Server"]
         }
     ]
 }
