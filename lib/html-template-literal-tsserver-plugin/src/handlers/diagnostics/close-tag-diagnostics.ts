@@ -1,6 +1,6 @@
 import { TemplateContext } from "typescript-template-language-service-decorator";
 import tss from "typescript/lib/tsserverlibrary.js";
-import { LanguageService as HtmlLanguageService, Node } from "vscode-html-languageservice";
+import { LanguageService as HtmlLanguageService, Node } from "vscode-html-languageservice/lib/esm/htmlLanguageService.js";
 import { getCustomElementTagsInContext } from "../../scanners/tag-scanner.js";
 import { getSourceFile } from "../../ts/sourcefile.js";
 import { CODE_ACTIONS } from "../enum/code-actions.js";

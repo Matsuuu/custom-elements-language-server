@@ -4,9 +4,8 @@
  *--------------------------------------------------------------------------------------------*/
 // Original code forked from https://github.com/vscode-langservers/vscode-html-languageserver/
 
-import { TextDocument, Position, LanguageService, Range } from "vscode-html-languageservice";
-import pkg from "vscode-html-languageservice";
-const { TextDocument: TextDocumentImpl, TokenType } = pkg;
+import { TextDocument, Position, LanguageService, Range } from "vscode-html-languageservice/lib/esm/htmlLanguageService.js";
+import { TokenType, TextDocument as TextDocumentImpl } from "vscode-html-languageservice/lib/esm/htmlLanguageService.js";
 
 export interface LanguageRange extends Range {
     languageId: string | undefined;

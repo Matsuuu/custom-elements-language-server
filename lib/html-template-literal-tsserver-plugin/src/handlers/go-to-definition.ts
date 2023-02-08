@@ -1,4 +1,4 @@
-import { LanguageService as HtmlLanguageService } from "vscode-html-languageservice";
+import { LanguageService as HtmlLanguageService } from "vscode-html-languageservice/lib/esm/htmlLanguageService.js";
 import tss from "typescript/lib/tsserverlibrary.js";
 import { getProjectBasePath } from "../template-context.js";
 import {

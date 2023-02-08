@@ -1,6 +1,6 @@
 import { TemplateContext } from "typescript-template-language-service-decorator";
 import tss from "typescript/lib/tsserverlibrary.js";
-import { LanguageService as HtmlLanguageService, Node } from "vscode-html-languageservice";
+import { LanguageService as HtmlLanguageService, Node } from "vscode-html-languageservice/lib/esm/htmlLanguageService.js";
 import { getCEMData } from "../../cem/cem-cache.js";
 import { findCustomElementDefinitionModule } from "../../cem/cem-helpers.js";
 import { HTMLTemplateLiteralPlugin } from "../../index.js";

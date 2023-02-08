@@ -1,6 +1,6 @@
 import { decorateWithTemplateLanguageService } from "typescript-template-language-service-decorator";
 import tss from "typescript/lib/tsserverlibrary.js";
-import { getLanguageService, LanguageService as HtmlLanguageService } from "vscode-html-languageservice";
+import { getLanguageService, LanguageService as HtmlLanguageService } from "vscode-html-languageservice/lib/esm/htmlLanguageService.js";
 import { HTMLTemplateLiteralLanguageService } from "./html-template-literal-language-service.js";
 
 export class HTMLTemplateLiteralPlugin {

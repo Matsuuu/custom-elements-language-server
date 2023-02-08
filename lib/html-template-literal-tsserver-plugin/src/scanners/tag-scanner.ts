@@ -1,5 +1,5 @@
 import { TemplateContext } from "typescript-template-language-service-decorator";
-import { LanguageService, Node } from "vscode-html-languageservice";
+import { LanguageService, Node } from "vscode-html-languageservice/lib/esm/htmlLanguageService.js";
 import { createTextDocumentFromContext } from "../text-document.js";
 
 export function getCustomElementTagsInContext(languageService: LanguageService, context: TemplateContext): Array<Node> {
