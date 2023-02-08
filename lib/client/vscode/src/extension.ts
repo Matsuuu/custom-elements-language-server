@@ -1,11 +1,12 @@
 import * as path from "path";
-import { workspace, ExtensionContext } from "vscode";
+import { commands, window, workspace, ExtensionContext } from "vscode";
 
 import { LanguageClient, LanguageClientOptions, ServerOptions, TransportKind } from "vscode-languageclient/node.js";
 
 let client: LanguageClient;
 
 export function activate(context: ExtensionContext) {
+    window.showInformationMessage('Hello World!');
     console.log("Initializing LS");
     // let serverModule = context.asAbsolutePath(path.join("lib", "server", "out", "server.js"));
     let serverModule = context.asAbsolutePath(path.join("dist", "server", "src", "server.js"));
@@ -38,6 +39,13 @@ export function activate(context: ExtensionContext) {
             ]
         },
     };
+
+    const disposable = commands.registerCommand('extension.helloWorld', () => {
+        // The code you place here will be executed every time your command is executed
+
+        // Display a message box to the user
+        window.showInformationMessage('Hello World!');
+    });
 
     // Create the language client and start the client.
     client = new LanguageClient("customElementsLanguageServer", "Custom Elements Language Services", serverOptions, clientOptions);

@@ -19,8 +19,14 @@
         "onLanguage:typescript",
         "onLanguage:html"
     ],
-    "main": "./dist/client/vscode/src/extension.js",
+    "main": "./dist/client/vscode/src/extension",
     "contributes": {
+        "commands": [
+			{
+				"command": "extension.helloWorld",
+				"title": "Hello World"
+			}
+		],
         "configuration": {
             "type": "object",
             "title": "Example configuration",
@@ -83,7 +89,8 @@
         "format": "npx prettier --write .",
         "localinstall": "npm run build:template-plugin && npm run build:server && npm run install:server",
         "bundle": "esbuild ./lib/client/vscode/src/extension.ts ./lib/server/src/server.ts --bundle --platform=node --external:vscode --outdir=dist",
-        "package": "vsce package"
+        "package": "vsce package",
+        "prepublish": "npm run bundle && npm run package"
     },
     "devDependencies": {
         "concurrently": "^7.5.0",
