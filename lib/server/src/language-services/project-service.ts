@@ -41,7 +41,8 @@ export class ProjectService extends tss.server.ProjectService {
     public openAndGetProjectForFile(fileName: string, fileContent: string) {
         const isHtmlFile = fileName.endsWith("html");
         if (isHtmlFile) {
-            return this.openAndGetProjectForHtmlFile(fileName, fileContent);
+            return undefined;
+            // return this.openAndGetProjectForHtmlFile(fileName, fileContent);
         }
 
         const fileOpenResult = this.openClientFile(fileName, fileContent);
@@ -70,7 +71,9 @@ export class ProjectService extends tss.server.ProjectService {
 
 function findClosestConfigurationFile(path: string) {
     let currentPath = path.substring(0, path.lastIndexOf("/"));
-    while (currentPath.includes("/")) {
+    let i = 0;
+    while (currentPath.includes("/") && currentPath.length > 1) {
+        console.log(currentPath);
         const tsConfigPath = currentPath + "/tsconfig.json";
         const jsConfigPath = currentPath + "/jsconfig.json";
 
@@ -81,7 +84,11 @@ function findClosestConfigurationFile(path: string) {
             return jsConfigPath;
         }
 
-        currentPath = currentPath.substring(0, path.lastIndexOf("/"));
+        currentPath = currentPath.substring(0, currentPath.lastIndexOf("/"));
+        i++;
+        if (i > 100) {
+            break;
+        }
     }
     return undefined;
 }

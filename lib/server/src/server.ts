@@ -9,7 +9,8 @@ import {
     TextDocumentSyncKind,
     Diagnostic,
     CodeActionParams,
-    CodeAction
+    CodeAction,
+    Position
 } from "vscode-languageserver/node.js";
 import tss from "typescript/lib/tsserverlibrary.js";
 
@@ -23,6 +24,7 @@ import { documentSpanToLocation, quickInfoToHover, textDocumentDataToUsableData,
 import { documents, documentSettings } from "./text-documents.js";
 import { getReferencesAtPosition } from "./handlers/references.js";
 import { getCodeActionsForParams } from "./handlers/code-actions.js";
+import * as HTMLLanguageService from "vscode-html-languageservice/lib/esm/htmlLanguageService.js";
 
 const connection = createConnection(ProposedFeatures.all);
 
@@ -41,9 +43,18 @@ connection.onDidChangeWatchedFiles(_change => {
 });
 
 connection.onHover(hoverInfo => {
-    console.log("Hover NEW");
+    console.log("Hover");
     const usableData = textDocumentDataToUsableData(documents, hoverInfo);
     const languageService = getLanguageService(usableData.fileName, usableData.fileContent);
+
+    const lang = HTMLLanguageService.getLanguageService();
+    const doc = documents.get(hoverInfo.textDocument.uri);
+    if (doc) {
+        const htmlDoc = lang.parseHTMLDocument(doc);
+        const a = lang.doHover(doc, hoverInfo.position, htmlDoc);
+        const node = htmlDoc.findNodeAt(usableData.position);
+        debugger;
+    }
 
     const quickInfo = languageService?.getQuickInfoAtPosition(usableData.fileName, usableData.position);
     if (quickInfo?.kind !== tss.ScriptElementKind.string) {

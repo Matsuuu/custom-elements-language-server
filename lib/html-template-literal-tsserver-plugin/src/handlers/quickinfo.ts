@@ -13,6 +13,7 @@ import { attributeNameVariantBuilder } from "../ast/ast.js";
 import { getCEMData } from "../export.js";
 
 export function getQuickInfo(context: TemplateContext, position: tss.LineAndCharacter, htmlLanguageService: HTMLLanguageService.LanguageService): tss.QuickInfo | undefined {
+    debugger;
     const basePath = getProjectBasePath(context);
     const actionContext = resolveActionContext(htmlLanguageService, context, position);
     const cemCollection = getCEMData(context.fileName);
