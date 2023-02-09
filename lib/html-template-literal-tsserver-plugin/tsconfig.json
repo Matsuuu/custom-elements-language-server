@@ -1,11 +1,11 @@
 {
     "paths": ["src/**"],
-    "exclude": ["example", "out", "test-project"],
+    "exclude": ["example", "out", "test-project", "dist"],
     "compilerOptions": {
         "target": "ESNext",
         "module": "ESNext",
         "moduleResolution": "nodenext",
-        "outDir": "./out",
+        "outDir": "./dist",
         "declaration": true,
 
         "experimentalDecorators": true,
@@ -21,5 +21,5 @@
         "noImplicitReturns": true,
         "allowUnreachableCode": true,
         "sourceMap": true
-    }
+    },
 }

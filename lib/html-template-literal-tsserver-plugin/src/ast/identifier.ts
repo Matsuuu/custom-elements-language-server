@@ -127,7 +127,7 @@ function findNodesByCondition<T>(sourceFile: ts.SourceFile, checkerFunction: Che
     let foundNodes: Array<T> = [];
     function findNodeWithCondition(node: ts.Node) {
         if (checkerFunction.apply(null, [node])) {
-            foundNodes.push(node as T);
+            foundNodes.push(node as unknown as T);
         }
         ts.forEachChild(node, findNodeWithCondition);
     }

@@ -1,4 +1,5 @@
-import { CustomElement, JavaScriptModule } from "custom-elements-manifest";
+// @ts-expect-error
+import type { CustomElement, JavaScriptModule } from "custom-elements-manifest";
 import { TemplateContext } from "typescript-template-language-service-decorator";
 import ts from "typescript";
 import tss from "typescript/lib/tsserverlibrary.js";

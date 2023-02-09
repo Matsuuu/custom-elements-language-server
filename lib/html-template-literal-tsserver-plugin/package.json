@@ -11,7 +11,7 @@
     "scripts": {
         "start": "npm run watch",
         "watch": "npm run build -- --watch",
-        "build": "esbuild ./src/export.ts --bundle --platform=node --external:vscode --sourcemap --outdir=dist"
+        "build": "esbuild ./src/export.ts --bundle --external:vscode --platform=node --sourcemap --outdir=dist"
     },
     "devDependencies": {
         "@types/node": "^18.11.9",

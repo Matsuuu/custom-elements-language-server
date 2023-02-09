@@ -1,3 +1,4 @@
+// @ts-expect-error
 import { JavaScriptModule } from "custom-elements-manifest";
 import ts from "typescript";
 import { getAttributeIdentifier, getClassIdentifier, getEventIdentifier, getPropertyIdentifier } from "./identifier.js";

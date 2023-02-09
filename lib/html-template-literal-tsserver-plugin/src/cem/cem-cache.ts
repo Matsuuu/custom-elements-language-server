@@ -2,6 +2,7 @@ import { getDependencyPackagesWithCEMs, getImportedDependencies } from "../depen
 import { HTMLTemplateLiteralPlugin } from "../index.js";
 import { getOrCreateProgram } from "../ts/sourcefile.js";
 import { CEMInstance } from "./cem-data.js";
+// @ts-expect-error
 import { JavaScriptModule } from "custom-elements-manifest";
 import { addReferenceToModule, JavaScriptModuleWithRef } from "./cem-helpers.js";
 

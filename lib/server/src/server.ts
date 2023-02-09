@@ -25,6 +25,7 @@ import { documents, documentSettings } from "./text-documents.js";
 import { getReferencesAtPosition } from "./handlers/references.js";
 import { getCodeActionsForParams } from "./handlers/code-actions.js";
 import * as HTMLLanguageService from "vscode-html-languageservice/lib/esm/htmlLanguageService.js";
+import { resolveActionContext } from "html-template-literal-tsserver-plugin";
 
 const connection = createConnection(ProposedFeatures.all);
 

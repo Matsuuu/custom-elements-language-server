@@ -13,7 +13,8 @@ import {
     resolveActionContext,
 } from "../scanners/action-context.js";
 import { findClassForTagName, findCustomElementDeclarationFromModule, JavaScriptModuleWithRef } from "../cem/cem-helpers.js";
-import { CustomElement, JavaScriptModule } from "custom-elements-manifest";
+// @ts-expect-error
+import { CustomElement } from "custom-elements-manifest";
 import { TemplateContext } from "typescript-template-language-service-decorator";
 import { getFileNameFromPath } from "../fs.js";
 import { getAttributeDefinitionTextSpan, getClassDefinitionTextSpan, getEventDefinitionTextSpan, getPropertyDefinitionTextSpan } from "../ast/text-span.js";

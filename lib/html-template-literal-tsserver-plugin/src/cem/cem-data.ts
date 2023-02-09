@@ -1,3 +1,4 @@
+// @ts-expect-error
 import { Package } from "custom-elements-manifest";
 import * as fs from "fs";
 import { ImportedDependency } from "../dependencies/dependency-package-resolver.js";
