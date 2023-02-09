@@ -16,6 +16,7 @@
         "strictFunctionTypes": true,
         "strictBindCallApply": true,
         "strictPropertyInitialization": true,
+        "allowSyntheticDefaultImports": true,
         "alwaysStrict": true,
         "noImplicitReturns": true,
         "allowUnreachableCode": true,

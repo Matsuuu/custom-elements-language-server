@@ -178,8 +178,8 @@ async function runDiagnostics(uri: string, textDoc: TextDocument) {
     const languageService = getLanguageService(fileName, textDoc.getText());
 
     const diagnostics = languageService?.getSemanticDiagnostics(fileName);
-    const sendableDiagnostics: Array<Diagnostic> = diagnostics?.map(diag => tsDiagnosticToDiagnostic(diag, textDoc))
-        .filter((diag): diag is Diagnostic => diag !== undefined) ?? []; // Stupid ts types
+    const sendableDiagnostics: Array<Diagnostic> = diagnostics?.map((diag: ts.Diagnostic) => tsDiagnosticToDiagnostic(diag, textDoc))
+        .filter((diag: unknown): diag is Diagnostic => diag !== undefined) ?? []; // Stupid ts types
 
     connection.sendDiagnostics({ uri: textDoc.uri, diagnostics: sendableDiagnostics });
 }

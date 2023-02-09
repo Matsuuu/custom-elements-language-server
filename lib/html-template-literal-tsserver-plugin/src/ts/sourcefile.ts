@@ -16,7 +16,10 @@ export function getOrCreateProgram(fullPath: string) {
     const program = ts.createProgram({
         rootNames: [fullPath],
         options: {
-            allowJs: true
+            allowJs: true,
+            lib: [
+                "DOM"
+            ]
         },
         host: ts.createCompilerHost({}, true),
     });
