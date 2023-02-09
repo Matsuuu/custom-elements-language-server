@@ -41,7 +41,7 @@ connection.onDidChangeWatchedFiles(_change => {
 });
 
 connection.onHover(hoverInfo => {
-    console.log("Hover");
+    console.log("Hover NEW");
     const usableData = textDocumentDataToUsableData(documents, hoverInfo);
     const languageService = getLanguageService(usableData.fileName, usableData.fileContent);
 

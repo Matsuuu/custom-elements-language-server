@@ -21,8 +21,5 @@
         "noImplicitReturns": true,
         "allowUnreachableCode": true,
         "sourceMap": true,
-        "lib": [
-            "node"
-        ]
     }
 }

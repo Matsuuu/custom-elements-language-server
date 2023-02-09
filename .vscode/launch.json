@@ -1,6 +1,7 @@
 {
     "version": "0.2.0",
     "configurations": [
+      
         {
             "type": "extensionHost",
             "request": "launch",
@@ -8,6 +9,9 @@
             "runtimeExecutable": "${execPath}",
             "args": ["--extensionDevelopmentPath=${workspaceRoot}"],
             "outFiles": ["${workspaceRoot}/client/vscode/out/**/*.js"],
+            "env": {
+              "CUSTOM_ELEMENTS_LANGUAGE_SERVER_PATH": "lib/server/dist/server.js"
+            },
             "preLaunchTask": {
                 "type": "npm",
                 "script": "watch"

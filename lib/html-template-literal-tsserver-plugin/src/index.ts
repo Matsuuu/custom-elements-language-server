@@ -1,12 +1,12 @@
 import { decorateWithTemplateLanguageService } from "typescript-template-language-service-decorator";
 import tss from "typescript/lib/tsserverlibrary.js";
-import { getLanguageService, LanguageService as HtmlLanguageService } from "vscode-html-languageservice/lib/esm/htmlLanguageService.js";
+import * as HTMLLanguageService from "vscode-html-languageservice/lib/esm/htmlLanguageService.js";
 import { HTMLTemplateLiteralLanguageService } from "./html-template-literal-language-service.js";
 
 export class HTMLTemplateLiteralPlugin {
     public static projectDirectory: string;
 
-    private _htmlLanguageService?: HtmlLanguageService;
+    private _htmlLanguageService?: HTMLLanguageService.LanguageService;
     private _config = {};
     private _logger: tss.server.Logger | undefined;
     private _consumerInfo: tss.server.PluginCreateInfo | undefined;
@@ -39,9 +39,9 @@ export class HTMLTemplateLiteralPlugin {
         this._projectDirectory = this._consumerInfo.project.getCurrentDirectory();
     }
 
-    private get htmlLanguageService(): HtmlLanguageService {
+    private get htmlLanguageService(): HTMLLanguageService.LanguageService {
         if (!this._htmlLanguageService) {
-            this._htmlLanguageService = getLanguageService();
+            this._htmlLanguageService = HTMLLanguageService.getLanguageService();
         }
         return this._htmlLanguageService;
     }

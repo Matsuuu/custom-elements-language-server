@@ -2,13 +2,11 @@
     "name": "custom-elements-languageserver",
     "version": "0.0.1",
     "description": "",
-    "type": "module",
-    "main": "out/server.js",
+    "main": "dist/server.js",
     "scripts": {
         "start": "npm run watch",
-        "start-old": "npm run build && node ./out/server.js",
-        "build": "tsc",
-        "watch": "tsc --watch"
+        "watch": "npm run build -- --watch",
+        "build": "esbuild ./src/server.ts --bundle --platform=node --external:vscode --sourcemap --outdir=dist"
     },
     "bin": {
         "custom-elements-languageserver": "./bin/custom-elements-languageserver.js"
@@ -31,7 +29,8 @@
         "vscode-languageserver-textdocument": "^1.0.5"
     },
     "devDependencies": {
-        "@types/node": "^18.0.0"
+        "@types/node": "^18.0.0",
+        "esbuild": "^0.17.6"
     },
     "engines": {
         "node": "*"

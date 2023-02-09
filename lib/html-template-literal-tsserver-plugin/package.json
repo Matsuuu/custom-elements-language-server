@@ -2,17 +2,16 @@
     "name": "html-template-literal-tsserver-plugin",
     "version": "0.0.1",
     "license": "MIT",
-    "type": "module",
-    "main": "out/export.js",
+    "main": "dist/export.js",
     "dependencies": {
         "typescript": "^4.8.4",
         "typescript-template-language-service-decorator": "^2.3.1",
         "vscode-html-languageservice": "^5.0.2"
     },
     "scripts": {
-        "build": "tsc",
-        "start": "tsc --watch",
-        "enable-logs": "export TSS_LOG=\"-logToFile true -file /home/matsu/Projects/custom-elements-language-server/lib/html-template-literal-tsserver-plugin/logs -level verbose\""
+        "start": "npm run watch",
+        "watch": "npm run build -- --watch",
+        "build": "esbuild ./src/export.ts --bundle --platform=node --external:vscode --sourcemap --outdir=dist"
     },
     "devDependencies": {
         "@types/node": "^18.11.9",

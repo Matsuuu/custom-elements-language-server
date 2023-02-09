@@ -2,7 +2,7 @@ import { CustomElement, JavaScriptModule } from "custom-elements-manifest";
 import { TemplateContext } from "typescript-template-language-service-decorator";
 import ts from "typescript";
 import tss from "typescript/lib/tsserverlibrary.js";
-import { LanguageService as HtmlLanguageService } from "vscode-html-languageservice/lib/esm/htmlLanguageService.js";
+import * as HTMLLanguageService from "vscode-html-languageservice/lib/esm/htmlLanguageService.js";
 import { getAttributeIdentifier, getClassIdentifier, getEventIdentifier, getPropertyIdentifier } from "../ast/identifier.js";
 import { findClassForTagName, findCustomElementDeclarationFromModule } from "../cem/cem-helpers.js";
 import { AttributeActionContext, EventActionContext, isAttributeNameAction, isEndTagAction, isEventNameAction, isPropertyNameAction, isTagAction, PropertyActionContext, resolveActionContext, TagActionContext } from "../scanners/completion-context.js";
@@ -12,7 +12,7 @@ import { getSourceFile } from "../ts/sourcefile.js";
 import { attributeNameVariantBuilder } from "../ast/ast.js";
 import { getCEMData } from "../export.js";
 
-export function getQuickInfo(context: TemplateContext, position: tss.LineAndCharacter, htmlLanguageService: HtmlLanguageService): tss.QuickInfo | undefined {
+export function getQuickInfo(context: TemplateContext, position: tss.LineAndCharacter, htmlLanguageService: HTMLLanguageService.LanguageService): tss.QuickInfo | undefined {
     const basePath = getProjectBasePath(context);
     const actionContext = resolveActionContext(htmlLanguageService, context, position);
     const cemCollection = getCEMData(context.fileName);

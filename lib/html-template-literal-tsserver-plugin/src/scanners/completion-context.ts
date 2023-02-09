@@ -2,7 +2,7 @@ import { TemplateContext } from "typescript-template-language-service-decorator"
 import * as tss from "typescript/lib/tsserverlibrary.js";
 import { Position, LanguageService } from "vscode-html-languageservice/lib/esm/htmlLanguageService.js";
 import { createTextDocumentFromContext } from "../text-document.js";
-import { TokenType } from "vscode-html-languageservice/lib/esm/htmlLanguageService.js";
+import * as HTMLLanguageService from "vscode-html-languageservice/lib/esm/htmlLanguageService.js";
 
 // Some of the context checks were borrowed from https://github.com/microsoft/vscode-html-languageservice/blob/main/src/services/htmlCompletion.ts
 
@@ -13,14 +13,14 @@ export function resolveActionContext(languageService: LanguageService, context: 
 
     let currentTag = "";
     let token = scanner.scan();
-    while (token !== TokenType.EOS && scanner.getTokenOffset() <= offset) {
+    while (token !== HTMLLanguageService.TokenType.EOS && scanner.getTokenOffset() <= offset) {
         const tokenOffset = scanner.getTokenOffset();
         const tokenLength = scanner.getTokenLength();
 
         const textSpan: tss.TextSpan = { start: tokenOffset, length: tokenLength };
 
         switch (token) {
-            case TokenType.StartTag:
+            case HTMLLanguageService.TokenType.StartTag:
                 const tagName = scanner.getTokenText();
                 currentTag = tagName;
 
@@ -32,19 +32,19 @@ export function resolveActionContext(languageService: LanguageService, context: 
                     } as TagActionContext;
                 }
                 break;
-            case TokenType.AttributeName:
+            case HTMLLanguageService.TokenType.AttributeName:
                 if (scanner.getTokenOffset() <= offset && offset <= scanner.getTokenEnd()) {
                     const attributeName = scanner.getTokenText();
                     return resolveAttributeKind(attributeName, currentTag, textSpan);
                 }
                 break;
-            case TokenType.AttributeValue:
+            case HTMLLanguageService.TokenType.AttributeValue:
                 if (scanner.getTokenOffset() <= offset && offset <= scanner.getTokenEnd()) {
                     console.log("Attribute value");
                     // TODO: Can we hit this?
                 }
                 break;
-            case TokenType.EndTag:
+            case HTMLLanguageService.TokenType.EndTag:
                 if (offset <= scanner.getTokenEnd()) {
                     const tagName = scanner.getTokenText();
                     return {
