@@ -106,6 +106,7 @@ function resolveAbsoluteFileToImport(importFilePath: string, basePath: string, s
     const dependencyPackageJsonPath = packagePath + "/package.json";
     if (!fs.existsSync(dependencyPackageJsonPath)) {
         // TODO: Handle this? Is it needed?
+        // If you end up in here. Please report this bug
         debugger;
         return undefined;
     }

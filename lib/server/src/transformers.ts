@@ -1,4 +1,5 @@
 import ts from "typescript";
+import { CODE_ACTIONS } from "html-template-literal-tsserver-plugin";
 import { Hover, Location, Position, Range, TextDocumentPositionParams, Diagnostic, DiagnosticSeverity } from "vscode-languageserver";
 import { TextDocument } from "vscode-languageserver-textdocument";
 import { TextDocuments } from "vscode-languageserver/node.js";
@@ -85,6 +86,9 @@ export function tsDiagnosticToDiagnostic(diagnostic: ts.Diagnostic, textDoc: Tex
     const start = diagnostic.start ?? 0;
     const end = start + (diagnostic.length ?? 0);
     if (!textDoc) {
+        return undefined;
+    }
+    if (!Object.values(CODE_ACTIONS).includes(diagnostic.code)) {
         return undefined;
     }
 

@@ -37,6 +37,9 @@ export const temp = html`
 
 `;
 
+document.querySelector("p");
+
+
 class Foo {
     bar() {
         console.log("Bin");
