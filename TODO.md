@@ -8,7 +8,7 @@
 - Create a command to restart the connection
 - Release
 
-# List of todo items before release
+# Extra todos
 
 - Make sure basic LSP features work
     - Go to Definition X
@@ -28,5 +28,5 @@
         - Else?
         - Invalid attribute/property values?
 
-
+- Why does our diagnostics also bring random TS diagnostics?
 
