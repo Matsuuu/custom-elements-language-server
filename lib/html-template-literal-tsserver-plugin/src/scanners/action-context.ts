@@ -1,13 +1,10 @@
-import { TemplateContext } from "typescript-template-language-service-decorator";
 import * as tss from "typescript/lib/tsserverlibrary.js";
-import { Position, LanguageService } from "vscode-html-languageservice/lib/esm/htmlLanguageService.js";
-import { createTextDocumentFromContext } from "../text-document.js";
+import { Position, LanguageService, TextDocument } from "vscode-html-languageservice/lib/esm/htmlLanguageService.js";
 import * as HTMLLanguageService from "vscode-html-languageservice/lib/esm/htmlLanguageService.js";
 
 // Some of the context checks were borrowed from https://github.com/microsoft/vscode-html-languageservice/blob/main/src/services/htmlCompletion.ts
 
-export function resolveActionContext(languageService: LanguageService, context: TemplateContext, position: Position): ActionContext {
-    const document = createTextDocumentFromContext(context);
+export function resolveActionContext(languageService: LanguageService, document: TextDocument, position: Position): ActionContext {
     const scanner = languageService.createScanner(document.getText());
     const offset = document.offsetAt(position);
 

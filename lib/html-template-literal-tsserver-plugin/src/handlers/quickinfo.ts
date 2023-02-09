@@ -11,11 +11,12 @@ import { getProjectBasePath } from "../template-context.js";
 import { getSourceFile } from "../ts/sourcefile.js";
 import { attributeNameVariantBuilder } from "../ast/ast.js";
 import { getCEMData } from "../export.js";
+import { createTextDocumentFromContext } from "../text-document.js";
 
 export function getQuickInfo(context: TemplateContext, position: tss.LineAndCharacter, htmlLanguageService: HTMLLanguageService.LanguageService): tss.QuickInfo | undefined {
-    debugger;
     const basePath = getProjectBasePath(context);
-    const actionContext = resolveActionContext(htmlLanguageService, context, position);
+    const document = createTextDocumentFromContext(context);
+    const actionContext = resolveActionContext(htmlLanguageService, document, position);
     const cemCollection = getCEMData(context.fileName);
 
     if (!cemCollection.hasData()) {

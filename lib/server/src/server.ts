@@ -53,7 +53,6 @@ connection.onHover(hoverInfo => {
         const htmlDoc = lang.parseHTMLDocument(doc);
         const a = lang.doHover(doc, hoverInfo.position, htmlDoc);
         const node = htmlDoc.findNodeAt(usableData.position);
-        debugger;
     }
 
     const quickInfo = languageService?.getQuickInfoAtPosition(usableData.fileName, usableData.position);

@@ -13,7 +13,8 @@ export function getCompletionEntries(context: TemplateContext, position: tss.Lin
     const htmlLSCompletions = getDefaultCompletionItems(context, position, htmlLanguageService);
     const defaultCompletionItems = htmlLSCompletions.items.map(completionItemToCompletionEntry);
 
-    const actionContext = resolveActionContext(htmlLanguageService, context, position);
+    const document = createTextDocumentFromContext(context);
+    const actionContext = resolveActionContext(htmlLanguageService, document, position);
 
     const cemCollection = getCEMData(context.fileName);
     let cemCompletions: tss.CompletionEntry[] = [];

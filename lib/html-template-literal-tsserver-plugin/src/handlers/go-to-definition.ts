@@ -18,10 +18,12 @@ import { TemplateContext } from "typescript-template-language-service-decorator"
 import { getFileNameFromPath } from "../fs.js";
 import { getAttributeDefinitionTextSpan, getClassDefinitionTextSpan, getEventDefinitionTextSpan, getPropertyDefinitionTextSpan } from "../ast/text-span.js";
 import { getCEMData } from "../export.js";
+import { createTextDocumentFromContext } from "../text-document.js";
 
 export function getGoToDefinitionEntries(context: TemplateContext, position: tss.LineAndCharacter, htmlLanguageService: HtmlLanguageService) {
     let definitionInfos: Array<ts.DefinitionInfo> = [];
-    const actionContext = resolveActionContext(htmlLanguageService, context, position);
+    const document = createTextDocumentFromContext(context);
+    const actionContext = resolveActionContext(htmlLanguageService, document, position);
     const cemCollection = getCEMData(context.fileName);
 
     if (!cemCollection.hasData()) {
