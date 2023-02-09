@@ -1,16 +1,29 @@
 import ts from "typescript";
 import tss from "typescript/lib/tsserverlibrary.js";
 import { CompletionItem, CompletionItemKind, CompletionList, TextDocumentPositionParams } from "vscode-languageserver/node.js";
+import * as HTMLLanguageService from "vscode-html-languageservice/lib/esm/htmlLanguageService.js";
 
 import { getLanguageService } from "./language-services/language-services.js";
 import { documents } from "./text-documents.js";
 import { wait } from "./wait.js";
+import { resolveActionContext } from "html-template-literal-tsserver-plugin";
+import { textDocumentDataToUsableData } from "./transformers.js";
 
 export async function getCompletionItems(textDocumentPosition: TextDocumentPositionParams): Promise<CompletionList> {
     console.log("On Completion");
     await wait(50);
     const doc = documents.get(textDocumentPosition.textDocument.uri);
     if (!doc) return CompletionList.create();
+
+    const usableData = textDocumentDataToUsableData(documents, textDocumentPosition);
+    const lang = HTMLLanguageService.getLanguageService();
+    if (doc) {
+        const htmlDoc = lang.parseHTMLDocument(doc);
+        const a = lang.doHover(doc, textDocumentPosition.position, htmlDoc);
+        const node = htmlDoc.findNodeAt(usableData.position);
+        const actionContext = resolveActionContext(lang, doc, textDocumentPosition.position);
+        debugger;
+    }
 
     const fileName = doc.uri.replace("file://", "");
 
