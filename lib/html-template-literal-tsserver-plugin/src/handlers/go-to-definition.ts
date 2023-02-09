@@ -11,7 +11,7 @@ import {
     isTagAction,
     PropertyActionContext,
     resolveActionContext,
-} from "../scanners/completion-context.js";
+} from "../scanners/action-context.js";
 import { findClassForTagName, findCustomElementDeclarationFromModule, JavaScriptModuleWithRef } from "../cem/cem-helpers.js";
 import { CustomElement, JavaScriptModule } from "custom-elements-manifest";
 import { TemplateContext } from "typescript-template-language-service-decorator";
