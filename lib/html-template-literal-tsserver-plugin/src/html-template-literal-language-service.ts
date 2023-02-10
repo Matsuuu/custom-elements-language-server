@@ -6,6 +6,8 @@ import { getCompletionEntries } from "./handlers/completion.js";
 import { getQuickInfo } from "./handlers/quickinfo.js";
 import { getImportDiagnostics } from "./handlers/diagnostics/import-diagnostics.js";
 import { getMissingCloseTagDiagnostics } from "./handlers/diagnostics/close-tag-diagnostics.js";
+import { createTextDocumentFromContext } from "./text-document.js";
+import { getProjectBasePath } from "./template-context.js";
 
 export class HTMLTemplateLiteralLanguageService implements TemplateLanguageService {
     public static project: tss.server.Project;
@@ -19,7 +21,10 @@ export class HTMLTemplateLiteralLanguageService implements TemplateLanguageServi
     }
 
     public getQuickInfoAtPosition(context: TemplateContext, position: tss.LineAndCharacter): tss.QuickInfo | undefined {
-        return getQuickInfo(context, position, this.htmlLanguageService);
+        const document = createTextDocumentFromContext(context);
+        const basePath = getProjectBasePath(context);
+        const filePath = context.fileName;
+        return getQuickInfo(basePath, filePath, document, position, this.htmlLanguageService);
     }
 
     public getCompletionsAtPosition(context: TemplateContext, position: tss.LineAndCharacter): tss.CompletionInfo {

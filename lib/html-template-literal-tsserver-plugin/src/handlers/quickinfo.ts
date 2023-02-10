@@ -1,6 +1,5 @@
 // @ts-expect-error
 import type { CustomElement, JavaScriptModule } from "custom-elements-manifest";
-import { TemplateContext } from "typescript-template-language-service-decorator";
 import ts from "typescript";
 import tss from "typescript/lib/tsserverlibrary.js";
 import * as HTMLLanguageService from "vscode-html-languageservice/lib/esm/htmlLanguageService.js";
@@ -8,17 +7,13 @@ import { getAttributeIdentifier, getClassIdentifier, getEventIdentifier, getProp
 import { findClassForTagName, findCustomElementDeclarationFromModule } from "../cem/cem-helpers.js";
 import { AttributeActionContext, EventActionContext, isAttributeNameAction, isEndTagAction, isEventNameAction, isPropertyNameAction, isTagAction, PropertyActionContext, resolveActionContext, TagActionContext } from "../scanners/action-context.js";
 import { getFileNameFromPath } from "../fs.js";
-import { getProjectBasePath } from "../template-context.js";
 import { getSourceFile } from "../ts/sourcefile.js";
 import { attributeNameVariantBuilder } from "../ast/ast.js";
 import { getCEMData } from "../export.js";
-import { createTextDocumentFromContext } from "../text-document.js";
 
-export function getQuickInfo(context: TemplateContext, position: tss.LineAndCharacter, htmlLanguageService: HTMLLanguageService.LanguageService): tss.QuickInfo | undefined {
-    const basePath = getProjectBasePath(context);
-    const document = createTextDocumentFromContext(context);
+export function getQuickInfo(projectBasePath: string, filePath: string, document: HTMLLanguageService.TextDocument, position: tss.LineAndCharacter, htmlLanguageService: HTMLLanguageService.LanguageService): tss.QuickInfo | undefined {
     const actionContext = resolveActionContext(htmlLanguageService, document, position);
-    const cemCollection = getCEMData(context.fileName);
+    const cemCollection = getCEMData(filePath);
 
     if (!cemCollection.hasData()) {
         return undefined;
@@ -30,26 +25,26 @@ export function getQuickInfo(context: TemplateContext, position: tss.LineAndChar
     }
 
     const fileName = getFileNameFromPath(matchingClass?.path);
-    const fileFullText = getSourceFile(basePath, matchingClass.path)?.getFullText() ?? '';
+    const fileFullText = getSourceFile(projectBasePath, matchingClass.path)?.getFullText() ?? '';
     const classDeclaration = findCustomElementDeclarationFromModule(matchingClass);
     if (!classDeclaration) {
         return undefined;
     }
 
     if (isTagAction(actionContext) || isEndTagAction(actionContext)) {
-        return getTagQuickInfo(basePath, matchingClass, classDeclaration, actionContext, fileFullText);
+        return getTagQuickInfo(projectBasePath, matchingClass, classDeclaration, actionContext, fileFullText);
     }
 
     if (isAttributeNameAction(actionContext)) {
-        return getAttributeQuickInfo(basePath, matchingClass, classDeclaration, actionContext, fileName, fileFullText);
+        return getAttributeQuickInfo(projectBasePath, matchingClass, classDeclaration, actionContext, fileName, fileFullText);
     }
 
     if (isPropertyNameAction(actionContext)) {
-        return getPropertyQuickInfo(basePath, matchingClass, classDeclaration, actionContext, fileName, fileFullText);
+        return getPropertyQuickInfo(projectBasePath, matchingClass, classDeclaration, actionContext, fileName, fileFullText);
     }
 
     if (isEventNameAction(actionContext)) {
-        return getEventQuickInfo(basePath, matchingClass, classDeclaration, actionContext, fileName, fileFullText);
+        return getEventQuickInfo(projectBasePath, matchingClass, classDeclaration, actionContext, fileName, fileFullText);
     }
 
     return undefined;
