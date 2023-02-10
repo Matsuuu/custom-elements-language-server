@@ -10,8 +10,8 @@ export interface Handler<T, P> {
     onHTMLOrOtherFile: (params: T) => P | undefined;
 }
 
-export function isJavascriptFile(params: TextDocumentPositionParams) {
-    const uri = params.textDocument.uri;
+export function isJavascriptFile(params: TextDocumentPositionParams | string) {
+    const uri = typeof params === "string" ? params : params.textDocument.uri;
 
     return javascriptFileTypes.some(fileType => uri.endsWith("." + fileType));
 }

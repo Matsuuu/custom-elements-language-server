@@ -10,9 +10,12 @@ import {
     Diagnostic,
     CodeActionParams,
     CodeAction,
-    Position
+    Position,
+    WorkspaceFolder
 } from "vscode-languageserver/node.js";
 import tss from "typescript/lib/tsserverlibrary.js";
+import fs from "fs";
+import path from "path";
 
 console.log("NODE VERSION: ", process.version);
 
@@ -20,12 +23,15 @@ import { TextDocument } from "vscode-languageserver-textdocument";
 import { getCompletionItemInfo, getCompletionItems } from "./completion.js";
 import { DEFAULT_SETTINGS, LanguageServerSettings, setCapabilities, setGlobalSettings } from "./settings.js";
 import { getLanguageService, updateLanguageServiceForFile } from "./language-services/language-services.js";
-import { documentSpanToLocation, quickInfoToHover, textDocumentDataToUsableData, tsDiagnosticToDiagnostic } from "./transformers.js";
+import { documentSpanToLocation, quickInfoToHover, textDocumentDataToUsableData, tsDiagnosticToDiagnostic, uriToFileName } from "./transformers.js";
 import { documents, documentSettings } from "./text-documents.js";
 import { getReferencesAtPosition } from "./handlers/references.js";
 import { getCodeActionsForParams } from "./handlers/code-actions.js";
 import * as HTMLLanguageService from "vscode-html-languageservice/lib/esm/htmlLanguageService.js";
 import { resolveActionContext } from "html-template-literal-tsserver-plugin";
+import { HoverHandler } from "./handlers/hover.js";
+import { isJavascriptFile } from "./handlers/handler.js";
+import { wait } from "./wait.js";
 
 const connection = createConnection(ProposedFeatures.all);
 
@@ -43,27 +49,7 @@ connection.onDidChangeWatchedFiles(_change => {
     connection.console.log("We received a file change event");
 });
 
-connection.onHover(hoverInfo => {
-    console.log("Hover");
-    const usableData = textDocumentDataToUsableData(documents, hoverInfo);
-    const languageService = getLanguageService(usableData.fileName, usableData.fileContent);
-
-    const lang = HTMLLanguageService.getLanguageService();
-    const doc = documents.get(hoverInfo.textDocument.uri);
-    if (doc) {
-        const htmlDoc = lang.parseHTMLDocument(doc);
-        const a = lang.doHover(doc, hoverInfo.position, htmlDoc);
-        const node = htmlDoc.findNodeAt(usableData.position);
-        const actionContext = resolveActionContext(lang, doc, hoverInfo.position);
-        debugger;
-    }
-
-    const quickInfo = languageService?.getQuickInfoAtPosition(usableData.fileName, usableData.position);
-    if (quickInfo?.kind !== tss.ScriptElementKind.string) {
-        return undefined;
-    }
-    return quickInfoToHover(usableData.fileName, quickInfo);
-});
+connection.onHover(HoverHandler.handle);
 
 // This handler provides the initial list of the completion items.
 connection.onCompletion(getCompletionItems);
@@ -97,7 +83,9 @@ documents.onDidClose(e => {
 documents.onDidOpen(e => {
     console.log("Opened text doc");
     const fileName = e.document.uri.replace("file://", "");
-    updateLanguageServiceForFile(fileName, e.document.getText());
+    if (isJavascriptFile(e.document.uri)) {
+        updateLanguageServiceForFile(fileName, e.document.getText());
+    }
 
     runDiagnostics(e.document.uri, e.document);
 });
@@ -147,7 +135,33 @@ function onInitialize(params: InitializeParams) {
             },
         };
     }
+
+    initializeProjectsInWorkSpaceFolders(params.workspaceFolders || []);
+
     return result;
+}
+
+interface PackageJsonLike {
+    main: string;
+    module: string;
+}
+
+async function initializeProjectsInWorkSpaceFolders(workspaceFolders: WorkspaceFolder[]) {
+    await wait(2000);
+    workspaceFolders?.forEach(workSpaceFolder => {
+        let fileName = uriToFileName(workSpaceFolder.uri);
+        const packageJsonPath = fileName + "/package.json";
+        if (fs.existsSync(packageJsonPath)) {
+            try {
+                const packageJson = JSON.parse(fs.readFileSync(packageJsonPath, "utf8")) as PackageJsonLike;
+                const mainFileName = packageJson.main ?? packageJson.module;
+                const mainFilePath = path.resolve(fileName, mainFileName);
+                updateLanguageServiceForFile(mainFilePath, undefined);
+            } catch (ex) {
+                console.warn("Couldn't open project " + fileName, ex);
+            }
+        }
+    })
 }
 
 function onInitialized() {
@@ -187,6 +201,9 @@ connection.onDidChangeTextDocument((params: DidChangeTextDocumentParams) => {
 
 async function runDiagnostics(uri: string, textDoc: TextDocument) {
 
+    if (!isJavascriptFile(uri)) {
+        return; // TODO. Implement for html files too
+    }
     const fileName = uri.replace("file://", "");
     const languageService = getLanguageService(fileName, textDoc.getText());
 

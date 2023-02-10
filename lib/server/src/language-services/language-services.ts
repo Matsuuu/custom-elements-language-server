@@ -1,6 +1,7 @@
 import { plugin } from "html-template-literal-tsserver-plugin";
 import ts from "typescript";
 import tss, { server } from "typescript/lib/tsserverlibrary.js";
+import fs from "fs";
 
 import { getPluginCreateInfo } from "./plugin-creation.js";
 import { getProjectService } from "./project-service.js";
@@ -41,7 +42,7 @@ export class LanguageServiceManager {
         return languageService;
     }
 
-    public getLanguageServiceForCurrentFile(fileName: string, fileContent: string): tss.LanguageService | undefined {
+    public getLanguageServiceForCurrentFile(fileName: string, fileContent: string | undefined): tss.LanguageService | undefined {
         const project = projectService.openAndGetProjectForFile(fileName, fileContent);
         if (!project) {
             return undefined;
@@ -77,7 +78,40 @@ export function getLanguageService(fileName: string, fileContent: string) {
     return getLanguageServiceManagerInstance().getLanguageServiceForCurrentFile(fileName, fileContent);
 }
 
-export function updateLanguageServiceForFile(fileName: string, fileContent: string) {
+export function getProjectBasePath(fileName: string) {
+    const closestConfigurationFile = findClosestConfigurationFile(fileName);
+    return closestConfigurationFile?.substring(0, closestConfigurationFile?.lastIndexOf("/")) || '';
+}
+
+function findClosestConfigurationFile(path: string) {
+    let currentPath = path.substring(0, path.lastIndexOf("/"));
+    let i = 0;
+    while (currentPath.includes("/") && currentPath.length > 1) {
+        console.log(currentPath);
+        const tsConfigPath = currentPath + "/tsconfig.json";
+        const jsConfigPath = currentPath + "/jsconfig.json";
+        const packageJsonPath = currentPath + "/package.json";
+
+        if (fs.existsSync(packageJsonPath)) {
+            return packageJsonPath;
+        }
+        if (fs.existsSync(tsConfigPath)) {
+            return tsConfigPath;
+        }
+        if (fs.existsSync(jsConfigPath)) {
+            return jsConfigPath;
+        }
+
+        currentPath = currentPath.substring(0, currentPath.lastIndexOf("/"));
+        i++;
+        if (i > 40) {
+            return "";
+        }
+    }
+    return undefined;
+}
+
+export function updateLanguageServiceForFile(fileName: string, fileContent: string | undefined) {
     getLanguageServiceManagerInstance().getLanguageServiceForCurrentFile(fileName, fileContent);
 }
 

@@ -38,57 +38,12 @@ export class ProjectService extends tss.server.ProjectService {
         return tssIteratorToArray(this.configuredProjects.keys());
     }
 
-    public openAndGetProjectForFile(fileName: string, fileContent: string) {
-        const isHtmlFile = fileName.endsWith("html");
-        if (isHtmlFile) {
-            return undefined;
-            // return this.openAndGetProjectForHtmlFile(fileName, fileContent);
-        }
-
+    public openAndGetProjectForFile(fileName: string, fileContent: string | undefined) {
         const fileOpenResult = this.openClientFile(fileName, fileContent);
 
         // @ts-ignore I don't know why the typing here is so scuffed
         const scriptInfo = this.getScriptInfoForNormalizedPath(fileName);
         return scriptInfo?.containingProjects[0];
     }
-
-    openAndGetProjectForHtmlFile(fileName: string, fileContent: string) {
-        const closestConfigurationFile = findClosestConfigurationFile(fileName);
-        if (!closestConfigurationFile) {
-            return undefined;
-        }
-
-        const configuredProjects = this.configuredProjects;
-        if (!configuredProjects.has(closestConfigurationFile)) {
-            return undefined;
-        }
-
-        const project = configuredProjects.get(closestConfigurationFile);
-        project?.writeFile(fileName, fileContent);
-        return project;
-    }
 }
 
-function findClosestConfigurationFile(path: string) {
-    let currentPath = path.substring(0, path.lastIndexOf("/"));
-    let i = 0;
-    while (currentPath.includes("/") && currentPath.length > 1) {
-        console.log(currentPath);
-        const tsConfigPath = currentPath + "/tsconfig.json";
-        const jsConfigPath = currentPath + "/jsconfig.json";
-
-        if (fs.existsSync(tsConfigPath)) {
-            return tsConfigPath;
-        }
-        if (fs.existsSync(jsConfigPath)) {
-            return jsConfigPath;
-        }
-
-        currentPath = currentPath.substring(0, currentPath.lastIndexOf("/"));
-        i++;
-        if (i > 100) {
-            break;
-        }
-    }
-    return undefined;
-}

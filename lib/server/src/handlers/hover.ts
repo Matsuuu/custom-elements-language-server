@@ -3,7 +3,7 @@ import tss from "typescript/lib/tsserverlibrary.js";
 import { HoverParams, Hover } from "vscode-languageserver";
 import { quickInfoToHover, textDocumentDataToUsableData } from "../transformers";
 import { documents } from "../text-documents";
-import { getLanguageService } from "../language-services/language-services";
+import { getLanguageService, getProjectBasePath } from "../language-services/language-services";
 import { Handler, isJavascriptFile } from "./handler";
 import { getQuickInfo } from "html-template-literal-tsserver-plugin";
 
@@ -31,10 +31,10 @@ export const HoverHandler: Handler<HoverParams, Hover> = {
         if (!doc) {
             return undefined;
         }
-        const htmlDoc = languageService.parseHTMLDocument(doc);
-        const node = htmlDoc.findNodeAt(usableData.position);
-        const quickInfo = getQuickInfo();
+        // const node = htmlDoc.findNodeAt(usableData.position);
+        const basePath = getProjectBasePath(usableData.fileName);
+        const quickInfo = getQuickInfo(basePath, usableData.fileName, doc, hoverInfo.position, languageService);
 
-        return undefined;
+        return quickInfoToHover(usableData.fileName, quickInfo);
     }
 }

@@ -22,7 +22,6 @@ export async function getCompletionItems(textDocumentPosition: TextDocumentPosit
         const a = lang.doHover(doc, textDocumentPosition.position, htmlDoc);
         const node = htmlDoc.findNodeAt(usableData.position);
         const actionContext = resolveActionContext(lang, doc, textDocumentPosition.position);
-        debugger;
     }
 
     const fileName = doc.uri.replace("file://", "");
