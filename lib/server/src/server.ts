@@ -32,6 +32,7 @@ import { resolveActionContext } from "html-template-literal-tsserver-plugin";
 import { HoverHandler } from "./handlers/hover.js";
 import { isJavascriptFile } from "./handlers/handler.js";
 import { wait } from "./wait.js";
+import { DefinitionHandler } from "./handlers/definition.js";
 
 const connection = createConnection(ProposedFeatures.all);
 
@@ -57,14 +58,7 @@ connection.onCompletion(getCompletionItems);
 // the completion list.
 connection.onCompletionResolve(getCompletionItemInfo);
 
-connection.onDefinition(definitionEvent => {
-    const usableData = textDocumentDataToUsableData(documents, definitionEvent);
-    const languageService = getLanguageService(usableData.fileName, usableData.fileContent);
-    const definitions = languageService?.getDefinitionAtPosition(usableData.fileName, usableData.position);
-
-    const definitionLocations = definitions?.map(documentSpanToLocation) ?? [];
-    return definitionLocations;
-});
+connection.onDefinition(DefinitionHandler.handle);
 
 connection.onReferences((referencesEvent) => {
     const references = getReferencesAtPosition(referencesEvent);

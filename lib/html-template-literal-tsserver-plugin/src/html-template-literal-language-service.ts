@@ -17,13 +17,18 @@ export class HTMLTemplateLiteralLanguageService implements TemplateLanguageServi
     }
 
     getDefinitionAtPosition(context: TemplateContext, position: ts.LineAndCharacter): ts.DefinitionInfo[] {
-        return getGoToDefinitionEntries(context, position, this.htmlLanguageService);
+        const document = createTextDocumentFromContext(context);
+        const basePath = getProjectBasePath(context);
+        const filePath = context.fileName;
+
+        return getGoToDefinitionEntries(basePath, filePath, document, position, this.htmlLanguageService);
     }
 
     public getQuickInfoAtPosition(context: TemplateContext, position: tss.LineAndCharacter): tss.QuickInfo | undefined {
         const document = createTextDocumentFromContext(context);
         const basePath = getProjectBasePath(context);
         const filePath = context.fileName;
+
         return getQuickInfo(basePath, filePath, document, position, this.htmlLanguageService);
     }
 
