@@ -18,7 +18,6 @@ import path from "path";
 console.log("NODE VERSION: ", process.version);
 
 import { TextDocument } from "vscode-languageserver-textdocument";
-import { getCompletionItemInfo, getCompletionItems } from "./completion.js";
 import { DEFAULT_SETTINGS, LanguageServerSettings, setCapabilities, setGlobalSettings } from "./settings.js";
 import { getLanguageService, updateLanguageServiceForFile } from "./language-services/language-services.js";
 import { tsDiagnosticToDiagnostic, uriToFileName } from "./transformers.js";
@@ -28,6 +27,7 @@ import { getCodeActionsForParams } from "./handlers/code-actions.js";
 import { HoverHandler } from "./handlers/hover.js";
 import { isJavascriptFile } from "./handlers/handler.js";
 import { DefinitionHandler } from "./handlers/definition.js";
+import { CompletionsHandler } from "./handlers/completions.js";
 
 const connection = createConnection(ProposedFeatures.all);
 
@@ -45,10 +45,10 @@ connection.onDidChangeWatchedFiles(_change => {
 
 
 // This handler provides the initial list of the completion items.
-connection.onCompletion(getCompletionItems);
+connection.onCompletion(CompletionsHandler.handle);
 // This handler resolves additional information for the item selected in
 // the completion list.
-connection.onCompletionResolve(getCompletionItemInfo);
+// connection.onCompletionResolve(getCompletionItemInfo);
 
 connection.onHover(HoverHandler.handle);
 connection.onDefinition(DefinitionHandler.handle);
@@ -106,7 +106,7 @@ function onInitialize(params: InitializeParams) {
         capabilities: {
             textDocumentSync: TextDocumentSyncKind.Full,
             completionProvider: {
-                resolveProvider: true,
+                // resolveProvider: true,
             },
             hoverProvider: true,
             declarationProvider: true,

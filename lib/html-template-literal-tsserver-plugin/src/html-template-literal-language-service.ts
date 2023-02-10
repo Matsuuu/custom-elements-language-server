@@ -33,7 +33,10 @@ export class HTMLTemplateLiteralLanguageService implements TemplateLanguageServi
     }
 
     public getCompletionsAtPosition(context: TemplateContext, position: tss.LineAndCharacter): tss.CompletionInfo {
-        return getCompletionEntries(context, position, this.htmlLanguageService);
+        const document = createTextDocumentFromContext(context);
+        const filePath = context.fileName;
+
+        return getCompletionEntries(filePath, document, position, this.htmlLanguageService);
     }
 
     public getCompletionEntryDetails?(context: TemplateContext, position: ts.LineAndCharacter, name: string): ts.CompletionEntryDetails {

@@ -1,22 +1,18 @@
-import { TemplateContext } from "typescript-template-language-service-decorator";
+import * as HTMLLanguageService from "vscode-html-languageservice/lib/esm/htmlLanguageService.js";
 import { LanguageService as HtmlLanguageService } from "vscode-html-languageservice/lib/esm/htmlLanguageService.js";
 import tss from "typescript/lib/tsserverlibrary.js";
-import { createTextDocumentFromContext } from "../text-document.js";
-import { completionItemToCompletionEntry } from "../interop.js";
 import { isAttributeNameAction, isEndTagAction, isEventNameAction, isPropertyNameAction, isTagAction, resolveActionContext } from "../scanners/action-context.js";
 import { findCustomElementTagLike, findDeclarationForTagName } from "../cem/cem-helpers.js";
 import { getCEMData } from "../export.js";
+import { completionItemToCompletionEntry } from "../interop.js";
 
-export function getCompletionEntries(context: TemplateContext, position: tss.LineAndCharacter, htmlLanguageService: HtmlLanguageService) {
-    console.log("On completions");
-
-    const htmlLSCompletions = getDefaultCompletionItems(context, position, htmlLanguageService);
-    const defaultCompletionItems = htmlLSCompletions.items.map(completionItemToCompletionEntry);
-
-    const document = createTextDocumentFromContext(context);
+export function getCompletionEntries(filePath: string, document: HTMLLanguageService.TextDocument, position: tss.LineAndCharacter, htmlLanguageService: HtmlLanguageService) {
     const actionContext = resolveActionContext(htmlLanguageService, document, position);
 
-    const cemCollection = getCEMData(context.fileName);
+    const htmlLSCompletions = getDefaultCompletionItems(document, position, htmlLanguageService);
+    const defaultCompletionItems = htmlLSCompletions.items.map(completionItemToCompletionEntry);
+
+    const cemCollection = getCEMData(filePath);
     let cemCompletions: tss.CompletionEntry[] = [];
 
     if (!cemCollection) {
@@ -96,8 +92,7 @@ export function getCompletionEntries(context: TemplateContext, position: tss.Lin
     };
 }
 
-function getDefaultCompletionItems(context: TemplateContext, position: tss.LineAndCharacter, htmlLanguageService: HtmlLanguageService) {
-    const document = createTextDocumentFromContext(context);
+function getDefaultCompletionItems(document: HTMLLanguageService.TextDocument, position: tss.LineAndCharacter, htmlLanguageService: HtmlLanguageService) {
     const htmlDoc = htmlLanguageService.parseHTMLDocument(document);
     const htmlCompletions = htmlLanguageService.doComplete(document, position, htmlDoc);
     // TODO: Cache
