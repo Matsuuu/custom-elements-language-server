@@ -44,15 +44,15 @@ connection.onDidChangeWatchedFiles(_change => {
 });
 
 
-// This handler provides the initial list of the completion items.
-connection.onCompletion(CompletionsHandler.handle);
 // This handler resolves additional information for the item selected in
 // the completion list.
 // connection.onCompletionResolve(getCompletionItemInfo);
 
+connection.onCompletion(CompletionsHandler.handle);
 connection.onHover(HoverHandler.handle);
 connection.onDefinition(DefinitionHandler.handle);
 
+// TODO: Make references work for HTML too
 connection.onReferences((referencesEvent) => {
     const references = getReferencesAtPosition(referencesEvent);
 
@@ -158,7 +158,7 @@ function onInitialized() {
     }
     if (hasWorkspaceFolderCapability) {
         connection.workspace.onDidChangeWorkspaceFolders(_event => {
-            connection.console.log("Workspace folder change event received.");
+            // TODO
         });
     }
 }
