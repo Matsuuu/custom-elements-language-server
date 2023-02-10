@@ -1,5 +1,4 @@
 import * as HTMLLanguageService from "vscode-html-languageservice/lib/esm/htmlLanguageService.js";
-import tss from "typescript/lib/tsserverlibrary.js";
 import { HoverParams, Hover } from "vscode-languageserver";
 import { quickInfoToHover, textDocumentDataToUsableData } from "../transformers";
 import { documents } from "../text-documents";

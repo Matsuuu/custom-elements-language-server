@@ -39,6 +39,7 @@ export function getReferencesAtPosition(referenceParams: ReferenceParams) {
 
     const fileContentMap: any = {};
 
+    // TODO: Find from HTML files too
     const filesUsingTag = project?.getRootScriptInfos().filter(file => {
         const templateExpressions = findTemplateExpressions(file.path, "");
         const contentAreas = templateExpressions.map(exp => exp.getText());

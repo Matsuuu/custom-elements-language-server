@@ -10,10 +10,8 @@ import {
     Diagnostic,
     CodeActionParams,
     CodeAction,
-    Position,
     WorkspaceFolder
 } from "vscode-languageserver/node.js";
-import tss from "typescript/lib/tsserverlibrary.js";
 import fs from "fs";
 import path from "path";
 
@@ -23,15 +21,12 @@ import { TextDocument } from "vscode-languageserver-textdocument";
 import { getCompletionItemInfo, getCompletionItems } from "./completion.js";
 import { DEFAULT_SETTINGS, LanguageServerSettings, setCapabilities, setGlobalSettings } from "./settings.js";
 import { getLanguageService, updateLanguageServiceForFile } from "./language-services/language-services.js";
-import { documentSpanToLocation, quickInfoToHover, textDocumentDataToUsableData, tsDiagnosticToDiagnostic, uriToFileName } from "./transformers.js";
+import { tsDiagnosticToDiagnostic, uriToFileName } from "./transformers.js";
 import { documents, documentSettings } from "./text-documents.js";
 import { getReferencesAtPosition } from "./handlers/references.js";
 import { getCodeActionsForParams } from "./handlers/code-actions.js";
-import * as HTMLLanguageService from "vscode-html-languageservice/lib/esm/htmlLanguageService.js";
-import { resolveActionContext } from "html-template-literal-tsserver-plugin";
 import { HoverHandler } from "./handlers/hover.js";
 import { isJavascriptFile } from "./handlers/handler.js";
-import { wait } from "./wait.js";
 import { DefinitionHandler } from "./handlers/definition.js";
 
 const connection = createConnection(ProposedFeatures.all);
@@ -46,11 +41,8 @@ connection.onInitialized(onInitialized);
 connection.onDidChangeConfiguration(onDidChangeConfiguration);
 connection.onDidChangeWatchedFiles(_change => {
     console.log("File changed");
-    // Monitored files have change in VS Code
-    connection.console.log("We received a file change event");
 });
 
-connection.onHover(HoverHandler.handle);
 
 // This handler provides the initial list of the completion items.
 connection.onCompletion(getCompletionItems);
@@ -58,6 +50,7 @@ connection.onCompletion(getCompletionItems);
 // the completion list.
 connection.onCompletionResolve(getCompletionItemInfo);
 
+connection.onHover(HoverHandler.handle);
 connection.onDefinition(DefinitionHandler.handle);
 
 connection.onReferences((referencesEvent) => {
@@ -141,7 +134,6 @@ interface PackageJsonLike {
 }
 
 async function initializeProjectsInWorkSpaceFolders(workspaceFolders: WorkspaceFolder[]) {
-    await wait(2000);
     workspaceFolders?.forEach(workSpaceFolder => {
         let fileName = uriToFileName(workSpaceFolder.uri);
         const packageJsonPath = fileName + "/package.json";
