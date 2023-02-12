@@ -24,7 +24,7 @@ function nodeIsNotClosed(node: Node) {
 function nonClosedTagToDiagnostic(node: Node, sourceFile: tss.SourceFile | undefined, htmlContextOffset: number): tss.Diagnostic {
     const startTagEnd = node.startTagEnd ?? node.start;
     const closingSnippet = `Add closing tag </${node.tag}>`;
-    const closingTagOffset = (node.startTagEnd || 0) + 1;
+    const closingTagOffset = (node.startTagEnd || 0) + (sourceFile === undefined ? 0 : 1); // HTML Files don't need to +1 bump for some reason
     return {
         category: tss.DiagnosticCategory.Warning,
         code: CODE_ACTIONS.CLOSE_TAG,

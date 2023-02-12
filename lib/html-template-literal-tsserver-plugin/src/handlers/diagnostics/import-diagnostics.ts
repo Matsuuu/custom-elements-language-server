@@ -27,10 +27,6 @@ export function getImportDiagnostics(filePath: string, document: HTMLLanguageSer
     // Might lead to some false negatives.
     const sourceFileNames = associatedFiles;
 
-    if (!sourceFile) {
-        return [];
-    }
-
     const cemCollection = getCEMData(filePath);
     if (!cemCollection.hasData()) {
         return [];

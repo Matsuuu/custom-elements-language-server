@@ -25,7 +25,13 @@ export const CodeActionHandler: Handler<CodeActionParams, CodeAction[]> = {
 
     },
     onHTMLOrOtherFile: (params: CodeActionParams) => {
-        return [];
+        const doc = params.textDocument;
+        const textDoc = documents.get(doc.uri);
+        if (!textDoc) {
+            return [];
+        }
+
+        return getCodeActionsForParams(params, textDoc);
     }
 }
 
