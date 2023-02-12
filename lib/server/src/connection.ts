@@ -1,22 +1,27 @@
 import { createConnection, DidChangeConfigurationNotification, DidChangeConfigurationParams, InitializeParams, InitializeResult, ProposedFeatures, TextDocumentSyncKind, WorkspaceFolder } from "vscode-languageserver/node.js";
 import { DEFAULT_SETTINGS, LanguageServerSettings, setCapabilities, setGlobalSettings } from "./settings";
-import { documentSettings } from "./text-documents";
+import { documentSettings, initDocuments } from "./text-documents";
 import { uriToFileName } from "./transformers";
 import fs from "fs";
 import path from "path";
 import { updateLanguageServiceForFile } from "./language-services/language-services";
 
-export const connection = createConnection(ProposedFeatures.all);
+export let connection = createConnection(ProposedFeatures.all);
 
-connection.onInitialize(onInitialize);
-connection.onInitialized(onInitialized);
-connection.onDidChangeConfiguration(onDidChangeConfiguration);
-connection.onDidChangeWatchedFiles(_change => {
-    console.log("File changed");
-});
+export function initConnection() {
+    connection = createConnection(ProposedFeatures.all);
 
-// Listen on the connection
-connection.listen();
+    connection.onInitialize(onInitialize);
+    connection.onInitialized(onInitialized);
+    connection.onDidChangeConfiguration(onDidChangeConfiguration);
+    connection.onDidChangeWatchedFiles(_change => {
+        console.log("File changed");
+    });
+
+    // Listen on the connection
+    connection.listen();
+    initDocuments();
+}
 
 let hasConfigurationCapability: boolean = false;
 let hasWorkspaceFolderCapability: boolean = false;

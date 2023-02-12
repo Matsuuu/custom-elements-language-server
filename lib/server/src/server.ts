@@ -5,40 +5,18 @@ import {
 console.log("NODE VERSION: ", process.version);
 
 import { TextDocument } from "vscode-languageserver-textdocument";
-import { updateLanguageServiceForFile } from "./language-services/language-services.js";
-import { documents, documentSettings } from "./text-documents.js";
+import { documents, initDocuments } from "./text-documents.js";
 import { ReferenceHandler } from "./handlers/references.js";
 import { CodeActionHandler } from "./handlers/code-actions.js";
 import { HoverHandler } from "./handlers/hover.js";
-import { isJavascriptFile } from "./handlers/handler.js";
 import { DefinitionHandler } from "./handlers/definition.js";
 import { CompletionsHandler } from "./handlers/completions.js";
 import { CodeActionResolveHandler } from "./handlers/code-action-resolve.js";
-import { connection } from "./connection.js";
+import { connection, initConnection } from "./connection.js";
 import { runDiagnostics } from "./diagnostics.js";
 
-// Only keep settings for open documents
-documents.listen(connection);
-
-documents.onDidClose(e => {
-    documentSettings.delete(e.document.uri);
-});
-
-documents.onDidOpen(e => {
-    console.log("Opened text doc");
-    const fileName = e.document.uri.replace("file://", "");
-    if (isJavascriptFile(e.document.uri)) {
-        updateLanguageServiceForFile(fileName, e.document.getText());
-    }
-
-    runDiagnostics(e.document.uri, e.document);
-});
-
-
-
-// This handler resolves additional information for the item selected in
-// the completion list.
-// connection.onCompletionResolve(getCompletionItemInfo);
+initConnection();
+initDocuments();
 
 connection.onCompletion(CompletionsHandler.handle);
 connection.onHover(HoverHandler.handle);
