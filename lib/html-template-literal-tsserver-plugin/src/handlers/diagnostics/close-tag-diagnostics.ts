@@ -8,9 +8,9 @@ import { CODE_ACTIONS } from "../enum/code-actions.js";
 export function getMissingCloseTagDiagnostics(filePath: string, document: HTMLLanguageService.TextDocument, htmlLanguageService: HtmlLanguageService, nodeOffset: number): tss.Diagnostic[] {
     const customElementTagNodes = getCustomElementTagsInContext(htmlLanguageService, document);
     const sourceFile = getSourceFile(filePath);
-    if (!sourceFile) {
+    /*if (!sourceFile) {
         return [];
-    }
+    }*/
 
     return customElementTagNodes
         .filter(nodeIsNotClosed)
@@ -21,7 +21,7 @@ function nodeIsNotClosed(node: Node) {
     return node.endTagStart === undefined;
 }
 
-function nonClosedTagToDiagnostic(node: Node, sourceFile: tss.SourceFile, htmlContextOffset: number): tss.Diagnostic {
+function nonClosedTagToDiagnostic(node: Node, sourceFile: tss.SourceFile | undefined, htmlContextOffset: number): tss.Diagnostic {
     const startTagEnd = node.startTagEnd ?? node.start;
     const closingSnippet = `Add closing tag </${node.tag}>`;
     const closingTagOffset = (node.startTagEnd || 0) + 1;

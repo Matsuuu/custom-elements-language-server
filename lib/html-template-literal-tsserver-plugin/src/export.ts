@@ -13,3 +13,5 @@ export * from "./handlers/quickinfo.js";
 export * from "./handlers/go-to-definition.js";
 export * from "./handlers/completion.js";
 export * from "./scanners/action-context.js";
+export * from "./handlers/diagnostics/close-tag-diagnostics.js";
+export * from "./handlers/diagnostics/import-diagnostics.js";
