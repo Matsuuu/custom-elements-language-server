@@ -4,10 +4,29 @@ import { ReferenceParams, Location, Range } from "vscode-languageserver";
 import { getProjectForCurrentFile } from "../language-services/language-services.js";
 import { documents, scanDocument } from "../text-documents.js";
 import { fileNameToUri, offsetToPosition, positionToOffset, textDocumentDataToUsableData } from "../transformers.js";
+import { Handler, isJavascriptFile } from "./handler.js";
 
+export const ReferenceHandler: Handler<ReferenceParams, Location[]> = {
+    handle: function(params: ReferenceParams) {
+        if (isJavascriptFile(params)) {
+            return ReferenceHandler.onJavascriptFile(params);
+        } else {
+            return ReferenceHandler.onHTMLOrOtherFile(params);
+        }
+    },
+    onJavascriptFile: function(params: ReferenceParams) {
+        return getReferencesAtPosition(params);
+    },
+    onHTMLOrOtherFile: function(params: ReferenceParams) {
+        return [];
+    }
+}
+
+// TODO: Make references work for HTML too
 export function getReferencesAtPosition(referenceParams: ReferenceParams) {
     // TODO: This is an ugly method
     // TODO: ... And needs caching
+    // TODO: ...but for now, it works
     //
     const usableData = textDocumentDataToUsableData(documents, referenceParams);
     const project = getProjectForCurrentFile(usableData.fileName, usableData.fileContent);

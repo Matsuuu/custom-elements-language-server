@@ -22,7 +22,7 @@ import { DEFAULT_SETTINGS, LanguageServerSettings, setCapabilities, setGlobalSet
 import { getLanguageService, updateLanguageServiceForFile } from "./language-services/language-services.js";
 import { tsDiagnosticToDiagnostic, uriToFileName } from "./transformers.js";
 import { documents, documentSettings } from "./text-documents.js";
-import { getReferencesAtPosition } from "./handlers/references.js";
+import { getReferencesAtPosition, ReferenceHandler } from "./handlers/references.js";
 import { getCodeActionsForParams } from "./handlers/code-actions.js";
 import { HoverHandler } from "./handlers/hover.js";
 import { isJavascriptFile } from "./handlers/handler.js";
@@ -43,24 +43,6 @@ connection.onDidChangeWatchedFiles(_change => {
     console.log("File changed");
 });
 
-
-// This handler resolves additional information for the item selected in
-// the completion list.
-// connection.onCompletionResolve(getCompletionItemInfo);
-
-connection.onCompletion(CompletionsHandler.handle);
-connection.onHover(HoverHandler.handle);
-connection.onDefinition(DefinitionHandler.handle);
-
-// TODO: Make references work for HTML too
-connection.onReferences((referencesEvent) => {
-    const references = getReferencesAtPosition(referencesEvent);
-
-    return [...references];
-});
-
-// Make the text document manager listen on the connection
-// for open, change and close text document events
 documents.listen(connection);
 
 documents.onDidClose(e => {
@@ -80,6 +62,47 @@ documents.onDidOpen(e => {
 // Listen on the connection
 connection.listen();
 
+
+
+// This handler resolves additional information for the item selected in
+// the completion list.
+// connection.onCompletionResolve(getCompletionItemInfo);
+
+connection.onCompletion(CompletionsHandler.handle);
+connection.onHover(HoverHandler.handle);
+connection.onDefinition(DefinitionHandler.handle);
+connection.onReferences(ReferenceHandler.handle);
+
+
+connection.onCodeActionResolve((codeAction: CodeAction) => {
+    const edit = codeAction.edit;
+    if (edit && edit.changes) {
+        const files = Object.keys(edit.changes);
+        for (const file of files) {
+            const textDoc = documents.get(file);
+            if (!textDoc) continue;
+
+            runDiagnostics(file, textDoc);
+        }
+    }
+
+    return codeAction;
+})
+
+connection.onCodeAction((params: CodeActionParams) => {
+    const doc = params.textDocument;
+    const textDoc = documents.get(doc.uri);
+    if (!textDoc) {
+        return undefined;
+    }
+
+    const codeActions = getCodeActionsForParams(params, textDoc);
+
+    return codeActions;
+})
+
+// Make the text document manager listen on the connection
+// for open, change and close text document events
 function onInitialize(params: InitializeParams) {
     let capabilities = params.capabilities;
 
@@ -199,30 +222,3 @@ async function runDiagnostics(uri: string, textDoc: TextDocument) {
 
     connection.sendDiagnostics({ uri: textDoc.uri, diagnostics: sendableDiagnostics });
 }
-
-connection.onCodeActionResolve((codeAction: CodeAction) => {
-    const edit = codeAction.edit;
-    if (edit && edit.changes) {
-        const files = Object.keys(edit.changes);
-        for (const file of files) {
-            const textDoc = documents.get(file);
-            if (!textDoc) continue;
-
-            runDiagnostics(file, textDoc);
-        }
-    }
-
-    return codeAction;
-})
-
-connection.onCodeAction((params: CodeActionParams) => {
-    const doc = params.textDocument;
-    const textDoc = documents.get(doc.uri);
-    if (!textDoc) {
-        return undefined;
-    }
-
-    const codeActions = getCodeActionsForParams(params, textDoc);
-
-    return codeActions;
-})
