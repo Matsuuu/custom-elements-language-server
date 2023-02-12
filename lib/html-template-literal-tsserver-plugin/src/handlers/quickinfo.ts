@@ -11,9 +11,9 @@ import { getSourceFile } from "../ts/sourcefile.js";
 import { attributeNameVariantBuilder } from "../ast/ast.js";
 import { getCEMData } from "../export.js";
 
-export function getQuickInfo(projectBasePath: string, filePath: string, document: HTMLLanguageService.TextDocument, position: tss.LineAndCharacter, htmlLanguageService: HTMLLanguageService.LanguageService): tss.QuickInfo | undefined {
+export function getQuickInfo(projectBasePath: string, document: HTMLLanguageService.TextDocument, position: tss.LineAndCharacter, htmlLanguageService: HTMLLanguageService.LanguageService): tss.QuickInfo | undefined {
     const actionContext = resolveActionContext(htmlLanguageService, document, position);
-    const cemCollection = getCEMData(filePath);
+    const cemCollection = getCEMData();
 
     if (!cemCollection.hasData()) {
         return undefined;

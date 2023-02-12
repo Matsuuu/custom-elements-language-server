@@ -19,10 +19,10 @@ import { getFileNameFromPath } from "../fs.js";
 import { getAttributeDefinitionTextSpan, getClassDefinitionTextSpan, getEventDefinitionTextSpan, getPropertyDefinitionTextSpan } from "../ast/text-span.js";
 import { getCEMData } from "../export.js";
 
-export function getGoToDefinitionEntries(projectBasePath: string, filePath: string, document: HTMLLanguageService.TextDocument, position: tss.LineAndCharacter, htmlLanguageService: HTMLLanguageService.LanguageService) {
+export function getGoToDefinitionEntries(projectBasePath: string, document: HTMLLanguageService.TextDocument, position: tss.LineAndCharacter, htmlLanguageService: HTMLLanguageService.LanguageService) {
     let definitionInfos: Array<ts.DefinitionInfo> = [];
     const actionContext = resolveActionContext(htmlLanguageService, document, position);
-    const cemCollection = getCEMData(filePath);
+    const cemCollection = getCEMData();
 
     if (!cemCollection.hasData()) {
         return [...definitionInfos];

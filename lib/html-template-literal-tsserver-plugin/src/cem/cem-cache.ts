@@ -12,10 +12,8 @@ export class CEMCollection {
     private _modules: Array<JavaScriptModule> | undefined;
     private _modulesWithRefs: Array<JavaScriptModuleWithRef> | undefined;
 
-    constructor(openFilePath: string) {
+    constructor() {
         const basePath = HTMLTemplateLiteralPlugin.projectDirectory;
-        const program = getOrCreateProgram(openFilePath);
-        const sourceFiles = program.getSourceFiles();
         const dependencyPackages = getDependencyPackagesWithCEMs(basePath + "/node_modules");
         // const test = getDependencyPackagesWithCEMs(basePath + "/node_modules");
 
@@ -66,9 +64,9 @@ export class CEMCollection {
 
 let CACHED_COLLECTION: CEMCollection | undefined = undefined;
 
-export function getCEMData(openFilePath: string) {
+export function getCEMData() {
     if (!CACHED_COLLECTION) {
-        CACHED_COLLECTION = new CEMCollection(openFilePath);
+        CACHED_COLLECTION = new CEMCollection();
     }
     CACHED_COLLECTION.refreshLocal();
     // TODO: Figure out when dependencyCEM's might need updating

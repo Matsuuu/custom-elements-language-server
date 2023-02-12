@@ -33,7 +33,7 @@ export const DefinitionHandler: Handler<DefinitionParams, Location[] | undefined
         // const node = htmlDoc.findNodeAt(usableData.position);
         const basePath = getProjectBasePath(usableData.fileName);
 
-        const definitions = getGoToDefinitionEntries(basePath, usableData.fileName, doc, definitionParams.position, languageService);
+        const definitions = getGoToDefinitionEntries(basePath, doc, definitionParams.position, languageService);
 
         const definitionLocations = definitions?.map(documentSpanToLocation) ?? [];
         return definitionLocations;

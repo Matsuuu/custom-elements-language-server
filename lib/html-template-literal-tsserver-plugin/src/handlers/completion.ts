@@ -6,13 +6,13 @@ import { findCustomElementTagLike, findDeclarationForTagName } from "../cem/cem-
 import { getCEMData } from "../export.js";
 import { completionItemToCompletionEntry } from "../interop.js";
 
-export function getCompletionEntries(filePath: string, document: HTMLLanguageService.TextDocument, position: tss.LineAndCharacter, htmlLanguageService: HtmlLanguageService) {
+export function getCompletionEntries(document: HTMLLanguageService.TextDocument, position: tss.LineAndCharacter, htmlLanguageService: HtmlLanguageService) {
     const actionContext = resolveActionContext(htmlLanguageService, document, position);
 
     const htmlLSCompletions = getDefaultCompletionItems(document, position, htmlLanguageService);
     const defaultCompletionItems = htmlLSCompletions.items.map(completionItemToCompletionEntry);
 
-    const cemCollection = getCEMData(filePath);
+    const cemCollection = getCEMData();
     let cemCompletions: tss.CompletionEntry[] = [];
 
     if (!cemCollection) {

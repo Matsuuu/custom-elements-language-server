@@ -29,14 +29,13 @@ export const CompletionsHandler: Handler<CompletionParams, CompletionList> = {
         return completionsToList(completions);
     },
     onHTMLOrOtherFile: (completionParams: CompletionParams) => {
-        const usableData = textDocumentDataToUsableData(documents, completionParams);
         const languageService = HTMLLanguageService.getLanguageService();
         const doc = documents.get(completionParams.textDocument.uri);
         if (!doc) {
             return CompletionList.create();
         }
 
-        const completions = getCompletionEntries(usableData.fileName, doc, completionParams.position, languageService);
+        const completions = getCompletionEntries(doc, completionParams.position, languageService);
 
         return completionsToList(completions);
     }

@@ -32,7 +32,7 @@ export const HoverHandler: Handler<HoverParams, Hover> = {
         }
         // const node = htmlDoc.findNodeAt(usableData.position);
         const basePath = getProjectBasePath(usableData.fileName);
-        const quickInfo = getQuickInfo(basePath, usableData.fileName, doc, hoverInfo.position, languageService);
+        const quickInfo = getQuickInfo(basePath, doc, hoverInfo.position, languageService);
 
         return quickInfoToHover(usableData.fileName, quickInfo);
     }
