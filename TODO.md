@@ -1,8 +1,8 @@
 # Current worklist
 
 - Cache more
-- See why html files seem to jam the document connection stuff
-- Support HTML files (might have to push this one further)
+- Support HTML files
+    - Finalize Porting everything to Handlers
 - Inform the user of a missing CEM setup
 - Make sure the packaged version activates 100% of the time
 - Create a command to restart the connection

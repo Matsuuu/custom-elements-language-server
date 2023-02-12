@@ -1,4 +1,4 @@
-import { LanguageService as HtmlLanguageService } from "vscode-html-languageservice/lib/esm/htmlLanguageService.js";
+import * as HTMLLanguageService from "vscode-html-languageservice/lib/esm/htmlLanguageService.js";
 import tss from "typescript/lib/tsserverlibrary.js";
 import { getProjectBasePath } from "../template-context.js";
 import {
@@ -15,17 +15,14 @@ import {
 import { findClassForTagName, findCustomElementDeclarationFromModule, JavaScriptModuleWithRef } from "../cem/cem-helpers.js";
 // @ts-expect-error
 import { CustomElement } from "custom-elements-manifest";
-import { TemplateContext } from "typescript-template-language-service-decorator";
 import { getFileNameFromPath } from "../fs.js";
 import { getAttributeDefinitionTextSpan, getClassDefinitionTextSpan, getEventDefinitionTextSpan, getPropertyDefinitionTextSpan } from "../ast/text-span.js";
 import { getCEMData } from "../export.js";
-import { createTextDocumentFromContext } from "../text-document.js";
 
-export function getGoToDefinitionEntries(context: TemplateContext, position: tss.LineAndCharacter, htmlLanguageService: HtmlLanguageService) {
+export function getGoToDefinitionEntries(projectBasePath: string, filePath: string, document: HTMLLanguageService.TextDocument, position: tss.LineAndCharacter, htmlLanguageService: HTMLLanguageService.LanguageService) {
     let definitionInfos: Array<ts.DefinitionInfo> = [];
-    const document = createTextDocumentFromContext(context);
     const actionContext = resolveActionContext(htmlLanguageService, document, position);
-    const cemCollection = getCEMData(context.fileName);
+    const cemCollection = getCEMData(filePath);
 
     if (!cemCollection.hasData()) {
         return [...definitionInfos];
@@ -39,7 +36,7 @@ export function getGoToDefinitionEntries(context: TemplateContext, position: tss
     if (matchingClass.cem.isDependency) {
         matchingClass.path = matchingClass.path.replace(/\.(js|ts)$/, ".d.ts");
     }
-    const basePath = matchingClass.cem.cemFolderPath ?? getProjectBasePath(context);
+    const basePath = matchingClass.cem.cemFolderPath ?? projectBasePath;
 
     const fileName = getFileNameFromPath(matchingClass?.path);
     const classDeclaration = findCustomElementDeclarationFromModule(matchingClass);

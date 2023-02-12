@@ -4,6 +4,7 @@
     "license": "MIT",
     "author": "example-project",
     "version": "0.0.0",
+    "main": "./src/index.js",
     "scripts": {
         "start": "tsc && concurrently -k -r \"tsc --watch --preserveWatchOutput\" \"wds\"",
         "analyze": "cem analyze --litelement"

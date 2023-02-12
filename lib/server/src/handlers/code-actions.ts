@@ -2,7 +2,32 @@ import { CODE_ACTIONS } from "html-template-literal-tsserver-plugin";
 import tss from "typescript/lib/tsserverlibrary.js";
 import { CodeAction, CodeActionParams, Diagnostic, Range, WorkspaceEdit } from "vscode-languageserver";
 import { TextDocument } from "vscode-languageserver-textdocument";
+import { documents } from "../text-documents.js";
 import { offsetToPosition } from "../transformers.js";
+import { Handler, isJavascriptFile } from "./handler.js";
+
+export const CodeActionHandler: Handler<CodeActionParams, CodeAction[]> = {
+    handle: (params: CodeActionParams) => {
+        if (isJavascriptFile(params)) {
+            return CodeActionHandler.onJavascriptFile(params);
+        } else {
+            return CodeActionHandler.onHTMLOrOtherFile(params);
+        }
+    },
+    onJavascriptFile: (params: CodeActionParams) => {
+        const doc = params.textDocument;
+        const textDoc = documents.get(doc.uri);
+        if (!textDoc) {
+            return [];
+        }
+
+        return getCodeActionsForParams(params, textDoc);
+
+    },
+    onHTMLOrOtherFile: (params: CodeActionParams) => {
+        return [];
+    }
+}
 
 export function getCodeActionsForParams(params: CodeActionParams, textDoc: TextDocument) {
     const codeActions: Array<CodeAction> = [];
