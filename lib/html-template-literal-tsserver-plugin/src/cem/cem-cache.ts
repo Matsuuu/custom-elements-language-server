@@ -1,6 +1,5 @@
-import { getDependencyPackagesWithCEMs, getImportedDependencies } from "../dependencies/dependency-package-resolver.js";
+import { getDependencyPackagesWithCEMs } from "../dependencies/dependency-package-resolver.js";
 import { HTMLTemplateLiteralPlugin } from "../index.js";
-import { getOrCreateProgram } from "../ts/sourcefile.js";
 import { CEMInstance } from "./cem-data.js";
 // @ts-expect-error
 import { JavaScriptModule } from "custom-elements-manifest";
@@ -12,10 +11,8 @@ export class CEMCollection {
     private _modules: Array<JavaScriptModule> | undefined;
     private _modulesWithRefs: Array<JavaScriptModuleWithRef> | undefined;
 
-    constructor() {
-        const basePath = HTMLTemplateLiteralPlugin.projectDirectory;
+    constructor(basePath: string) {
         const dependencyPackages = getDependencyPackagesWithCEMs(basePath + "/node_modules");
-        // const test = getDependencyPackagesWithCEMs(basePath + "/node_modules");
 
         const cemData = CEMInstance.fromLocalPath(basePath);
         const dependencyCems = Object.values(dependencyPackages)
@@ -64,9 +61,9 @@ export class CEMCollection {
 
 let CACHED_COLLECTION: CEMCollection | undefined = undefined;
 
-export function getCEMData() {
+export function getCEMData(projectBasePath: string) {
     if (!CACHED_COLLECTION) {
-        CACHED_COLLECTION = new CEMCollection();
+        CACHED_COLLECTION = new CEMCollection(projectBasePath);
     }
     CACHED_COLLECTION.refreshLocal();
     // TODO: Figure out when dependencyCEM's might need updating

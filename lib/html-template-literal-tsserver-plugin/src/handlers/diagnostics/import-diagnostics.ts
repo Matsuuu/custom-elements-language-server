@@ -11,7 +11,8 @@ import { getFilePathFolder, resolveImportPath } from "./imports.js";
 import { CODE_ACTIONS } from "../enum/code-actions.js";
 import { getPathAsDtsFile, getPathAsJsFile, getPathAsTsFile } from "../../ts/filepath-transformers.js";
 
-export function getImportDiagnostics(filePath: string, document: HTMLLanguageService.TextDocument, htmlLanguageService: HtmlLanguageService): tss.Diagnostic[] {
+export function getImportDiagnostics(filePath: string, projectBasePath: string, document: HTMLLanguageService.TextDocument, htmlLanguageService: HtmlLanguageService): tss.Diagnostic[] {
+    console.log("Get import diagnostics");
     const filePathWithoutFile = getFilePathFolder(filePath);
     const basePath = HTMLTemplateLiteralPlugin.projectDirectory;
     const sourceFile = getSourceFile(filePath);
@@ -27,7 +28,7 @@ export function getImportDiagnostics(filePath: string, document: HTMLLanguageSer
     // Might lead to some false negatives.
     const sourceFileNames = associatedFiles;
 
-    const cemCollection = getCEMData();
+    const cemCollection = getCEMData(projectBasePath);
     if (!cemCollection.hasData()) {
         return [];
     }

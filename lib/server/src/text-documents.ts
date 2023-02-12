@@ -21,7 +21,6 @@ export function initDocuments() {
     });
 
     documents.onDidOpen(e => {
-        console.log("Opened text doc");
         const fileName = e.document.uri.replace("file://", "");
         if (isJavascriptFile(e.document.uri)) {
             updateLanguageServiceForFile(fileName, e.document.getText());

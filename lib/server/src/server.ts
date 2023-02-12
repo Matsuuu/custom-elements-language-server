@@ -26,7 +26,6 @@ connection.onCodeAction(CodeActionHandler.handle)
 connection.onCodeActionResolve(CodeActionResolveHandler.handle);
 
 connection.onDidChangeTextDocument((params: DidChangeTextDocumentParams) => {
-    console.log("OnDidChangeTextDocument");
     const docRef = params.textDocument;
     const changes = params.contentChanges;
     const textDoc = documents.get(docRef.uri);

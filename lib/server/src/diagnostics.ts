@@ -20,11 +20,16 @@ function handleJavascriptDiagnostics(uri: string, textDoc: TextDocument) {
     const fileName = uriToFileName(uri);
     const languageService = getLanguageService(fileName, textDoc.getText());
 
-    const diagnostics = languageService?.getSemanticDiagnostics(fileName);
-    const sendableDiagnostics: Array<Diagnostic> = diagnostics?.map((diag: ts.Diagnostic) => tsDiagnosticToDiagnostic(diag, textDoc))
-        .filter((diag: unknown): diag is Diagnostic => diag !== undefined) ?? []; // Stupid ts types
+    try {
+        const diagnostics = languageService?.getSemanticDiagnostics(fileName);
+        const sendableDiagnostics: Array<Diagnostic> = diagnostics?.map((diag: ts.Diagnostic) => tsDiagnosticToDiagnostic(diag, textDoc))
+            .filter((diag: unknown): diag is Diagnostic => diag !== undefined) ?? []; // Stupid ts types
 
-    connection.sendDiagnostics({ uri: textDoc.uri, diagnostics: sendableDiagnostics });
+        connection.sendDiagnostics({ uri: textDoc.uri, diagnostics: sendableDiagnostics });
+    } catch (ex) {
+
+    }
+
 }
 
 function handleHTMLOrOtherFileDiagnostics(uri: string, textDoc: TextDocument) {

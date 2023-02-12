@@ -34,11 +34,16 @@ export class CEMInstance {
             return;
         }
 
-        const cemFile = fs.readFileSync(builderData.cemPath, "utf8");
+        let cemFile;
+
+        if (fs.existsSync(builderData.cemPath)) {
+            cemFile = fs.readFileSync(builderData.cemPath, "utf8");
+        }
 
         if (!cemFile) {
+            debugger;
             // TODO: Logger and some message
-            console.log("Could not find custom-elements.json file");
+            console.log("Could not find custom-elements.json file in path " + builderData.cemPath);
             return;
         }
 

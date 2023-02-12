@@ -24,6 +24,7 @@ export class HTMLTemplateLiteralLanguageService implements TemplateLanguageServi
     }
 
     public getQuickInfoAtPosition(context: TemplateContext, position: tss.LineAndCharacter): tss.QuickInfo | undefined {
+        console.log("getQuickInfoAtPosition");
         const document = createTextDocumentFromContext(context);
         const basePath = getProjectBasePath(context);
 
@@ -32,8 +33,9 @@ export class HTMLTemplateLiteralLanguageService implements TemplateLanguageServi
 
     public getCompletionsAtPosition(context: TemplateContext, position: tss.LineAndCharacter): tss.CompletionInfo {
         const document = createTextDocumentFromContext(context);
+        const basePath = getProjectBasePath(context);
 
-        return getCompletionEntries(document, position, this.htmlLanguageService);
+        return getCompletionEntries(document, basePath, position, this.htmlLanguageService);
     }
 
     public getCompletionEntryDetails?(context: TemplateContext, position: ts.LineAndCharacter, name: string): ts.CompletionEntryDetails {
@@ -49,8 +51,9 @@ export class HTMLTemplateLiteralLanguageService implements TemplateLanguageServi
     public getSemanticDiagnostics(context: TemplateContext): tss.Diagnostic[] {
         const document = createTextDocumentFromContext(context);
         const filePath = context.fileName;
+        const basePath = getProjectBasePath(context);
 
-        const importDiagnostics = getImportDiagnostics(filePath, document, this.htmlLanguageService);
+        const importDiagnostics = getImportDiagnostics(filePath, basePath, document, this.htmlLanguageService);
         const nonClosedTagDiagnostics = getMissingCloseTagDiagnostics(filePath, document, this.htmlLanguageService, context.node.pos);
 
         return [

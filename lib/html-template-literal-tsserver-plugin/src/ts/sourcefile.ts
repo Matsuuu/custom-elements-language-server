@@ -30,6 +30,7 @@ export function getOrCreateProgram(fullPath: string) {
 }
 
 export function getSourceFile(baseOrFullPath: string, classPath?: string) {
+    console.log("Get sourcefile: " + baseOrFullPath);
     // TODO: Does `setParentNodes` slow this down much
     const fullClassPath = classPath === undefined ?
         baseOrFullPath :
@@ -41,6 +42,9 @@ export function getSourceFile(baseOrFullPath: string, classPath?: string) {
     // NOTE: this makes everything slow as shit
     // program.getDeclarationDiagnostics();
 
+    if (!program) {
+        return undefined;
+    }
     // @ts-ignore
     const sourceFile = program.getSourceFile(fullClassPath);
 

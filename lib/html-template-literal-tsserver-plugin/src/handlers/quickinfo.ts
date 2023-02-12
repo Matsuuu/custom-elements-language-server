@@ -13,7 +13,7 @@ import { getCEMData } from "../export.js";
 
 export function getQuickInfo(projectBasePath: string, document: HTMLLanguageService.TextDocument, position: tss.LineAndCharacter, htmlLanguageService: HTMLLanguageService.LanguageService): tss.QuickInfo | undefined {
     const actionContext = resolveActionContext(htmlLanguageService, document, position);
-    const cemCollection = getCEMData();
+    const cemCollection = getCEMData(projectBasePath);
 
     if (!cemCollection.hasData()) {
         return undefined;

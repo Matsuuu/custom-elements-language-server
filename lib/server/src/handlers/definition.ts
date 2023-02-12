@@ -8,7 +8,6 @@ import { Handler, isJavascriptFile } from "./handler";
 
 export const DefinitionHandler: Handler<DefinitionParams, Location[] | undefined> = {
     handle: (definitionParams) => {
-        console.log("Definition");
         if (isJavascriptFile(definitionParams)) {
             return DefinitionHandler.onJavascriptFile(definitionParams);
         } else {

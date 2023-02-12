@@ -87,7 +87,6 @@ function findClosestConfigurationFile(path: string) {
     let currentPath = path.substring(0, path.lastIndexOf("/"));
     let i = 0;
     while (currentPath.includes("/") && currentPath.length > 1) {
-        console.log(currentPath);
         const tsConfigPath = currentPath + "/tsconfig.json";
         const jsConfigPath = currentPath + "/jsconfig.json";
         const packageJsonPath = currentPath + "/package.json";

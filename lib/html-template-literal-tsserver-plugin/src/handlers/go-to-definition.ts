@@ -22,7 +22,7 @@ import { getCEMData } from "../export.js";
 export function getGoToDefinitionEntries(projectBasePath: string, document: HTMLLanguageService.TextDocument, position: tss.LineAndCharacter, htmlLanguageService: HTMLLanguageService.LanguageService) {
     let definitionInfos: Array<ts.DefinitionInfo> = [];
     const actionContext = resolveActionContext(htmlLanguageService, document, position);
-    const cemCollection = getCEMData();
+    const cemCollection = getCEMData(projectBasePath);
 
     if (!cemCollection.hasData()) {
         return [...definitionInfos];

@@ -6,13 +6,10 @@ import { LanguageClient, LanguageClientOptions, ServerOptions, TransportKind } f
 let client: LanguageClient;
 
 export function activate(context: ExtensionContext) {
-    console.log(context);
-    console.log(process.env);
     let serverPath = path.join("dist", "server", "src", "server.js");
     if (process.env.CUSTOM_ELEMENTS_LANGUAGE_SERVER_PATH) {
         serverPath = process.env.CUSTOM_ELEMENTS_LANGUAGE_SERVER_PATH;
     }
-    console.log("Initializing LS");
     // let serverModule = context.asAbsolutePath(path.join("lib", "server", "out", "server.js"));
     let serverModule = context.asAbsolutePath(serverPath);
     // The debug options for the server
@@ -58,7 +55,6 @@ export function activate(context: ExtensionContext) {
 
     // Start the client. This will also launch the server
     client.start();
-    console.log("Client started");
 }
 
 export function deactivate(): Thenable<void> | undefined {

@@ -15,7 +15,7 @@ export function initConnection() {
     connection.onInitialized(onInitialized);
     connection.onDidChangeConfiguration(onDidChangeConfiguration);
     connection.onDidChangeWatchedFiles(_change => {
-        console.log("File changed");
+        //
     });
 
     // Listen on the connection
@@ -33,7 +33,6 @@ let hasDiagnosticRelatedInformationCapability: boolean = false;
 function onInitialize(params: InitializeParams) {
     let capabilities = params.capabilities;
 
-    console.log("Initialize start");
     // Does the client support the `workspace/configuration` request?
     // If not, we fall back using global settings.
     hasConfigurationCapability = !!(capabilities.workspace && !!capabilities.workspace.configuration);
@@ -79,7 +78,6 @@ function onInitialize(params: InitializeParams) {
 }
 
 function onInitialized() {
-    console.log("Initialized");
     if (hasConfigurationCapability) {
         // Register for all configuration changes.
         connection.client.register(DidChangeConfigurationNotification.type, undefined);
@@ -92,7 +90,6 @@ function onInitialized() {
 }
 
 function onDidChangeConfiguration(change: DidChangeConfigurationParams) {
-    // console.log("onDidChangeConfiguration");
     if (hasConfigurationCapability) {
         // Reset all cached document settings
         documentSettings.clear();

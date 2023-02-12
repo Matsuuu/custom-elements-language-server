@@ -8,7 +8,6 @@ import { getQuickInfo } from "html-template-literal-tsserver-plugin";
 
 export const HoverHandler: Handler<HoverParams, Hover> = {
     handle: (hoverInfo: HoverParams) => {
-        console.log("Hover");
         if (isJavascriptFile(hoverInfo)) {
             return HoverHandler.onJavascriptFile(hoverInfo);
         } else {
@@ -19,6 +18,7 @@ export const HoverHandler: Handler<HoverParams, Hover> = {
         const usableData = textDocumentDataToUsableData(documents, hoverInfo);
         const languageService = getLanguageService(usableData.fileName, usableData.fileContent);
 
+        console.log("Hover");
         const quickInfo = languageService?.getQuickInfoAtPosition(usableData.fileName, usableData.position);
 
         return quickInfoToHover(usableData.fileName, quickInfo);
