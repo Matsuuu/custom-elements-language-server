@@ -7,17 +7,17 @@ import { fileNameToUri, offsetToPosition, positionToOffset, textDocumentDataToUs
 import { Handler, isJavascriptFile } from "./handler.js";
 
 export const ReferenceHandler: Handler<ReferenceParams, Location[]> = {
-    handle: function(params: ReferenceParams) {
+    handle: (params: ReferenceParams) => {
         if (isJavascriptFile(params)) {
             return ReferenceHandler.onJavascriptFile(params);
         } else {
             return ReferenceHandler.onHTMLOrOtherFile(params);
         }
     },
-    onJavascriptFile: function(params: ReferenceParams) {
+    onJavascriptFile: (params: ReferenceParams) => {
         return getReferencesAtPosition(params);
     },
-    onHTMLOrOtherFile: function(params: ReferenceParams) {
+    onHTMLOrOtherFile: (params: ReferenceParams) => {
         return [];
     }
 }

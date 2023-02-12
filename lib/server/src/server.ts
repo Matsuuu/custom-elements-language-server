@@ -23,7 +23,7 @@ import { getLanguageService, updateLanguageServiceForFile } from "./language-ser
 import { tsDiagnosticToDiagnostic, uriToFileName } from "./transformers.js";
 import { documents, documentSettings } from "./text-documents.js";
 import { getReferencesAtPosition, ReferenceHandler } from "./handlers/references.js";
-import { getCodeActionsForParams } from "./handlers/code-actions.js";
+import { CodeActionHandler, getCodeActionsForParams } from "./handlers/code-actions.js";
 import { HoverHandler } from "./handlers/hover.js";
 import { isJavascriptFile } from "./handlers/handler.js";
 import { DefinitionHandler } from "./handlers/definition.js";
@@ -72,7 +72,7 @@ connection.onCompletion(CompletionsHandler.handle);
 connection.onHover(HoverHandler.handle);
 connection.onDefinition(DefinitionHandler.handle);
 connection.onReferences(ReferenceHandler.handle);
-
+connection.onCodeAction(CodeActionHandler.handle)
 
 connection.onCodeActionResolve((codeAction: CodeAction) => {
     const edit = codeAction.edit;
@@ -89,17 +89,6 @@ connection.onCodeActionResolve((codeAction: CodeAction) => {
     return codeAction;
 })
 
-connection.onCodeAction((params: CodeActionParams) => {
-    const doc = params.textDocument;
-    const textDoc = documents.get(doc.uri);
-    if (!textDoc) {
-        return undefined;
-    }
-
-    const codeActions = getCodeActionsForParams(params, textDoc);
-
-    return codeActions;
-})
 
 // Make the text document manager listen on the connection
 // for open, change and close text document events

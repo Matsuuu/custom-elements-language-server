@@ -1,4 +1,4 @@
-import { TextDocumentPositionParams } from "vscode-languageserver";
+import { CodeActionParams, TextDocumentPositionParams } from "vscode-languageserver";
 
 const javascriptFileTypes = [
     "js", "ts", "jsx", "tsx", "mjs", "cjs"
@@ -12,7 +12,9 @@ export interface Handler<T, P> {
     onHTMLOrOtherFile: (params: T) => HandlerReturnType<P>;
 }
 
-export function isJavascriptFile(params: TextDocumentPositionParams | string) {
+export type HandlerFileTypeIdentifier = TextDocumentPositionParams | CodeActionParams | string;
+
+export function isJavascriptFile(params: HandlerFileTypeIdentifier) {
     const uri = typeof params === "string" ? params : params.textDocument.uri;
 
     return javascriptFileTypes.some(fileType => uri.endsWith("." + fileType));
