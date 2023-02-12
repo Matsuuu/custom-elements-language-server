@@ -28,6 +28,7 @@ import { HoverHandler } from "./handlers/hover.js";
 import { isJavascriptFile } from "./handlers/handler.js";
 import { DefinitionHandler } from "./handlers/definition.js";
 import { CompletionsHandler } from "./handlers/completions.js";
+import { CodeActionResolveHandler } from "./handlers/code-action-resolve.js";
 
 const connection = createConnection(ProposedFeatures.all);
 
@@ -73,21 +74,7 @@ connection.onHover(HoverHandler.handle);
 connection.onDefinition(DefinitionHandler.handle);
 connection.onReferences(ReferenceHandler.handle);
 connection.onCodeAction(CodeActionHandler.handle)
-
-connection.onCodeActionResolve((codeAction: CodeAction) => {
-    const edit = codeAction.edit;
-    if (edit && edit.changes) {
-        const files = Object.keys(edit.changes);
-        for (const file of files) {
-            const textDoc = documents.get(file);
-            if (!textDoc) continue;
-
-            runDiagnostics(file, textDoc);
-        }
-    }
-
-    return codeAction;
-})
+connection.onCodeActionResolve(CodeActionResolveHandler.handle);
 
 
 // Make the text document manager listen on the connection
