@@ -1,11 +1,9 @@
-import { TemplateContext } from "typescript-template-language-service-decorator";
+import * as HTMLLanguageService from "vscode-html-languageservice/lib/esm/htmlLanguageService.js";
 import { LanguageService, Node } from "vscode-html-languageservice/lib/esm/htmlLanguageService.js";
-import { createTextDocumentFromContext } from "../text-document.js";
 
-export function getCustomElementTagsInContext(languageService: LanguageService, context: TemplateContext): Array<Node> {
+export function getCustomElementTagsInContext(languageService: LanguageService, document: HTMLLanguageService.TextDocument): Array<Node> {
     // TODO: Cache these too. Some kind of a WeakMap with the document.
     // This will be called multiple times per diagnostics call
-    const document = createTextDocumentFromContext(context);
     const scannedDocument = languageService.parseHTMLDocument(document);
 
     const rootNodes = scannedDocument.roots;

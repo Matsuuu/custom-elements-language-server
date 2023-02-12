@@ -1,13 +1,12 @@
-import { TemplateContext } from "typescript-template-language-service-decorator";
+import * as HTMLLanguageService from "vscode-html-languageservice/lib/esm/htmlLanguageService.js";
 import tss from "typescript/lib/tsserverlibrary.js";
 import { LanguageService as HtmlLanguageService, Node } from "vscode-html-languageservice/lib/esm/htmlLanguageService.js";
 import { getCustomElementTagsInContext } from "../../scanners/tag-scanner.js";
 import { getSourceFile } from "../../ts/sourcefile.js";
 import { CODE_ACTIONS } from "../enum/code-actions.js";
 
-export function getMissingCloseTagDiagnostics(context: TemplateContext, htmlLanguageService: HtmlLanguageService): tss.Diagnostic[] {
-    const customElementTagNodes = getCustomElementTagsInContext(htmlLanguageService, context);
-    const filePath = context.fileName;
+export function getMissingCloseTagDiagnostics(filePath: string, document: HTMLLanguageService.TextDocument, htmlLanguageService: HtmlLanguageService, nodeOffset: number): tss.Diagnostic[] {
+    const customElementTagNodes = getCustomElementTagsInContext(htmlLanguageService, document);
     const sourceFile = getSourceFile(filePath);
     if (!sourceFile) {
         return [];
@@ -15,7 +14,7 @@ export function getMissingCloseTagDiagnostics(context: TemplateContext, htmlLang
 
     return customElementTagNodes
         .filter(nodeIsNotClosed)
-        .map(node => nonClosedTagToDiagnostic(node, sourceFile, context.node.pos));
+        .map(node => nonClosedTagToDiagnostic(node, sourceFile, nodeOffset));
 }
 
 function nodeIsNotClosed(node: Node) {

@@ -1,18 +1,17 @@
-import { TemplateContext } from "typescript-template-language-service-decorator";
+import * as HTMLLanguageService from "vscode-html-languageservice/lib/esm/htmlLanguageService.js";
 import tss from "typescript/lib/tsserverlibrary.js";
 import { LanguageService as HtmlLanguageService, Node } from "vscode-html-languageservice/lib/esm/htmlLanguageService.js";
 import { getCEMData } from "../../cem/cem-cache.js";
 import { findCustomElementDefinitionModule } from "../../cem/cem-helpers.js";
 import { HTMLTemplateLiteralPlugin } from "../../index.js";
 import { getCustomElementTagsInContext } from "../../scanners/tag-scanner.js";
-import { getAllFilesAssociatedWithSourceFile, getOrCreateProgram, getSourceFile } from "../../ts/sourcefile.js";
+import { getAllFilesAssociatedWithSourceFile, getSourceFile } from "../../ts/sourcefile.js";
 import { SourceFile } from "typescript";
 import { getFilePathFolder, resolveImportPath } from "./imports.js";
 import { CODE_ACTIONS } from "../enum/code-actions.js";
 import { getPathAsDtsFile, getPathAsJsFile, getPathAsTsFile } from "../../ts/filepath-transformers.js";
 
-export function getImportDiagnostics(context: TemplateContext, htmlLanguageService: HtmlLanguageService): tss.Diagnostic[] {
-    const filePath = context.fileName;
+export function getImportDiagnostics(filePath: string, document: HTMLLanguageService.TextDocument, htmlLanguageService: HtmlLanguageService): tss.Diagnostic[] {
     const filePathWithoutFile = getFilePathFolder(filePath);
     const basePath = HTMLTemplateLiteralPlugin.projectDirectory;
     const sourceFile = getSourceFile(filePath);
@@ -21,9 +20,7 @@ export function getImportDiagnostics(context: TemplateContext, htmlLanguageServi
         return [];
     }
 
-    const prog = getOrCreateProgram(filePath);
-    const allSources = prog.getSourceFiles();
-    const sfNames = allSources.map(sf => sf.fileName);
+    // TODO: This part needs to be supported by html files too
     const associatedFiles = getAllFilesAssociatedWithSourceFile(sourceFile, basePath);
     // TODO: Might be that this gets all sourcefiles in the project
     // and not just relative to the file. Needs some checking.
@@ -39,7 +36,7 @@ export function getImportDiagnostics(context: TemplateContext, htmlLanguageServi
         return [];
     }
 
-    const customElementTagNodes = getCustomElementTagsInContext(htmlLanguageService, context);
+    const customElementTagNodes = getCustomElementTagsInContext(htmlLanguageService, document);
 
     const notDefinedTags: Array<NotDefinedTagInformation> = [];
 

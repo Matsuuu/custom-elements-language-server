@@ -50,8 +50,11 @@ export class HTMLTemplateLiteralLanguageService implements TemplateLanguageServi
     }
 
     public getSemanticDiagnostics(context: TemplateContext): tss.Diagnostic[] {
-        const importDiagnostics = getImportDiagnostics(context, this.htmlLanguageService);
-        const nonClosedTagDiagnostics = getMissingCloseTagDiagnostics(context, this.htmlLanguageService);
+        const document = createTextDocumentFromContext(context);
+        const filePath = context.fileName;
+
+        const importDiagnostics = getImportDiagnostics(filePath, document, this.htmlLanguageService);
+        const nonClosedTagDiagnostics = getMissingCloseTagDiagnostics(filePath, document, this.htmlLanguageService, context.node.pos);
 
         return [
             ...importDiagnostics,
