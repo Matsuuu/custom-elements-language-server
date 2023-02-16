@@ -12,7 +12,6 @@ export const temp = html`
     @my-custom-event="${() => { console.log('foo') }}"
     ></example-project>
 
-
     <example-project>
 
     
