@@ -15,7 +15,7 @@ export const temp = html`
     <example-project>
 
     
-    <example-project>
+    <example-project></example-project>
         
 
     <sl-button .size="" variant=""></sl-button>

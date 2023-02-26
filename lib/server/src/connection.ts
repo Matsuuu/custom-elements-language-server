@@ -113,8 +113,10 @@ async function initializeProjectsInWorkSpaceFolders(workspaceFolders: WorkspaceF
             try {
                 const packageJson = JSON.parse(fs.readFileSync(packageJsonPath, "utf8")) as PackageJsonLike;
                 const mainFileName = packageJson.main ?? packageJson.module;
-                const mainFilePath = path.resolve(fileName, mainFileName);
-                updateLanguageServiceForFile(mainFilePath, undefined);
+                if (mainFileName) {
+                    const mainFilePath = path.resolve(fileName, mainFileName);
+                    updateLanguageServiceForFile(mainFilePath, undefined);
+                }
             } catch (ex) {
                 console.warn("Couldn't open project " + fileName, ex);
             }

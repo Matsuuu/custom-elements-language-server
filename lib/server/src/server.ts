@@ -3,6 +3,7 @@ import {
 } from "vscode-languageserver/node.js";
 
 console.log("NODE VERSION: ", process.version);
+console.log("Startup at ", new Date());
 
 import { TextDocument } from "vscode-languageserver-textdocument";
 import { documents, initDocuments } from "./text-documents.js";
