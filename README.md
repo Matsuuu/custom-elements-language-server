@@ -31,6 +31,10 @@ With a library like [nvim-lspconfig](https://github.com/neovim/nvim-lspconfig) t
 require'lspconfig'.tsserver.setup{}
 ```
 
+### Other editors
+
+Is your favorite editor missing? If the editor supports LSP actions, plugging it in should be easy. If you need assistance, [submit an issue](https://github.com/Matsuuu/custom-elements-language-server/issues/new/choose).
+
 ## The Goal
 
 The aim of the Custom Elements Language Server / Language services is to create a centralized server for supporting LSP operations on Custom Elements.
