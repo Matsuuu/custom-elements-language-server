@@ -1,15 +1,35 @@
-# custom-elements-language-server
+# Custom Elements Language Server
 
-> **Warning**
-> This repository / project is still extremely Work In Progress. Rapid changes and refactors are going to happen
+> **Note**
+> This repository / project is still Work In Progress. Rapid changes and refactors are going to happen.
 
-## TODO
+## Installing
 
--   Scan CEM manifest and feed it into the html-template-literal-tssserver-plugin
--   Find a way to get declaration / references working with html literaly stuff
--   ?
+### VS Code
 
-When we need to add a new "feature", make sure the providers in server.ts match
+For VS Code, you are able to install the Custom Elements Language Server through the extension Marketplace.
+
+[You can find the plugin here](https://google.com) // TODO: Add the actual plugin link when released
+
+---
+
+### NeoVim
+
+NeoVim supports LSP actions through the built in LSP. You will just need to install the Language Server locally on your machine through npm or yarn, and then enable your connector for the language service.
+
+#### Install language server
+
+```bash
+npm install -g custom-elements-languageserver
+```
+
+#### Set up your lsp client
+
+With a library like [nvim-lspconfig](https://github.com/neovim/nvim-lspconfig) the client setup should be as easy as
+
+```lua
+require'lspconfig'.tsserver.setup{}
+```
 
 ## The Goal
 
@@ -22,3 +42,5 @@ These operations include but are not limited to
 -   Slot name autocompletions
 -   Event binding completions
 
+
+Via installing a plugin to your favorite editor to support LSP actions, you are able to enable all of these Language Service functionalities.
