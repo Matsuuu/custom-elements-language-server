@@ -1,5 +1,10 @@
 # Current worklist
 
+- Implement the requests from the template service to the core 
+- Use the newly created request interface to do the communications
+- Rename the packages
+- Setup builds
+
 - Go to def on dependencies doesn't always go to the correct range / position
 - Extract The Template literal tsconfig plugin from the "Core" of the server.
 - Rename the plugin
