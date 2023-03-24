@@ -2,7 +2,7 @@
     "name": "template-language-service",
     "version": "1.0.0",
     "description": "",
-    "main": "index.js",
+    "main": "dist/index.js",
     "dependencies": {
         "typescript": "^4.8.4",
         "typescript-template-language-service-decorator": "^2.3.1",
