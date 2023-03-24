@@ -1,5 +1,4 @@
 import { getDependencyPackagesWithCEMs } from "../dependencies/dependency-package-resolver.js";
-import { HTMLTemplateLiteralPlugin } from "../index.js";
 import { CEMInstance } from "./cem-data.js";
 // @ts-expect-error
 import { JavaScriptModule } from "custom-elements-manifest";

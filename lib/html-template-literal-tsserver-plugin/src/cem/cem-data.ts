@@ -41,7 +41,6 @@ export class CEMInstance {
         }
 
         if (!cemFile) {
-            debugger;
             // TODO: Logger and some message
             console.log("Could not find custom-elements.json file in path " + builderData.cemPath);
             return;

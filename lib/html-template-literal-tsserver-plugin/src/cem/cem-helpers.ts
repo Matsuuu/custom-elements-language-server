@@ -1,5 +1,5 @@
 // @ts-expect-error
-import { CustomElement, CustomElementDeclaration, Declaration, Export, JavaScriptModule, Module, Package } from "custom-elements-manifest";
+import { CustomElement, CustomElementDeclaration, Declaration, Export, JavaScriptModule, Module } from "custom-elements-manifest";
 import { getPathAsJsFile } from "../ts/filepath-transformers.js";
 import { CEMCollection } from "./cem-cache.js";
 import { CEMInstance } from "./cem-data.js";

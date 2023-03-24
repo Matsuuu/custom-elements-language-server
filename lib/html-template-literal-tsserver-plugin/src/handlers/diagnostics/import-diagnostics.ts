@@ -3,7 +3,6 @@ import tss from "typescript/lib/tsserverlibrary.js";
 import { LanguageService as HtmlLanguageService, Node } from "vscode-html-languageservice/lib/esm/htmlLanguageService.js";
 import { getCEMData } from "../../cem/cem-cache.js";
 import { findCustomElementDefinitionModule } from "../../cem/cem-helpers.js";
-import { HTMLTemplateLiteralPlugin } from "../../index.js";
 import { getCustomElementTagsInContext } from "../../scanners/tag-scanner.js";
 import { getAllFilesAssociatedWithSourceFile, getSourceFile } from "../../ts/sourcefile.js";
 import { SourceFile } from "typescript";

@@ -1,6 +1,5 @@
 import * as HTMLLanguageService from "vscode-html-languageservice/lib/esm/htmlLanguageService.js";
 import tss from "typescript/lib/tsserverlibrary.js";
-import { getProjectBasePath } from "../template-context.js";
 import {
     AttributeActionContext,
     EventActionContext,
