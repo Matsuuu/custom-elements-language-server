@@ -1,13 +1,6 @@
 import tss from "typescript/lib/tsserverlibrary.js";
 import { TemplateContext, TemplateLanguageService } from "typescript-template-language-service-decorator";
 import { LanguageService as HtmlLanguageService } from "vscode-html-languageservice/lib/esm/htmlLanguageService.js";
-import { getGoToDefinitionEntries } from "./handlers/go-to-definition.js";
-import { getCompletionEntries } from "./handlers/completion.js";
-import { getQuickInfo } from "./handlers/quickinfo.js";
-import { getImportDiagnostics } from "./handlers/diagnostics/import-diagnostics.js";
-import { getMissingCloseTagDiagnostics } from "./handlers/diagnostics/close-tag-diagnostics.js";
-import { createTextDocumentFromContext } from "./text-document.js";
-import { getProjectBasePath } from "./template-context.js";
 
 export class HTMLTemplateLiteralLanguageService implements TemplateLanguageService {
     public static project: tss.server.Project;
