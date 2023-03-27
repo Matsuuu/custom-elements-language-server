@@ -1,3 +1,4 @@
+import ts from "typescript";
 import * as fs from "fs";
 
 export interface ImportedDependency {

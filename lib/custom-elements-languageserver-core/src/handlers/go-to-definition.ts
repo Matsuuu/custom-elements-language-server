@@ -1,4 +1,5 @@
 import * as HTMLLanguageService from "vscode-html-languageservice/lib/esm/htmlLanguageService.js";
+import ts from "typescript";
 import tss from "typescript/lib/tsserverlibrary.js";
 import {
     AttributeActionContext,

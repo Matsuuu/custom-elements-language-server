@@ -1,3 +1,4 @@
+import ts from "typescript";
 import tss from "typescript/lib/tsserverlibrary.js";
 import { CompletionItem, CompletionItemKind } from "vscode-languageserver-types";
 
