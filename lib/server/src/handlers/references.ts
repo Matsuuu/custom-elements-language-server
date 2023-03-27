@@ -1,4 +1,4 @@
-import { findIdentifiers, findTagNameForClass, findTemplateExpressions, getCEMData } from "html-template-literal-tsserver-plugin";
+import { findIdentifiers, findTagNameForClass, findTemplateExpressions, getCEMData } from "custom-elements-languageserver-core";
 import tss from "typescript/lib/tsserverlibrary.js";
 import { ReferenceParams, Location, Range } from "vscode-languageserver";
 import { getProjectForCurrentFile } from "../language-services/language-services.js";

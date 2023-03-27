@@ -1,5 +1,5 @@
+import { getGoToDefinitionEntries } from "custom-elements-languageserver-core";
 import * as HTMLLanguageService from "vscode-html-languageservice/lib/esm/htmlLanguageService.js";
-import { getGoToDefinitionEntries } from "html-template-literal-tsserver-plugin";
 import { DefinitionParams, Location } from "vscode-languageserver";
 import { getLanguageService, getProjectBasePath } from "../language-services/language-services";
 import { documents } from "../text-documents";

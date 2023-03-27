@@ -1,12 +1,12 @@
+import { getMissingCloseTagDiagnostics } from "custom-elements-languageserver-core";
+import ts from "typescript";
 import * as HTMLLanguageService from "vscode-html-languageservice/lib/esm/htmlLanguageService.js";
-import { getMissingCloseTagDiagnostics } from "html-template-literal-tsserver-plugin";
 import { Diagnostic } from "vscode-languageserver";
 import { TextDocument } from "vscode-languageserver-textdocument";
 import { connection } from "./connection";
 import { isJavascriptFile } from "./handlers/handler";
 import { getLanguageService } from "./language-services/language-services";
-import { documents } from "./text-documents";
-import { textDocumentDataToUsableData, tsDiagnosticToDiagnostic, uriToFileName } from "./transformers";
+import { tsDiagnosticToDiagnostic, uriToFileName } from "./transformers";
 
 export async function runDiagnostics(uri: string, textDoc: TextDocument) {
     if (isJavascriptFile(uri)) {

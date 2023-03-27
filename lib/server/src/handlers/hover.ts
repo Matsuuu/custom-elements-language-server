@@ -19,7 +19,7 @@ export const HoverHandler: Handler<HoverParams, Hover> = {
         const usableData = textDocumentDataToUsableData(documents, hoverInfo);
         const languageService = getLanguageService(usableData.fileName, usableData.fileContent);
 
-        console.log("Hover");
+        console.log("New Hover 123");
         const quickInfo = languageService?.getQuickInfoAtPosition(usableData.fileName, usableData.position);
 
         return quickInfoToHover(usableData.fileName, quickInfo);
@@ -36,6 +36,8 @@ export const HoverHandler: Handler<HoverParams, Hover> = {
         if (!project) {
             return undefined;
         }
+
+        console.log("NEW HOVER 123");
 
         const request = createCustomElementsLanguageServiceRequest(basePath, doc, hoverInfo.position, project);
         const quickInfo = getQuickInfo(request);

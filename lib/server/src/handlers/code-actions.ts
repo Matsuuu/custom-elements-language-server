@@ -1,4 +1,4 @@
-import { CODE_ACTIONS } from "html-template-literal-tsserver-plugin";
+import { CODE_ACTIONS } from "custom-elements-languageserver-core";
 import tss from "typescript/lib/tsserverlibrary.js";
 import { CodeAction, CodeActionParams, Diagnostic, Range, WorkspaceEdit } from "vscode-languageserver";
 import { TextDocument } from "vscode-languageserver-textdocument";

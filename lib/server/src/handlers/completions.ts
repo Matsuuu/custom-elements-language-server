@@ -1,11 +1,12 @@
+import ts from "typescript";
 import * as HTMLLanguageService from "vscode-html-languageservice/lib/esm/htmlLanguageService.js";
 import { CompletionList, CompletionParams, CompletionItem, CompletionItemKind } from "vscode-languageserver";
 import { textDocumentDataToUsableData } from "../transformers";
 import { documents } from "../text-documents";
 import { getLanguageService, getProjectBasePath } from "../language-services/language-services";
 import { Handler, isJavascriptFile } from "./handler";
-import { getCompletionEntries } from "html-template-literal-tsserver-plugin";
 import { wait } from "../wait";
+import { getCompletionEntries } from "custom-elements-languageserver-core";
 
 export const CompletionsHandler: Handler<CompletionParams, CompletionList> = {
     handle: (completionParams: CompletionParams) => {
