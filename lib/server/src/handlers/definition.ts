@@ -1,5 +1,4 @@
 import { getGoToDefinitionEntries } from "custom-elements-languageserver-core";
-import * as HTMLLanguageService from "vscode-html-languageservice/lib/esm/htmlLanguageService.js";
 import { DefinitionParams, Location } from "vscode-languageserver";
 import { getLanguageService, getProjectBasePath, getProjectForCurrentFile } from "../language-services/language-services";
 import { documents } from "../text-documents";
@@ -25,7 +24,6 @@ export const DefinitionHandler: Handler<DefinitionParams, Location[] | undefined
     },
     onHTMLOrOtherFile: (definitionParams) => {
         const usableData = textDocumentDataToUsableData(documents, definitionParams);
-        const languageService = HTMLLanguageService.getLanguageService();
         const doc = documents.get(definitionParams.textDocument.uri);
         if (!doc) {
             return undefined;
