@@ -79,15 +79,11 @@
         ]
     },
     "scripts": {
+        "build:all": "npm run build:with-types --workspaces",
         "dev": "concurrently \"cd lib/server && npm run start\" \"cd lib/html-template-literal-tsserver-plugin && npm run start\"",
-        "build:client": "cd lib/client/vscode && npm run build",
-        "build:server": "cd lib/server && npm run build",
-        "build:template-plugin": "cd lib/template-language-service && npm run build",
-        "build:core": "cd lib/custom-elements-languageserver-core && npm run build",
-        "build:all": "npm run build:client && npm run build:template-plugin && npm run build:client && npm run build:core",
         "install:server": "cd lib/server && npm install -g .",
         "format": "npx prettier --write .",
-        "localinstall": "npm run build:template-plugin && npm run build:server && npm run install:server",
+        "localinstall": "npm run build:all && npm run install:server",
         "bundle": "esbuild ./lib/client/vscode/src/extension.ts ./lib/server/src/server.ts --bundle --platform=node --external:vscode --outdir=dist",
         "package": "vsce package",
         "build-and-package": "npm run bundle && npm run package"
@@ -107,5 +103,8 @@
     "bugs": {
         "url": "https://github.com/Matsuuu/custom-elements-language-server/issues"
     },
-    "homepage": "https://github.com/Matsuuu/custom-elements-language-server#readme"
+    "homepage": "https://github.com/Matsuuu/custom-elements-language-server#readme",
+    "workspaces": [
+        "./lib/*"
+    ]
 }

@@ -6,7 +6,8 @@
     "scripts": {
         "start": "npm run watch",
         "watch": "npm run build -- --watch",
-        "build": "esbuild ./src/server.ts --bundle --platform=node --external:vscode --sourcemap --outdir=dist"
+        "build": "esbuild ./src/server.ts --bundle --platform=node --external:vscode --sourcemap --outdir=dist",
+        "build:with-types": "npm run build"
     },
     "bin": {
         "custom-elements-languageserver": "./bin/custom-elements-languageserver.js"
