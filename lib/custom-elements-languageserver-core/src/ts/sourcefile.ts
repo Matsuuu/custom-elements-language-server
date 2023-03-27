@@ -42,6 +42,7 @@ export function getSourceFile(baseOrFullPath: string, classPath: string | undefi
     if (!program) {
         return undefined;
     }
+
     console.log("Trying to acquire a sourcefile for classPath: ", fullClassPath);
     // @ts-ignore
     const sourceFile = program.getSourceFile(fullClassPath);
