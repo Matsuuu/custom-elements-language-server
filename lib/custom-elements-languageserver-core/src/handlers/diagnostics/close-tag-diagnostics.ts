@@ -6,10 +6,10 @@ import { CODE_ACTIONS } from "../enum/code-actions.js";
 import { CustomElementsLanguageServiceRequest } from "../../request.js";
 
 export function getMissingCloseTagDiagnostics(nodeOffset: number, request: CustomElementsLanguageServiceRequest): tss.Diagnostic[] {
-    const { document, htmlLanguageService, projectBasePath, project } = request;
+    const { document, htmlLanguageService, filePath, project } = request;
     console.log("getMissingCloseTagDiagnostics")
     const customElementTagNodes = getCustomElementTagsInContext(htmlLanguageService, document);
-    const sourceFile = getSourceFile(projectBasePath, undefined, project);
+    const sourceFile = getSourceFile(filePath, undefined, project);
 
     return customElementTagNodes
         .filter(nodeIsNotClosed)
