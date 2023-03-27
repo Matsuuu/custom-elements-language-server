@@ -36,9 +36,13 @@ export function getReferencesAtPosition(referenceParams: ReferenceParams) {
         return [];
     }
 
+    if (!project) {
+        return [];
+    }
+
     const openFilePath = referenceParams.textDocument.uri.replace("file://", "");
     const openDoc = scanDocument(openFilePath);
-    const identifiers = findIdentifiers(openFilePath, "");
+    const identifiers = findIdentifiers(openFilePath, "", project);
     const offset = positionToOffset(openDoc, referenceParams.position);
     const identifierUnderCursor = identifiers.find(id => id.pos <= offset && id.end >= offset);
 
@@ -60,7 +64,7 @@ export function getReferencesAtPosition(referenceParams: ReferenceParams) {
 
     // TODO: Find from HTML files too
     const filesUsingTag = project?.getRootScriptInfos().filter(file => {
-        const templateExpressions = findTemplateExpressions(file.path, "");
+        const templateExpressions = findTemplateExpressions(file.path, "", project);
         const contentAreas = templateExpressions.map(exp => exp.getText());
         const contains = contentAreas.some(area => area.includes("<" + tagName));
         if (contains) {
