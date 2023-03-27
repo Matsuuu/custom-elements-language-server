@@ -1,6 +1,7 @@
 import tss from "typescript/lib/tsserverlibrary.js";
 import { TemplateContext, TemplateLanguageService } from "typescript-template-language-service-decorator";
 import { LanguageService as HtmlLanguageService } from "vscode-html-languageservice/lib/esm/htmlLanguageService.js";
+import { createTextDocumentFromContext } from "./text-document";
 
 export class HTMLTemplateLiteralLanguageService implements TemplateLanguageService {
     public static project: tss.server.Project;
@@ -54,4 +55,11 @@ export class HTMLTemplateLiteralLanguageService implements TemplateLanguageServi
             ...nonClosedTagDiagnostics
         ];
     }
+}
+
+export function getProjectBasePath(context: TemplateContext) {
+    // Where is StandardTemplateContext?
+    // @ts-ignore until we can find a typing for this
+    return context?.helper?.project?.currentDirectory ?? "";
+    // TODO: Is the currentdirectory the best way to get the base path?
 }

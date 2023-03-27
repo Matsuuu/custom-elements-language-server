@@ -1,5 +1,5 @@
 {
-    "name": "html-template-literal-tsserver-plugin",
+    "name": "custom-elements-languageserver-core",
     "version": "0.0.1",
     "license": "MIT",
     "main": "dist/export.js",
