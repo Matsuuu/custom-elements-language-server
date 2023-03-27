@@ -68,7 +68,7 @@ export class HTMLTemplateLiteralLanguageService implements TemplateLanguageServi
         const importDiagnostics = getImportDiagnostics(request);
         const nonClosedTagDiagnostics = getMissingCloseTagDiagnostics(context.node.pos, request);
 
-        return [...importDiagnostics, ...nonClosedTagDiagnostics] as tss.Diagnostic[]; // TODO: Fix typing
+        return [...importDiagnostics, ...nonClosedTagDiagnostics];
     }
 }
 
