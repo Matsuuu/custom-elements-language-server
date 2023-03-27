@@ -53,7 +53,7 @@ export function getReferencesAtPosition(referenceParams: ReferenceParams) {
 
     const tagNameModule = findTagNameForClass(cemCollection, referenceClass);
 
-    const definition = tagNameModule.exports?.filter(exp => exp.kind === "custom-element-definition")?.[0];
+    const definition = tagNameModule?.exports?.filter(exp => exp.kind === "custom-element-definition")?.[0];
     if (!definition) {
         return [];
     }
