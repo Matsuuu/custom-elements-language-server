@@ -3,9 +3,13 @@ import * as HTMLLanguageService from "vscode-html-languageservice/lib/esm/htmlLa
 
 export interface CustomElementsLanguageServiceRequest {
     projectBasePath: string;
-    document: HTMLLanguageService.TextDocument; // TODO: Abstract this away from dependency
-    position: tss.LineAndCharacter; // TODO: Abstract this too
+    document: HTMLLanguageService.TextDocument;
+    position: CursorPosition; // tss.LineAndCharacter
     htmlLanguageService: HTMLLanguageService.LanguageService;
     project: tss.server.Project;
 }
 
+export interface CursorPosition {
+    line: number;
+    character: number;
+}
