@@ -10,11 +10,9 @@ import { CODE_ACTIONS } from "../enum/code-actions.js";
 import { getPathAsDtsFile, getPathAsJsFile, getPathAsTsFile } from "../../ts/filepath-transformers.js";
 import { CustomElementsLanguageServiceRequest } from "../../request.js";
 
-export function getImportDiagnostics(filePath: string, request: CustomElementsLanguageServiceRequest): tss.Diagnostic[] {
-    console.log("Get import diagnostics");
-    const { document, htmlLanguageService, projectBasePath, project } = request;
+export function getImportDiagnostics(request: CustomElementsLanguageServiceRequest): tss.Diagnostic[] {
+    const { filePath, document, htmlLanguageService, projectBasePath, project } = request;
     const filePathWithoutFile = getFilePathFolder(filePath);
-    const basePath = "" // TODO: HTMLTemplateLiteralPlugin.projectDirectory;
     const sourceFile = getSourceFile(filePath, undefined, project);
 
     if (!sourceFile) {
@@ -22,7 +20,7 @@ export function getImportDiagnostics(filePath: string, request: CustomElementsLa
     }
 
     // TODO: This part needs to be supported by html files too
-    const associatedFiles = getAllFilesAssociatedWithSourceFile(sourceFile, basePath, project);
+    const associatedFiles = getAllFilesAssociatedWithSourceFile(sourceFile, projectBasePath, project);
     // TODO: Might be that this gets all sourcefiles in the project
     // and not just relative to the file. Needs some checking.
     // Might lead to some false negatives.

@@ -17,6 +17,7 @@ export function createCustomElementsLanguageServiceRequest(context: TemplateCont
     const projectBasePath = getProjectBasePath(context);
 
     return {
+        filePath: context.fileName,
         projectBasePath,
         document,
         position,
@@ -61,12 +62,10 @@ export class HTMLTemplateLiteralLanguageService implements TemplateLanguageServi
     }
 
     public getSemanticDiagnostics(context: TemplateContext): tss.Diagnostic[] {
-        const filePath = context.fileName;
-
         const position = { line: 0, character: 0 };
         const request = createCustomElementsLanguageServiceRequest(context, position, this.htmlLanguageService);
 
-        const importDiagnostics = getImportDiagnostics(filePath, request);
+        const importDiagnostics = getImportDiagnostics(request);
         const nonClosedTagDiagnostics = getMissingCloseTagDiagnostics(context.node.pos, request);
 
         return [...importDiagnostics, ...nonClosedTagDiagnostics] as tss.Diagnostic[]; // TODO: Fix typing

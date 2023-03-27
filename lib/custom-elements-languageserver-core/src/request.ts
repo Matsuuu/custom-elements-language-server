@@ -2,6 +2,7 @@ import tss from "typescript/lib/tsserverlibrary.js";
 import * as HTMLLanguageService from "vscode-html-languageservice/lib/esm/htmlLanguageService.js";
 
 export interface CustomElementsLanguageServiceRequest {
+    filePath: string;
     projectBasePath: string;
     document: HTMLLanguageService.TextDocument;
     position: CursorPosition; // tss.LineAndCharacter
