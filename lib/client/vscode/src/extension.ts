@@ -10,6 +10,8 @@ export function activate(context: ExtensionContext) {
     if (process.env.CUSTOM_ELEMENTS_LANGUAGE_SERVER_PATH) {
         serverPath = process.env.CUSTOM_ELEMENTS_LANGUAGE_SERVER_PATH;
     }
+    console.log("Connecting to server @ " + serverPath);
+
     // let serverModule = context.asAbsolutePath(path.join("lib", "server", "out", "server.js"));
     let serverModule = context.asAbsolutePath(serverPath);
     // The debug options for the server
