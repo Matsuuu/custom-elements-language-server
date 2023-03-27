@@ -2,9 +2,10 @@ import * as HTMLLanguageService from "vscode-html-languageservice/lib/esm/htmlLa
 import { HoverParams, Hover } from "vscode-languageserver";
 import { quickInfoToHover, textDocumentDataToUsableData } from "../transformers";
 import { documents } from "../text-documents";
-import { getLanguageService, getProjectBasePath } from "../language-services/language-services";
+import { getLanguageService, getProjectBasePath, getProjectForCurrentFile } from "../language-services/language-services";
 import { Handler, isJavascriptFile } from "./handler";
-import { getQuickInfo } from "html-template-literal-tsserver-plugin";
+import { getQuickInfo } from "custom-elements-languageserver-core";
+import { createCustomElementsLanguageServiceRequest } from "../language-services/request";
 
 export const HoverHandler: Handler<HoverParams, Hover> = {
     handle: (hoverInfo: HoverParams) => {
@@ -25,15 +26,21 @@ export const HoverHandler: Handler<HoverParams, Hover> = {
     },
     onHTMLOrOtherFile: (hoverInfo: HoverParams) => {
         const usableData = textDocumentDataToUsableData(documents, hoverInfo);
-        const languageService = HTMLLanguageService.getLanguageService();
         const doc = documents.get(hoverInfo.textDocument.uri);
         if (!doc) {
             return undefined;
         }
-        // const node = htmlDoc.findNodeAt(usableData.position);
+
+        const project = getProjectForCurrentFile(usableData.fileName, usableData.fileContent);
         const basePath = getProjectBasePath(usableData.fileName);
-        const quickInfo = getQuickInfo(basePath, doc, hoverInfo.position, languageService);
+        if (!project) {
+            return undefined;
+        }
+
+        const request = createCustomElementsLanguageServiceRequest(basePath, doc, hoverInfo.position, project);
+        const quickInfo = getQuickInfo(request);
 
         return quickInfoToHover(usableData.fileName, quickInfo);
     }
 }
+
