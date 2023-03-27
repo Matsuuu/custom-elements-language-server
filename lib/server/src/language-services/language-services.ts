@@ -1,4 +1,4 @@
-import { plugin } from "html-template-literal-tsserver-plugin";
+import plugin from "template-language-service";
 import ts from "typescript";
 import tss, { server } from "typescript/lib/tsserverlibrary.js";
 import fs from "fs";

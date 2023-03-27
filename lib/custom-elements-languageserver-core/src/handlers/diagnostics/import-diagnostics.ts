@@ -13,7 +13,7 @@ import { getPathAsDtsFile, getPathAsJsFile, getPathAsTsFile } from "../../ts/fil
 export function getImportDiagnostics(filePath: string, projectBasePath: string, document: HTMLLanguageService.TextDocument, htmlLanguageService: HtmlLanguageService): tss.Diagnostic[] {
     console.log("Get import diagnostics");
     const filePathWithoutFile = getFilePathFolder(filePath);
-    const basePath = HTMLTemplateLiteralPlugin.projectDirectory;
+    const basePath = "" // TODO: HTMLTemplateLiteralPlugin.projectDirectory;
     const sourceFile = getSourceFile(filePath);
 
     if (!sourceFile) {

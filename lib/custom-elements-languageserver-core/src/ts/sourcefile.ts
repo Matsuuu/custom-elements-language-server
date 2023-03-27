@@ -36,7 +36,7 @@ export function getSourceFile(baseOrFullPath: string, classPath?: string) {
         [baseOrFullPath, classPath].filter(p => p.trim().length > 0).join("/");
 
     // TODO: Make sure everything is fine with this
-    const program = HTMLTemplateLiteralLanguageService.project;
+    const program = undefined // TODO: HTMLTemplateLiteralLanguageService.project;
 
     // NOTE: this makes everything slow as shit
     // program.getDeclarationDiagnostics();

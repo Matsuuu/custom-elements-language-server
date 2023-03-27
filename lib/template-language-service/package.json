@@ -5,7 +5,7 @@
     "main": "dist/index.js",
     "dependencies": {
         "custom-elements-languageserver-core": "file:../custom-elements-languageserver-core",
-        "typescript": "^4.8.4",
+        "typescript": "^5.0.2",
         "typescript-template-language-service-decorator": "^2.3.1",
         "vscode-html-languageservice": "^5.0.2"
     },

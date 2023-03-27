@@ -2,6 +2,28 @@ import tss from "typescript/lib/tsserverlibrary.js";
 import { TemplateContext, TemplateLanguageService } from "typescript-template-language-service-decorator";
 import { LanguageService as HtmlLanguageService } from "vscode-html-languageservice/lib/esm/htmlLanguageService.js";
 import { createTextDocumentFromContext } from "./text-document";
+import {
+    getCompletionEntries,
+    getGoToDefinitionEntries,
+    getImportDiagnostics,
+    getMissingCloseTagDiagnostics,
+    getQuickInfo,
+} from "custom-elements-languageserver-core";
+import { CustomElementsLanguageServiceRequest } from "custom-elements-languageserver-core/dist/request";
+
+function createCustomElementsLanguageServiceRequest(context: TemplateContext, position: ts.LineAndCharacter, htmlLanguageService: HtmlLanguageService): CustomElementsLanguageServiceRequest {
+    const document = createTextDocumentFromContext(context);
+    const projectBasePath = getProjectBasePath(context);
+
+    return {
+        projectBasePath,
+        document,
+        position,
+        htmlLanguageService,
+        // @ts-ignore // TODO: Fix typing
+        project: HTMLTemplateLiteralLanguageService.project,
+    }
+}
 
 export class HTMLTemplateLiteralLanguageService implements TemplateLanguageService {
     public static project: tss.server.Project;
@@ -19,10 +41,9 @@ export class HTMLTemplateLiteralLanguageService implements TemplateLanguageServi
 
     public getQuickInfoAtPosition(context: TemplateContext, position: tss.LineAndCharacter): tss.QuickInfo | undefined {
         console.log("getQuickInfoAtPosition");
-        const document = createTextDocumentFromContext(context);
-        const basePath = getProjectBasePath(context);
+        const request = createCustomElementsLanguageServiceRequest(context, position, this.htmlLanguageService);
 
-        return getQuickInfo(basePath, document, position, this.htmlLanguageService);
+        return getQuickInfo(request);
     }
 
     public getCompletionsAtPosition(context: TemplateContext, position: tss.LineAndCharacter): tss.CompletionInfo {
@@ -33,13 +54,12 @@ export class HTMLTemplateLiteralLanguageService implements TemplateLanguageServi
     }
 
     public getCompletionEntryDetails?(context: TemplateContext, position: ts.LineAndCharacter, name: string): ts.CompletionEntryDetails {
-
         return {
             name: "",
             kind: tss.ScriptElementKind.parameterElement,
             kindModifiers: "0",
-            displayParts: []
-        }
+            displayParts: [],
+        };
     }
 
     public getSemanticDiagnostics(context: TemplateContext): tss.Diagnostic[] {
@@ -50,10 +70,7 @@ export class HTMLTemplateLiteralLanguageService implements TemplateLanguageServi
         const importDiagnostics = getImportDiagnostics(filePath, basePath, document, this.htmlLanguageService);
         const nonClosedTagDiagnostics = getMissingCloseTagDiagnostics(filePath, document, this.htmlLanguageService, context.node.pos);
 
-        return [
-            ...importDiagnostics,
-            ...nonClosedTagDiagnostics
-        ];
+        return [...importDiagnostics, ...nonClosedTagDiagnostics] as tss.Diagnostic[]; // TODO: Fix typing
     }
 }
 
