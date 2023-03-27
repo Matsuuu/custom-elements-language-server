@@ -30,14 +30,11 @@ export function getOrCreateProgram(fullPath: string) {
 }
 
 export function getSourceFile(baseOrFullPath: string, classPath: string | undefined, project: tss.server.Project) {
-    console.log("Get sourcefile: " + baseOrFullPath);
-    // TODO: Does `setParentNodes` slow this down much
     const fullClassPath = classPath === undefined ?
         baseOrFullPath :
         [baseOrFullPath, classPath].filter(p => p.trim().length > 0).join("/");
 
-    // TODO: Make sure everything is fine with this
-    const program = project; // TODO: HTMLTemplateLiteralLanguageService.project;
+    const program = project;
 
     // NOTE: this makes everything slow as shit
     // program.getDeclarationDiagnostics();
@@ -45,8 +42,11 @@ export function getSourceFile(baseOrFullPath: string, classPath: string | undefi
     if (!program) {
         return undefined;
     }
+    console.log("Trying to acquire a sourcefile for classPath: ", fullClassPath);
     // @ts-ignore
     const sourceFile = program.getSourceFile(fullClassPath);
+
+    console.log("Success: ", sourceFile !== undefined);
 
     return sourceFile;
 }
