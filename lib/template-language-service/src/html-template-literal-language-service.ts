@@ -21,7 +21,6 @@ function createCustomElementsLanguageServiceRequest(context: TemplateContext, po
         document,
         position,
         htmlLanguageService,
-        // @ts-ignore // TODO: Fix typing
         project: HTMLTemplateLiteralLanguageService.project,
     }
 }
