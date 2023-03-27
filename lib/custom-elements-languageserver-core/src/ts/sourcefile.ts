@@ -1,4 +1,5 @@
 import ts from "typescript";
+import tss from "typescript/lib/tsserverlibrary.js";
 import { getFilePathFolder, isDependencyImport, resolveImportPath } from "../handlers/diagnostics/imports.js";
 import * as path from "path";
 import * as fs from "fs";
@@ -28,7 +29,7 @@ export function getOrCreateProgram(fullPath: string) {
     return program;
 }
 
-export function getSourceFile(baseOrFullPath: string, classPath?: string) {
+export function getSourceFile(baseOrFullPath: string, classPath: string | undefined, project: tss.server.Project) {
     console.log("Get sourcefile: " + baseOrFullPath);
     // TODO: Does `setParentNodes` slow this down much
     const fullClassPath = classPath === undefined ?
@@ -36,7 +37,7 @@ export function getSourceFile(baseOrFullPath: string, classPath?: string) {
         [baseOrFullPath, classPath].filter(p => p.trim().length > 0).join("/");
 
     // TODO: Make sure everything is fine with this
-    const program = undefined // TODO: HTMLTemplateLiteralLanguageService.project;
+    const program = project; // TODO: HTMLTemplateLiteralLanguageService.project;
 
     // NOTE: this makes everything slow as shit
     // program.getDeclarationDiagnostics();
@@ -50,7 +51,7 @@ export function getSourceFile(baseOrFullPath: string, classPath?: string) {
     return sourceFile;
 }
 
-export function getAllFilesAssociatedWithSourceFile(sourceFile: ts.SourceFile, basePath: string) {
+export function getAllFilesAssociatedWithSourceFile(sourceFile: ts.SourceFile, basePath: string, project: tss.server.Project) {
 
     const analyzedFiles: Record<string, ts.SourceFile> = {};
 
@@ -73,7 +74,7 @@ export function getAllFilesAssociatedWithSourceFile(sourceFile: ts.SourceFile, b
                 continue;
             }
 
-            const importSourceFile = tryGetSourceFileForImport(absoluteImportPath);
+            const importSourceFile = tryGetSourceFileForImport(absoluteImportPath, project);
             if (!importSourceFile) {
                 continue;
             }
@@ -87,11 +88,11 @@ export function getAllFilesAssociatedWithSourceFile(sourceFile: ts.SourceFile, b
     return Object.keys(analyzedFiles);
 }
 
-function tryGetSourceFileForImport(absoluteImportPath: string) {
+function tryGetSourceFileForImport(absoluteImportPath: string, project: tss.server.Project) {
     return [
-        getSourceFile(getPathAsJsFile(absoluteImportPath)),
-        getSourceFile(getPathAsTsFile(absoluteImportPath)),
-        getSourceFile(getPathAsDtsFile(absoluteImportPath))
+        getSourceFile(getPathAsJsFile(absoluteImportPath), undefined, project),
+        getSourceFile(getPathAsTsFile(absoluteImportPath), undefined, project),
+        getSourceFile(getPathAsDtsFile(absoluteImportPath), undefined, project)
     ].filter(file => file !== undefined)[0];
 }
 

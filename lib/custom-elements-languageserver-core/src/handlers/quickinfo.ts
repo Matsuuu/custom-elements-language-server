@@ -12,8 +12,7 @@ import { getCEMData } from "../export.js";
 import { CustomElementsLanguageServiceRequest } from "../request.js";
 
 export function getQuickInfo(request: CustomElementsLanguageServiceRequest): tss.QuickInfo | undefined {
-    // export function getQuickInfo(projectBasePath: string, document: HTMLLanguageService.TextDocument, position: tss.LineAndCharacter, htmlLanguageService: HTMLLanguageService.LanguageService): tss.QuickInfo | undefined {
-    const { document, position, htmlLanguageService, projectBasePath } = request;
+    const { document, position, htmlLanguageService, projectBasePath, project } = request;
     const actionContext = resolveActionContext(htmlLanguageService, document, position);
     const cemCollection = getCEMData(projectBasePath);
 
@@ -27,33 +26,33 @@ export function getQuickInfo(request: CustomElementsLanguageServiceRequest): tss
     }
 
     const fileName = getFileNameFromPath(matchingClass?.path);
-    const fileFullText = getSourceFile(projectBasePath, matchingClass.path)?.getFullText() ?? '';
+    const fileFullText = getSourceFile(projectBasePath, matchingClass.path, project)?.getFullText() ?? '';
     const classDeclaration = findCustomElementDeclarationFromModule(matchingClass);
     if (!classDeclaration) {
         return undefined;
     }
 
     if (isTagAction(actionContext) || isEndTagAction(actionContext)) {
-        return getTagQuickInfo(projectBasePath, matchingClass, classDeclaration, actionContext, fileFullText);
+        return getTagQuickInfo(projectBasePath, matchingClass, classDeclaration, actionContext, fileFullText, project);
     }
 
     if (isAttributeNameAction(actionContext)) {
-        return getAttributeQuickInfo(projectBasePath, matchingClass, classDeclaration, actionContext, fileName, fileFullText);
+        return getAttributeQuickInfo(projectBasePath, matchingClass, classDeclaration, actionContext, fileName, fileFullText, project);
     }
 
     if (isPropertyNameAction(actionContext)) {
-        return getPropertyQuickInfo(projectBasePath, matchingClass, classDeclaration, actionContext, fileName, fileFullText);
+        return getPropertyQuickInfo(projectBasePath, matchingClass, classDeclaration, actionContext, fileName, fileFullText, project);
     }
 
     if (isEventNameAction(actionContext)) {
-        return getEventQuickInfo(projectBasePath, matchingClass, classDeclaration, actionContext, fileName, fileFullText);
+        return getEventQuickInfo(projectBasePath, matchingClass, classDeclaration, actionContext, fileName, fileFullText, project);
     }
 
     return undefined;
 }
 
-function getTagQuickInfo(basePath: string, matchingClass: JavaScriptModule, classDeclaration: CustomElement, actionContext: TagActionContext, fileFullText: string): tss.QuickInfo | undefined {
-    const classIdentifier = getClassIdentifier(matchingClass.path, classDeclaration?.name, basePath,);
+function getTagQuickInfo(basePath: string, matchingClass: JavaScriptModule, classDeclaration: CustomElement, actionContext: TagActionContext, fileFullText: string, project: tss.server.Project): tss.QuickInfo | undefined {
+    const classIdentifier = getClassIdentifier(matchingClass.path, classDeclaration?.name, basePath, project);
 
     let quickInfo: string = "";
     let className: string = "";
@@ -91,10 +90,10 @@ function getTagQuickInfo(basePath: string, matchingClass: JavaScriptModule, clas
     }
 }
 
-function getAttributeQuickInfo(basePath: any, matchingClass: JavaScriptModule, classDeclaration: CustomElement, actionContext: AttributeActionContext, fileName: string, fileFullText: string): tss.QuickInfo | undefined {
+function getAttributeQuickInfo(basePath: any, matchingClass: JavaScriptModule, classDeclaration: CustomElement, actionContext: AttributeActionContext, fileName: string, fileFullText: string, project: tss.server.Project): tss.QuickInfo | undefined {
     const attributeName = actionContext.attributeName;
     const attributeVariants = attributeNameVariantBuilder(attributeName);
-    const attributeIdentifier = getAttributeIdentifier(matchingClass.path, attributeName, basePath);
+    const attributeIdentifier = getAttributeIdentifier(matchingClass.path, attributeName, basePath, project);
     const attributeDeclaration = attributeIdentifier?.parent;
 
     let quickInfo: string = "";
@@ -131,9 +130,9 @@ function getAttributeQuickInfo(basePath: any, matchingClass: JavaScriptModule, c
     }
 }
 
-function getPropertyQuickInfo(basePath: any, matchingClass: JavaScriptModule, classDeclaration: CustomElement, actionContext: PropertyActionContext, fileName: string, fileFullText: string): tss.QuickInfo | undefined {
+function getPropertyQuickInfo(basePath: any, matchingClass: JavaScriptModule, classDeclaration: CustomElement, actionContext: PropertyActionContext, fileName: string, fileFullText: string, project: tss.server.Project): tss.QuickInfo | undefined {
     const propertyName = actionContext.propertyName;
-    const propertyIdentifier = getPropertyIdentifier(matchingClass.path, propertyName, basePath);
+    const propertyIdentifier = getPropertyIdentifier(matchingClass.path, propertyName, basePath, project);
     const propertyDeclaration = propertyIdentifier?.parent;
 
     let quickInfo: string = "";
@@ -170,9 +169,9 @@ function getPropertyQuickInfo(basePath: any, matchingClass: JavaScriptModule, cl
     }
 }
 
-function getEventQuickInfo(basePath: any, matchingClass: JavaScriptModule, classDeclaration: CustomElement, actionContext: EventActionContext, fileName: string, fileFullText: string): tss.QuickInfo | undefined {
+function getEventQuickInfo(basePath: any, matchingClass: JavaScriptModule, classDeclaration: CustomElement, actionContext: EventActionContext, fileName: string, fileFullText: string, project: tss.server.Project): tss.QuickInfo | undefined {
     const eventName = actionContext.eventName;
-    const eventIdentifier = getEventIdentifier(matchingClass.path, eventName, basePath);
+    const eventIdentifier = getEventIdentifier(matchingClass.path, eventName, basePath, project);
     const eventDeclaration = eventIdentifier?.parent;
 
     let quickInfo: string = "";

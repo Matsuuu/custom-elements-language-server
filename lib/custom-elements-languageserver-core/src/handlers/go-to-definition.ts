@@ -18,9 +18,13 @@ import { CustomElement } from "custom-elements-manifest";
 import { getFileNameFromPath } from "../fs.js";
 import { getAttributeDefinitionTextSpan, getClassDefinitionTextSpan, getEventDefinitionTextSpan, getPropertyDefinitionTextSpan } from "../ast/text-span.js";
 import { getCEMData } from "../export.js";
+import { CustomElementsLanguageServiceRequest } from "../request.js";
 
-export function getGoToDefinitionEntries(projectBasePath: string, document: HTMLLanguageService.TextDocument, position: tss.LineAndCharacter, htmlLanguageService: HTMLLanguageService.LanguageService) {
+// request: CustomElementsLanguageServiceRequest
+export function getGoToDefinitionEntries(request: CustomElementsLanguageServiceRequest) {
     let definitionInfos: Array<ts.DefinitionInfo> = [];
+    const { document, position, htmlLanguageService, projectBasePath, project } = request;
+
     const actionContext = resolveActionContext(htmlLanguageService, document, position);
     const cemCollection = getCEMData(projectBasePath);
 
@@ -45,26 +49,26 @@ export function getGoToDefinitionEntries(projectBasePath: string, document: HTML
     }
 
     if (isTagAction(actionContext) || isEndTagAction(actionContext)) {
-        definitionInfos = [...definitionInfos, ...getTagDefinitionsEntries(basePath, matchingClass, classDeclaration, fileName)];
+        definitionInfos = [...definitionInfos, ...getTagDefinitionsEntries(basePath, matchingClass, classDeclaration, fileName, project)];
     }
 
     if (isAttributeNameAction(actionContext)) {
-        definitionInfos = [...definitionInfos, ...getAttributeDefinitionEntries(actionContext, basePath, matchingClass, classDeclaration, fileName)];
+        definitionInfos = [...definitionInfos, ...getAttributeDefinitionEntries(actionContext, basePath, matchingClass, classDeclaration, fileName, project)];
     }
 
     if (isPropertyNameAction(actionContext)) {
-        definitionInfos = [...definitionInfos, ...getPropertyDefinitionEntries(actionContext, basePath, matchingClass, classDeclaration, fileName)];
+        definitionInfos = [...definitionInfos, ...getPropertyDefinitionEntries(actionContext, basePath, matchingClass, classDeclaration, fileName, project)];
     }
 
     if (isEventNameAction(actionContext)) {
-        definitionInfos = [...definitionInfos, ...getEventDefinitionEntries(actionContext, basePath, matchingClass, classDeclaration, fileName)];
+        definitionInfos = [...definitionInfos, ...getEventDefinitionEntries(actionContext, basePath, matchingClass, classDeclaration, fileName, project)];
     }
 
     return [...definitionInfos];
 }
 
-function getTagDefinitionsEntries(basePath: string, matchingClass: JavaScriptModuleWithRef, classDeclaration: CustomElement, fileName: string) {
-    const classDefinitionTextSpan = getClassDefinitionTextSpan(matchingClass, classDeclaration?.name ?? "", basePath);
+function getTagDefinitionsEntries(basePath: string, matchingClass: JavaScriptModuleWithRef, classDeclaration: CustomElement, fileName: string, project: tss.server.Project) {
+    const classDefinitionTextSpan = getClassDefinitionTextSpan(matchingClass, classDeclaration?.name ?? "", basePath, project);
     let packagePath = matchingClass.cem.cemFolderPath + "/" + matchingClass.path;
     // TODO: Point to the .d.ts file ? Let's try it out
 
@@ -87,8 +91,9 @@ function getAttributeDefinitionEntries(
     matchingClass: JavaScriptModuleWithRef,
     classDeclaration: CustomElement,
     fileName: string,
+    project: tss.server.Project
 ) {
-    const attributeDefinitionTextSpan = getAttributeDefinitionTextSpan(matchingClass, actionContext.attributeName ?? "", basePath);
+    const attributeDefinitionTextSpan = getAttributeDefinitionTextSpan(matchingClass, actionContext.attributeName ?? "", basePath, project);
     const packagePath = matchingClass.cem.cemFolderPath + "/" + matchingClass.path;
 
     return [
@@ -110,8 +115,9 @@ function getPropertyDefinitionEntries(
     matchingClass: JavaScriptModuleWithRef,
     classDeclaration: CustomElement,
     fileName: string,
+    project: tss.server.Project
 ) {
-    const propertyDefinitionTextSpan = getPropertyDefinitionTextSpan(matchingClass, actionContext.propertyName ?? "", basePath);
+    const propertyDefinitionTextSpan = getPropertyDefinitionTextSpan(matchingClass, actionContext.propertyName ?? "", basePath, project);
     const packagePath = matchingClass.cem.cemFolderPath + "/" + matchingClass.path;
 
     return [
@@ -133,8 +139,9 @@ function getEventDefinitionEntries(
     matchingClass: JavaScriptModuleWithRef,
     classDeclaration: CustomElement,
     fileName: string,
+    project: tss.server.Project
 ) {
-    const eventDefinitionTextSpan = getEventDefinitionTextSpan(matchingClass, actionContext.eventName ?? "", basePath);
+    const eventDefinitionTextSpan = getEventDefinitionTextSpan(matchingClass, actionContext.eventName ?? "", basePath, project);
     const packagePath = matchingClass.cem.cemFolderPath + "/" + matchingClass.path;
 
     return [

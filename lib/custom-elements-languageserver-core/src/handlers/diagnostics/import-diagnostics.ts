@@ -1,6 +1,5 @@
-import * as HTMLLanguageService from "vscode-html-languageservice/lib/esm/htmlLanguageService.js";
 import tss from "typescript/lib/tsserverlibrary.js";
-import { LanguageService as HtmlLanguageService, Node } from "vscode-html-languageservice/lib/esm/htmlLanguageService.js";
+import { Node } from "vscode-html-languageservice/lib/esm/htmlLanguageService.js";
 import { getCEMData } from "../../cem/cem-cache.js";
 import { findCustomElementDefinitionModule } from "../../cem/cem-helpers.js";
 import { getCustomElementTagsInContext } from "../../scanners/tag-scanner.js";
@@ -9,19 +8,21 @@ import { SourceFile } from "typescript";
 import { getFilePathFolder, resolveImportPath } from "./imports.js";
 import { CODE_ACTIONS } from "../enum/code-actions.js";
 import { getPathAsDtsFile, getPathAsJsFile, getPathAsTsFile } from "../../ts/filepath-transformers.js";
+import { CustomElementsLanguageServiceRequest } from "../../request.js";
 
-export function getImportDiagnostics(filePath: string, projectBasePath: string, document: HTMLLanguageService.TextDocument, htmlLanguageService: HtmlLanguageService): tss.Diagnostic[] {
+export function getImportDiagnostics(filePath: string, request: CustomElementsLanguageServiceRequest): tss.Diagnostic[] {
     console.log("Get import diagnostics");
+    const { document, htmlLanguageService, projectBasePath, project } = request;
     const filePathWithoutFile = getFilePathFolder(filePath);
     const basePath = "" // TODO: HTMLTemplateLiteralPlugin.projectDirectory;
-    const sourceFile = getSourceFile(filePath);
+    const sourceFile = getSourceFile(filePath, undefined, project);
 
     if (!sourceFile) {
         return [];
     }
 
     // TODO: This part needs to be supported by html files too
-    const associatedFiles = getAllFilesAssociatedWithSourceFile(sourceFile, basePath);
+    const associatedFiles = getAllFilesAssociatedWithSourceFile(sourceFile, basePath, project);
     // TODO: Might be that this gets all sourcefiles in the project
     // and not just relative to the file. Needs some checking.
     // Might lead to some false negatives.

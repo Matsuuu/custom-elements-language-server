@@ -1,5 +1,6 @@
 import { getSourceFile } from "../ts/sourcefile.js";
 import ts from "typescript";
+import tss from "typescript/lib/tsserverlibrary.js";
 import {
     attributeEscapedTextMatchesVariant,
     attributeNameVariantBuilder,
@@ -9,8 +10,8 @@ import {
     nodeIsEventDeclaration,
 } from "./ast.js";
 
-export function getClassIdentifier(classPath: string, className: string, basePath: string): ts.Identifier | undefined {
-    const sourceFile = getSourceFile(basePath, classPath);
+export function getClassIdentifier(classPath: string, className: string, basePath: string, project: tss.server.Project): ts.Identifier | undefined {
+    const sourceFile = getSourceFile(basePath, classPath, project);
     if (!sourceFile) {
         return undefined;
     }
@@ -18,8 +19,8 @@ export function getClassIdentifier(classPath: string, className: string, basePat
     return findClassIdentifierByName(sourceFile, className);
 }
 
-export function findIdentifiers(classPath: string, basePath: string): Array<ts.Identifier> {
-    const sourceFile = getSourceFile(basePath, classPath);
+export function findIdentifiers(classPath: string, basePath: string, project: tss.server.Project): Array<ts.Identifier> {
+    const sourceFile = getSourceFile(basePath, classPath, project);
     if (!sourceFile) {
         return [];
     }
@@ -35,8 +36,8 @@ export function isCustomElementDefinition(node: ts.Node) {
         (node.getText() === "window.customElements.define" || node.getText() === "customElements.define");
 }
 
-export function findTemplateExpressions(classPath: string, basePath: string): Array<ts.Node> {
-    const sourceFile = getSourceFile(basePath, classPath);
+export function findTemplateExpressions(classPath: string, basePath: string, project: tss.server.Project): Array<ts.Node> {
+    const sourceFile = getSourceFile(basePath, classPath, project);
     if (!sourceFile) {
         return [];
     }
@@ -49,8 +50,8 @@ function nodeIsTemplateLiteral(node: ts.Node) {
         ts.isTemplateExpression(node);
 }
 
-export function getAttributeIdentifier(classPath: string, attributeName: string, basePath: string): ts.Identifier | undefined {
-    const sourceFile = getSourceFile(basePath, classPath);
+export function getAttributeIdentifier(classPath: string, attributeName: string, basePath: string, project: tss.server.Project): ts.Identifier | undefined {
+    const sourceFile = getSourceFile(basePath, classPath, project);
     if (!sourceFile) {
         return undefined;
     }
@@ -58,8 +59,8 @@ export function getAttributeIdentifier(classPath: string, attributeName: string,
     return findAttributeIdentifierByName(sourceFile, attributeName);
 }
 
-export function getPropertyIdentifier(classPath: string, propertyName: string, basePath: string): ts.Identifier | undefined {
-    const sourceFile = getSourceFile(basePath, classPath);
+export function getPropertyIdentifier(classPath: string, propertyName: string, basePath: string, project: tss.server.Project): ts.Identifier | undefined {
+    const sourceFile = getSourceFile(basePath, classPath, project);
     if (!sourceFile) {
         return undefined;
     }
@@ -67,8 +68,8 @@ export function getPropertyIdentifier(classPath: string, propertyName: string, b
     return findPropertyIdentifierByName(sourceFile, propertyName);
 }
 
-export function getEventIdentifier(classPath: string, eventName: string, basePath: string): ts.Identifier | undefined {
-    const sourceFile = getSourceFile(basePath, classPath);
+export function getEventIdentifier(classPath: string, eventName: string, basePath: string, project: tss.server.Project): ts.Identifier | undefined {
+    const sourceFile = getSourceFile(basePath, classPath, project);
     if (!sourceFile) {
         return undefined;
     }

@@ -1,10 +1,11 @@
 import { getGoToDefinitionEntries } from "custom-elements-languageserver-core";
 import * as HTMLLanguageService from "vscode-html-languageservice/lib/esm/htmlLanguageService.js";
 import { DefinitionParams, Location } from "vscode-languageserver";
-import { getLanguageService, getProjectBasePath } from "../language-services/language-services";
+import { getLanguageService, getProjectBasePath, getProjectForCurrentFile } from "../language-services/language-services";
 import { documents } from "../text-documents";
 import { documentSpanToLocation, textDocumentDataToUsableData } from "../transformers";
 import { Handler, isJavascriptFile } from "./handler";
+import { createCustomElementsLanguageServiceRequest } from "../language-services/request";
 
 export const DefinitionHandler: Handler<DefinitionParams, Location[] | undefined> = {
     handle: (definitionParams) => {
@@ -30,9 +31,14 @@ export const DefinitionHandler: Handler<DefinitionParams, Location[] | undefined
             return undefined;
         }
         // const node = htmlDoc.findNodeAt(usableData.position);
+        const project = getProjectForCurrentFile(usableData.fileName, usableData.fileContent);
         const basePath = getProjectBasePath(usableData.fileName);
+        if (!project) {
+            return undefined;
+        }
 
-        const definitions = getGoToDefinitionEntries(basePath, doc, definitionParams.position, languageService);
+        const request = createCustomElementsLanguageServiceRequest(basePath, doc, definitionParams.position, project);
+        const definitions = getGoToDefinitionEntries(request);
 
         const definitionLocations = definitions?.map(documentSpanToLocation) ?? [];
         return definitionLocations;

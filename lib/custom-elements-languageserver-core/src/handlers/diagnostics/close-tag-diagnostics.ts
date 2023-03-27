@@ -1,14 +1,15 @@
-import * as HTMLLanguageService from "vscode-html-languageservice/lib/esm/htmlLanguageService.js";
 import tss from "typescript/lib/tsserverlibrary.js";
-import { LanguageService as HtmlLanguageService, Node } from "vscode-html-languageservice/lib/esm/htmlLanguageService.js";
+import { Node } from "vscode-html-languageservice/lib/esm/htmlLanguageService.js";
 import { getCustomElementTagsInContext } from "../../scanners/tag-scanner.js";
 import { getSourceFile } from "../../ts/sourcefile.js";
 import { CODE_ACTIONS } from "../enum/code-actions.js";
+import { CustomElementsLanguageServiceRequest } from "../../request.js";
 
-export function getMissingCloseTagDiagnostics(filePath: string, document: HTMLLanguageService.TextDocument, htmlLanguageService: HtmlLanguageService, nodeOffset: number): tss.Diagnostic[] {
+export function getMissingCloseTagDiagnostics(nodeOffset: number, request: CustomElementsLanguageServiceRequest): tss.Diagnostic[] {
+    const { document, htmlLanguageService, projectBasePath, project } = request;
     console.log("getMissingCloseTagDiagnostics")
     const customElementTagNodes = getCustomElementTagsInContext(htmlLanguageService, document);
-    const sourceFile = getSourceFile(filePath);
+    const sourceFile = getSourceFile(projectBasePath, undefined, project);
 
     return customElementTagNodes
         .filter(nodeIsNotClosed)

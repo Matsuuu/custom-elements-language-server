@@ -33,14 +33,12 @@ export class HTMLTemplateLiteralLanguageService implements TemplateLanguageServi
     }
 
     getDefinitionAtPosition(context: TemplateContext, position: ts.LineAndCharacter): ts.DefinitionInfo[] {
-        const document = createTextDocumentFromContext(context);
-        const basePath = getProjectBasePath(context);
+        const request = createCustomElementsLanguageServiceRequest(context, position, this.htmlLanguageService);
 
-        return getGoToDefinitionEntries(basePath, document, position, this.htmlLanguageService);
+        return getGoToDefinitionEntries(request);
     }
 
     public getQuickInfoAtPosition(context: TemplateContext, position: tss.LineAndCharacter): tss.QuickInfo | undefined {
-        console.log("getQuickInfoAtPosition");
         const request = createCustomElementsLanguageServiceRequest(context, position, this.htmlLanguageService);
 
         return getQuickInfo(request);
@@ -63,12 +61,13 @@ export class HTMLTemplateLiteralLanguageService implements TemplateLanguageServi
     }
 
     public getSemanticDiagnostics(context: TemplateContext): tss.Diagnostic[] {
-        const document = createTextDocumentFromContext(context);
         const filePath = context.fileName;
-        const basePath = getProjectBasePath(context);
 
-        const importDiagnostics = getImportDiagnostics(filePath, basePath, document, this.htmlLanguageService);
-        const nonClosedTagDiagnostics = getMissingCloseTagDiagnostics(filePath, document, this.htmlLanguageService, context.node.pos);
+        const position = { line: 0, character: 0 };
+        const request = createCustomElementsLanguageServiceRequest(context, position, this.htmlLanguageService);
+
+        const importDiagnostics = getImportDiagnostics(filePath, request);
+        const nonClosedTagDiagnostics = getMissingCloseTagDiagnostics(context.node.pos, request);
 
         return [...importDiagnostics, ...nonClosedTagDiagnostics] as tss.Diagnostic[]; // TODO: Fix typing
     }
