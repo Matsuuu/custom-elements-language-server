@@ -1,12 +1,13 @@
 import { getMissingCloseTagDiagnostics } from "custom-elements-languageserver-core";
 import ts from "typescript";
-import * as HTMLLanguageService from "vscode-html-languageservice/lib/esm/htmlLanguageService.js";
 import { Diagnostic } from "vscode-languageserver";
 import { TextDocument } from "vscode-languageserver-textdocument";
 import { connection } from "./connection";
 import { isJavascriptFile } from "./handlers/handler";
-import { getLanguageService } from "./language-services/language-services";
-import { tsDiagnosticToDiagnostic, uriToFileName } from "./transformers";
+import { getLanguageService, getProjectBasePath, getProjectForCurrentFile } from "./language-services/language-services";
+import { textDocumentDataToUsableDataFromUri, tsDiagnosticToDiagnostic, uriToFileName } from "./transformers";
+import { createCustomElementsLanguageServiceRequest } from "./language-services/request";
+import { documents } from "./text-documents";
 
 export async function runDiagnostics(uri: string, textDoc: TextDocument) {
     if (isJavascriptFile(uri)) {
@@ -33,10 +34,19 @@ function handleJavascriptDiagnostics(uri: string, textDoc: TextDocument) {
 }
 
 function handleHTMLOrOtherFileDiagnostics(uri: string, textDoc: TextDocument) {
-    const fileName = uriToFileName(uri);
-    const languageService = HTMLLanguageService.getLanguageService();
+    const usableData = textDocumentDataToUsableDataFromUri(documents, uri);
+    const doc = documents.get(uri);
 
-    const missingTagDiagnostics = getMissingCloseTagDiagnostics(fileName, textDoc, languageService, 0);
+    const project = getProjectForCurrentFile(usableData.fileName, usableData.fileContent);
+    const basePath = getProjectBasePath(usableData.fileName);
+
+    if (!doc || !project) {
+        return;
+    }
+
+    const request = createCustomElementsLanguageServiceRequest(basePath, doc, { line: 0, character: 0 }, project);
+
+    const missingTagDiagnostics = getMissingCloseTagDiagnostics(0, request);
 
     const diagnostics = [
         ...missingTagDiagnostics

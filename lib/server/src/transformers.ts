@@ -21,6 +21,17 @@ export function fileNameToUri(fileName: string) {
     return "file://" + fileName;
 }
 
+export function textDocumentDataToUsableDataFromUri(documents: TextDocuments<TextDocument>, uri: string): UsableTextDocumentData {
+    const fileName = uriToFileName(uri);
+    const doc = documents.get(uri);
+
+    return {
+        fileName,
+        position: 0,
+        fileContent: doc?.getText() ?? "",
+    };
+}
+
 export function textDocumentDataToUsableData(documents: TextDocuments<TextDocument>, textDocumentData: TextDocumentPositionParams): UsableTextDocumentData {
     const fileName = uriToFileName(textDocumentData.textDocument.uri);
     const doc = documents.get(textDocumentData.textDocument.uri);
