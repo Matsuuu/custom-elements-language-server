@@ -29,16 +29,24 @@ export function getCompletionEntries(document: HTMLLanguageService.TextDocument,
         const similiarTags = findCustomElementTagLike(cemCollection, actionContext.tagName);
         similiarTags.forEach(tag => {
             // TODO: This tag documentation stuff is ugly
-            let tagDocumentation = "";
+
+            const tagDocumentationParts = [
+                "```html",
+                "<" + tag + ">",
+                "```",
+            ]
+
             if (tag.classInfo?.summary) {
-                tagDocumentation += tag.classInfo?.summary;
+                tagDocumentationParts.push(tag.classInfo?.summary);
             }
             if (tag.classInfo?.description) {
-                if (tagDocumentation.length > 0) {
-                    tagDocumentation += "\n\n";
+                if (tag.classInfo?.summary) {
+                    tagDocumentationParts.push("\n\n");
                 }
-                tagDocumentation += tag.classInfo?.description;
+                tagDocumentationParts.push(tag.classInfo?.description);
             }
+
+            const tagDocumentation = tagDocumentationParts.join("\n");
             //
             // TODO: LabelDetails to other stuff too. 
             // TODO: And format it

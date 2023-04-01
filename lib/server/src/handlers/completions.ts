@@ -60,22 +60,13 @@ function completionEntryToCompletionItem(completionsEntry: ts.CompletionEntry): 
 
     }
 
-    const tagDocumentation = [
-        "```html",
-        "<foo-bar>",
-        "```",
-        "---",
-        completionsEntry.labelDetails?.description,
-    ].join("\n");
-
     // TODO: Fill the rest
     return {
         label: completionsEntry.name,
         kind: CompletionItemKind.Class,
-        //documentation: completionsEntry.labelDetails?.description,
         documentation: {
             kind: "markdown",
-            value: tagDocumentation
+            value: completionsEntry.labelDetails?.description ?? ''
         },
         insertText: insertText
     };
