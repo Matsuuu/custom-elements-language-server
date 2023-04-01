@@ -59,11 +59,24 @@ function completionEntryToCompletionItem(completionsEntry: ts.CompletionEntry): 
         insertText = insertText.replace(match?.at(0) || '', "");
 
     }
+
+    const tagDocumentation = [
+        "```html",
+        "<foo-bar>",
+        "```",
+        "---",
+        completionsEntry.labelDetails?.description,
+    ].join("\n");
+
     // TODO: Fill the rest
     return {
         label: completionsEntry.name,
         kind: CompletionItemKind.Class,
-        documentation: completionsEntry.labelDetails?.description,
+        //documentation: completionsEntry.labelDetails?.description,
+        documentation: {
+            kind: "markdown",
+            value: tagDocumentation
+        },
         insertText: insertText
     };
 }
