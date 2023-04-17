@@ -79,6 +79,7 @@
         ]
     },
     "scripts": {
+        "build": "npm run build --workspaces",
         "build:all": "npm run build:with-types --workspaces",
         "dev": "concurrently \"cd lib/server && npm run start\" \"cd lib/html-template-literal-tsserver-plugin && npm run start\"",
         "install:server": "cd lib/server && npm install -g .",
