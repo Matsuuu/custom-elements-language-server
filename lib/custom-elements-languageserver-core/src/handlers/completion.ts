@@ -47,9 +47,7 @@ export function getCompletionEntries(document: HTMLLanguageService.TextDocument,
             }
 
             const tagDocumentation = tagDocumentationParts.join("\n");
-            //
-            // TODO: LabelDetails to other stuff too. 
-            // TODO: And format it
+
             cemCompletions.push({ name: tag.tagName, kind: tss.ScriptElementKind.memberVariableElement, sortText: tag.tagName, labelDetails: { description: tagDocumentation } });
         });
     }
@@ -60,6 +58,7 @@ export function getCompletionEntries(document: HTMLLanguageService.TextDocument,
         // the closing tag is already present.
     }
 
+    // TODO: Add extra completion info
     if (isAttributeNameAction(actionContext)) {
         const classDeclaration = findDeclarationForTagName(cemCollection, actionContext.tagName);
         if (classDeclaration) {
@@ -70,6 +69,7 @@ export function getCompletionEntries(document: HTMLLanguageService.TextDocument,
         }
     }
 
+    // TODO: Add extra completion info
     if (isEventNameAction(actionContext)) {
         const classDeclaration = findDeclarationForTagName(cemCollection, actionContext.tagName);
         if (classDeclaration) {
@@ -81,6 +81,7 @@ export function getCompletionEntries(document: HTMLLanguageService.TextDocument,
         }
     }
 
+    // TODO: Add extra completion info
     if (isPropertyNameAction(actionContext)) {
         const classDeclaration = findDeclarationForTagName(cemCollection, actionContext.tagName);
         if (classDeclaration) {

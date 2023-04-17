@@ -39,8 +39,12 @@ export function getImportedDependencies(sourceFiles: readonly ts.SourceFile[]) {
 
 // TODO: This is just a quickly done PoC. Refactor and make good
 export function getDependencyPackagesWithCEMs(nodeModulesPath: string) {
-    const packageDirectories = fs.readdirSync(nodeModulesPath);
     let packages: Record<string, ImportedDependency> = {};
+    if (!fs.existsSync(nodeModulesPath)) {
+        return packages;
+    }
+
+    const packageDirectories = fs.readdirSync(nodeModulesPath);
 
     for (const packageDir of packageDirectories) {
         const dependenciesWithinNamespace = [];
