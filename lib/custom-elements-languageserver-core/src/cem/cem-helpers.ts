@@ -60,7 +60,7 @@ export function findDeclarationForTagName(cemCollection: CEMCollection, tagName:
     return classDeclaration;
 }
 
-export function findCustomElementTagLike(cemCollection: CEMCollection, tagNamePart: string) {
+export function findCustomElementTagLike(cemCollection: CEMCollection, tagNamePart: string): TagDeclarationInfo[] {
     // TODO: No need to constantly scan
     scanCustomElementTagNames(cemCollection);
     return [...CEMCustomElementTagCache.values()].filter(declInfo => declInfo.tagName.includes(tagNamePart));

@@ -32,7 +32,7 @@ export function getCompletionEntries(document: HTMLLanguageService.TextDocument,
 
             const tagDocumentationParts = [
                 "```html",
-                "<" + tag + ">",
+                "<" + tag.tagName + ">",
                 "```",
             ]
 
