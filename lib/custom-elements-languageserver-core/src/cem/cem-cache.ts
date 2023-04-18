@@ -58,15 +58,18 @@ export class CEMCollection {
     }
 }
 
-let CACHED_COLLECTION: CEMCollection | undefined = undefined;
+const CEM_COLLECTION_CACHE = new Map<string, CEMCollection>();
 
-export function getCEMData(projectBasePath: string) {
-    if (!CACHED_COLLECTION) {
-        CACHED_COLLECTION = new CEMCollection(projectBasePath);
+export function getCEMData(projectBasePath: string): CEMCollection {
+    const existingCollection = CEM_COLLECTION_CACHE.get(projectBasePath);
+    if (existingCollection) {
+        existingCollection?.refreshLocal();
+        return existingCollection;
     }
-    CACHED_COLLECTION.refreshLocal();
-    // TODO: Figure out when dependencyCEM's might need updating
-    return CACHED_COLLECTION;
+
+    const cemCollection = new CEMCollection(projectBasePath);
+    CEM_COLLECTION_CACHE.set(projectBasePath, cemCollection);
+    return cemCollection;
 }
 
 function cemIsNotUndefined(cemInstance: CEMInstance | undefined): cemInstance is CEMInstance {

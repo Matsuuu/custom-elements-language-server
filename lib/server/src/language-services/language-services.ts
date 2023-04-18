@@ -1,6 +1,5 @@
 import plugin from "template-language-service";
-import ts from "typescript";
-import tss, { server } from "typescript/lib/tsserverlibrary.js";
+import tss from "typescript/lib/tsserverlibrary.js";
 import fs from "fs";
 
 import { getPluginCreateInfo } from "./plugin-creation.js";
@@ -24,7 +23,7 @@ export class LanguageServiceManager {
             return this._languageServiceCache.get(projectConfigFilePath);
         }
 
-        const pluginCreateInfo = getPluginCreateInfo(projectService);
+        const pluginCreateInfo = getPluginCreateInfo(projectService, projectConfigFilePath);
         if (!pluginCreateInfo) {
             throw new Error("Failed to initialize Plugin Creation Info");
         }
@@ -56,7 +55,9 @@ export class LanguageServiceManager {
 
         const configFilePath = project.canonicalConfigFilePath;
 
-        return this.getOrCreateLanguageService(configFilePath, project);
+        const languageService = this.getOrCreateLanguageService(configFilePath, project);
+
+        return languageService;
     }
 
     public getProjectForCurrentFile(fileName: string, fileContent: string) {
