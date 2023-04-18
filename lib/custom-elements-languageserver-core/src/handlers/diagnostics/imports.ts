@@ -15,6 +15,8 @@ export function resolveImportPath(fullImportPath: string, filePathWithoutFile: s
 
     if (relativeImportPath.includes("node_modules")) {
         relativeImportPath = relativeImportPath.substring(relativeImportPath.indexOf("node_modules") + "node_modules/".length);
+    } else if (!relativeImportPath.startsWith(".")) {
+        relativeImportPath = "./" + relativeImportPath;
     }
 
     return relativeImportPath;

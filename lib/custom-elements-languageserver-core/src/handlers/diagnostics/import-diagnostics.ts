@@ -19,7 +19,7 @@ export function getImportDiagnostics(request: CustomElementsLanguageServiceReque
         return [];
     }
 
-    // TODO: This part needs to be supported by html files too
+    // TODO: This part needs to be supported by html files too somehow
     const associatedFiles = getAllFilesAssociatedWithSourceFile(sourceFile, projectBasePath, project);
     // TODO: Might be that this gets all sourcefiles in the project
     // and not just relative to the file. Needs some checking.
