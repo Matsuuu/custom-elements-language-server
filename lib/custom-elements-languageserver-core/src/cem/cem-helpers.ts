@@ -61,15 +61,20 @@ export function findDeclarationForTagName(cemCollection: CEMCollection, tagName:
 }
 
 export function findCustomElementTagLike(cemCollection: CEMCollection, tagNamePart: string): TagDeclarationInfo[] {
-    // TODO: No need to constantly scan
-    scanCustomElementTagNames(cemCollection);
-    return [...CEMCustomElementTagCache.values()].filter(declInfo => declInfo.tagName.includes(tagNamePart));
+    const customElementTags = getCustomElementTags(cemCollection);
+    return customElementTags.filter(declInfo => declInfo.tagName.includes(tagNamePart));
 }
 
-export function scanCustomElementTagNames(cemCollection: CEMCollection) {
+interface CEMTagInfo {
+    tagName: string,
+    module: JavaScriptModule
+    classInfo: CustomElementDeclaration | undefined;
+}
+
+export function getCustomElementTags(cemCollection: CEMCollection): CEMTagInfo[] {
     const customElementDeclarations = cemCollection.modules.filter(mod => moduleHasCustomElementExport(mod));
 
-    customElementDeclarations.forEach(mod => {
+    return customElementDeclarations.map(mod => {
         const tagName = mod.exports?.filter(exportHasCustomElementExport).map(exp => exp.name)[0];
         if (tagName) {
             const classInfo = findClassForTagName(cemCollection, tagName);
@@ -77,13 +82,14 @@ export function scanCustomElementTagNames(cemCollection: CEMCollection) {
                 ?.filter(isCustomElementDeclaration)
                 .filter(decl => decl.tagName === tagName)[0];
 
-            CEMCustomElementTagCache.set(tagName, {
+            return {
                 tagName,
                 module: mod,
                 classInfo: classDeclaration
-            });
+            };
         }
-    });
+        return undefined;
+    }).filter((entry): entry is CEMTagInfo => entry !== undefined);
 }
 
 export function findCustomElementDefinitionModule(cemCollection: CEMCollection, tagName: string): JavaScriptModuleWithRef | undefined {
