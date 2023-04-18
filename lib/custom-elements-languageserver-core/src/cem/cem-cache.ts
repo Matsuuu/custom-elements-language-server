@@ -5,6 +5,7 @@ import { JavaScriptModule } from "custom-elements-manifest";
 import { addReferenceToModule, JavaScriptModuleWithRef } from "./cem-helpers.js";
 
 export class CEMCollection {
+    public id: number = Date.now() + Math.floor(Math.random() * 999);
     public cems: Array<CEMInstance> = [];
     public localCEM: CEMInstance | undefined;
     private _modules: Array<JavaScriptModule> | undefined;
