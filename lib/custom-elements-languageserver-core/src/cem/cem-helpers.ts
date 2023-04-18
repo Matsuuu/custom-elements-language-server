@@ -62,6 +62,7 @@ export function findDeclarationForTagName(cemCollection: CEMCollection, tagName:
 
 export function findCustomElementTagLike(cemCollection: CEMCollection, tagNamePart: string): TagDeclarationInfo[] {
     const customElementTags = getCustomElementTags(cemCollection);
+    // TODO: This stuff could maybe be cached so it doens't need to be parsed every time
     return customElementTags.filter(declInfo => declInfo.tagName.includes(tagNamePart));
 }
 
