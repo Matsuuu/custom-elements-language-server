@@ -2,9 +2,8 @@ import tss from "typescript/lib/tsserverlibrary.js";
 
 import { ProjectService } from "../language-services/project-service.js";
 
-export function getPluginCreateInfo(projectService: ProjectService): tss.server.PluginCreateInfo | undefined {
-    const projectNames = projectService.getConfiguredProjects();
-    const project = projectService.configuredProjects.get(projectNames[0]);
+export function getPluginCreateInfo(projectService: ProjectService, projectConfigFilePath: string): tss.server.PluginCreateInfo | undefined {
+    const project = projectService.configuredProjects.get(projectConfigFilePath);
 
     if (!project) {
         return undefined;
