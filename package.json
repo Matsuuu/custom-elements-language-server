@@ -1,5 +1,6 @@
 {
-    "name": "custom-elements-languageserver-project",
+    "name": "custom-elements-language-server-project",
+    "displayName": "Custom Elements Language Server",
     "description": "A language server for Custom Elements and Web Components",
     "author": "Matsuuu <huhta.matias@gmail.com>",
     "license": "MIT",

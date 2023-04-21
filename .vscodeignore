@@ -3,5 +3,4 @@
 .vscode
 lib
 node_modules
-src
-
+.prettierrc
