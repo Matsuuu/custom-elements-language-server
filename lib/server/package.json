@@ -39,6 +39,6 @@
         "node": "*"
     },
     "files": [
-        "dist"
+        "dist/server.js"
     ]
 }
