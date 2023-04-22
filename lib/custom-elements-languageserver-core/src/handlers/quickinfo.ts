@@ -1,5 +1,5 @@
 // @ts-expect-error
-import type { CustomElement, JavaScriptModule } from "custom-elements-manifest";
+import type { ClassField, CustomElement, JavaScriptModule } from "custom-elements-manifest";
 import ts from "typescript";
 import tss from "typescript/lib/tsserverlibrary.js";
 import { getAttributeIdentifier, getClassIdentifier, getEventIdentifier, getPropertyIdentifier } from "../ast/identifier.js";
@@ -146,10 +146,11 @@ function getPropertyQuickInfo(basePath: any, matchingClass: JavaScriptModule, cl
         quickInfo = property?.description || '';
     }
 
+    const cemPropertyData = classDeclaration.members?.find((field): field is ClassField => field.kind === 'field' && field.name === propertyName);
 
     const propertyNameDocumentation = [
         "```typescript",
-        "(property) " + classDeclaration.name + "." + propertyName + ": string",
+        `(property) ${classDeclaration.name}.${propertyName}="${cemPropertyData?.type?.text}"`,
         "```"
     ].join("\n");
 
