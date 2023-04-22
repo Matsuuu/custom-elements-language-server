@@ -24,8 +24,8 @@
     "contributes": {
         "commands": [
             {
-                "command": "extension.helloWorld",
-                "title": "Hello World"
+                "command": "extension.restart",
+                "title": "Custom Elements Language Server: Restart"
             }
         ],
         "configuration": {

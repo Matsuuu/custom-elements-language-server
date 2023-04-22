@@ -1,9 +1,20 @@
 import * as path from "path";
 import { commands, window, workspace, ExtensionContext } from "vscode";
 
-import { LanguageClient, LanguageClientOptions, ServerOptions, TransportKind } from "vscode-languageclient/node.js";
+import { Disposable, LanguageClient, LanguageClientOptions, ServerOptions, TransportKind } from "vscode-languageclient/node.js";
 
 let client: LanguageClient;
+
+const disposables: Disposable[] = [];
+
+function registerCommands(context: ExtensionContext) {
+    const restartCommandDisposable = commands.registerCommand('extension.restart', async () => {
+        deactivate();
+        activate(context);
+    });
+    disposables.push(restartCommandDisposable);
+}
+
 
 export function activate(context: ExtensionContext) {
     let serverPath = path.join("dist", "server", "src", "server.js");
@@ -45,21 +56,17 @@ export function activate(context: ExtensionContext) {
         },
     };
 
-    const disposable = commands.registerCommand('extension.helloWorld', () => {
-        // The code you place here will be executed every time your command is executed
-
-        // Display a message box to the user
-        window.showInformationMessage('Hello World!');
-    });
-
     // Create the language client and start the client.
     client = new LanguageClient("customElementsLanguageServer", "Custom Elements Language Services", serverOptions, clientOptions);
 
     // Start the client. This will also launch the server
     client.start();
+
+    registerCommands(context);
 }
 
 export function deactivate(): Thenable<void> | undefined {
+    disposables.forEach(dis => dis.dispose());
     if (!client) {
         return undefined;
     }
