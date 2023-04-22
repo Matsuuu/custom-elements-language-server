@@ -10,6 +10,16 @@ a CEM generator like one provided by [The Open WC Team](https://github.com/open-
 
 Generating a CEM in watch mode will provide you with the best user experience. If your dependencies ship with a Custom Elements Manifest, those will be utilized also.
 
+## Features
+
+The current featureset is as follows:
+
+- Support HTML files and html`` -template literals
+- Provides Completions for custom elements defined in the local Custom Elements Manifest and ones in node_modules
+- Provides type hints for attributes and properties on html tages
+- Provides Go To Definition -functionality for Custom Elements defined in the Custom Elements Manifest
+- Provides diagnostics on missing imports and unclosed custom element tags
+
 ## Installing
 
 ### VS Code
