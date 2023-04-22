@@ -50,6 +50,7 @@ function nodeIsTemplateLiteral(node: ts.Node) {
         ts.isTemplateExpression(node);
 }
 
+// TODO: These could find attributes from other elements. These should use the class context instead of the whole sourcefile
 export function getAttributeIdentifier(classPath: string, attributeName: string, basePath: string, project: tss.server.Project): ts.Identifier | undefined {
     const sourceFile = getSourceFile(basePath, classPath, project);
     if (!sourceFile) {
@@ -59,6 +60,7 @@ export function getAttributeIdentifier(classPath: string, attributeName: string,
     return findAttributeIdentifierByName(sourceFile, attributeName);
 }
 
+// TODO: These could find attributes from other elements. These should use the class context instead of the whole sourcefile
 export function getPropertyIdentifier(classPath: string, propertyName: string, basePath: string, project: tss.server.Project): ts.Identifier | undefined {
     const sourceFile = getSourceFile(basePath, classPath, project);
     if (!sourceFile) {
@@ -68,6 +70,7 @@ export function getPropertyIdentifier(classPath: string, propertyName: string, b
     return findPropertyIdentifierByName(sourceFile, propertyName);
 }
 
+// TODO: These could find attributes from other elements. These should use the class context instead of the whole sourcefile
 export function getEventIdentifier(classPath: string, eventName: string, basePath: string, project: tss.server.Project): ts.Identifier | undefined {
     const sourceFile = getSourceFile(basePath, classPath, project);
     if (!sourceFile) {

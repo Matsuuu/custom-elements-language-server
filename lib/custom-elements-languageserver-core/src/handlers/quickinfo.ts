@@ -96,6 +96,8 @@ function getAttributeQuickInfo(basePath: any, matchingClass: JavaScriptModule, c
     const attributeIdentifier = getAttributeIdentifier(matchingClass.path, attributeName, basePath, project);
     const attributeDeclaration = attributeIdentifier?.parent;
 
+    const cemAttributeData = classDeclaration.attributes?.find(attr => attr.name === attributeName || attr.fieldName === attributeName);
+
     let quickInfo: string = "";
 
     if (attributeDeclaration) {
@@ -106,10 +108,9 @@ function getAttributeQuickInfo(basePath: any, matchingClass: JavaScriptModule, c
         quickInfo = cemAttribute?.summary || '';
     }
 
-
     const attributeNameDocumentation = [
         "```typescript",
-        "(attribute) <" + classDeclaration.tagName + " " + attributeVariants.snakeVariant + "=\"\">: string",
+        `(attribute) <${classDeclaration.tagName} ${attributeVariants.snakeVariant}="${cemAttributeData?.type?.text}">`,
         "```"
     ].join("\n");
 
