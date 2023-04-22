@@ -109,6 +109,8 @@
     },
     "homepage": "https://github.com/Matsuuu/custom-elements-language-server#readme",
     "workspaces": [
-        "./lib/*"
+        "./lib/template-language-service",
+        "./lib/custom-elements-languageserver-core",
+        "./lib/server"
     ]
 }
