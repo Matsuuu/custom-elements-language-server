@@ -81,7 +81,6 @@ export function getCompletionEntries(document: HTMLLanguageService.TextDocument,
         }
     }
 
-    // TODO: Add extra completion info
     if (isEventNameAction(actionContext)) {
         const classDeclaration = findDeclarationForTagName(cemCollection, actionContext.tagName);
         if (classDeclaration) {
@@ -93,7 +92,6 @@ export function getCompletionEntries(document: HTMLLanguageService.TextDocument,
         }
     }
 
-    // TODO: Add extra completion info
     if (isPropertyNameAction(actionContext)) {
         const classDeclaration = findDeclarationForTagName(cemCollection, actionContext.tagName);
         if (classDeclaration) {

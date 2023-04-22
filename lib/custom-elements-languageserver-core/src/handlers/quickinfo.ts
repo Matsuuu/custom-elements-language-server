@@ -4,7 +4,7 @@ import ts from "typescript";
 import tss from "typescript/lib/tsserverlibrary.js";
 import { getAttributeIdentifier, getClassIdentifier, getEventIdentifier, getPropertyIdentifier } from "../ast/identifier.js";
 import { findClassForTagName, findCustomElementDeclarationFromModule } from "../cem/cem-helpers.js";
-import { AttributeActionContext, EventActionContext, isAttributeNameAction, isEndTagAction, isEventNameAction, isPropertyNameAction, isTagAction, PropertyActionContext, resolveActionContext, TagActionContext } from "../scanners/action-context.js";
+import { AttributeActionContext, EventActionContext, isAttributeNameAction, isAttributeValueAction, isEndTagAction, isEventNameAction, isPropertyNameAction, isPropertyValueAction, isTagAction, PropertyActionContext, resolveActionContext, TagActionContext } from "../scanners/action-context.js";
 import { getFileNameFromPath } from "../fs.js";
 import { getSourceFile } from "../ts/sourcefile.js";
 import { attributeNameVariantBuilder } from "../ast/ast.js";
@@ -36,11 +36,11 @@ export function getQuickInfo(request: CustomElementsLanguageServiceRequest): tss
         return getTagQuickInfo(projectBasePath, matchingClass, classDeclaration, actionContext, fileFullText, project);
     }
 
-    if (isAttributeNameAction(actionContext)) {
+    if (isAttributeNameAction(actionContext) || isAttributeValueAction(actionContext)) {
         return getAttributeQuickInfo(projectBasePath, matchingClass, classDeclaration, actionContext, fileName, fileFullText, project);
     }
 
-    if (isPropertyNameAction(actionContext)) {
+    if (isPropertyNameAction(actionContext) || isPropertyValueAction(actionContext)) {
         return getPropertyQuickInfo(projectBasePath, matchingClass, classDeclaration, actionContext, fileName, fileFullText, project);
     }
 

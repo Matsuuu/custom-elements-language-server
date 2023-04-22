@@ -197,13 +197,11 @@ export interface EventActionContext extends AttributeLikeActionContext {
     eventName: string;
 }
 
-export interface AttributeValueActionContext extends ActionContext {
-    attributeName: string;
+export interface AttributeValueActionContext extends AttributeActionContext {
     attributeValue: string;
 }
 
-export interface PropertyValueActionContext extends ActionContext {
-    propertyName: string;
+export interface PropertyValueActionContext extends PropertyActionContext {
     propertyValue: string;
 }
 
