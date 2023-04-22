@@ -9,6 +9,7 @@ export function resolveActionContext(languageService: LanguageService, document:
     const offset = document.offsetAt(position);
 
     let currentTag = "";
+    let currentAttribute;
     let token = scanner.scan();
     while (token !== HTMLLanguageService.TokenType.EOS && scanner.getTokenOffset() <= offset) {
         const tokenOffset = scanner.getTokenOffset();
@@ -30,15 +31,16 @@ export function resolveActionContext(languageService: LanguageService, document:
                 }
                 break;
             case HTMLLanguageService.TokenType.AttributeName:
+                const attributeName = scanner.getTokenText();
+                currentAttribute = attributeName;
                 if (scanner.getTokenOffset() <= offset && offset <= scanner.getTokenEnd()) {
-                    const attributeName = scanner.getTokenText();
                     return resolveAttributeKind(attributeName, currentTag, textSpan);
                 }
                 break;
             case HTMLLanguageService.TokenType.AttributeValue:
                 if (scanner.getTokenOffset() <= offset && offset <= scanner.getTokenEnd()) {
-                    console.log("Attribute value");
-                    // TODO: Can we hit this?
+                    const attributeValue = scanner.getTokenText(); // TODO: Utilize
+                    return resolveAttributeValueKind(currentAttribute ?? "", currentTag, textSpan);
                 }
                 break;
             case HTMLLanguageService.TokenType.EndTag:
@@ -103,10 +105,44 @@ function resolveAttributeKind(attributeName: string, currentTag: string, textSpa
     } as AttributeActionContext;
 }
 
-export interface ActionContext {
-    kind: ActionContextKind;
-    tagName: string;
-    textSpan: tss.TextSpan;
+function resolveAttributeValueKind(attributeName: string, currentTag: string, textSpan: tss.TextSpan) {
+    const tagName = currentTag;
+
+    if (attributeName.startsWith("@")) {
+        // TODO: Do something?
+        return {
+            kind: ActionContextKind.NOOP,
+            tagName: "",
+            textSpan: ZERO_TEXTSPAN
+        };
+    }
+
+    if (attributeName.startsWith("on")) {
+        // TODO: Do something?
+        return {
+            kind: ActionContextKind.NOOP,
+            tagName: "",
+            textSpan: ZERO_TEXTSPAN
+        };
+    }
+
+    if (attributeName.startsWith(".")) {
+        return {
+            kind: ActionContextKind.PropertyValue,
+            propertyName: attributeName.substring(1),
+            tagName,
+            textSpan,
+            propertyValue: "" // TODO
+        } as PropertyValueActionContext;
+    }
+
+    return {
+        kind: ActionContextKind.AttributeValue,
+        attributeName,
+        tagName,
+        textSpan,
+        attributeValue: "" // TODO
+    } as AttributeValueActionContext;
 }
 
 const ZERO_TEXTSPAN: tss.TextSpan = { start: 0, length: 0 };
@@ -131,6 +167,20 @@ export function isEventNameAction(context: ActionContext): context is EventActio
     return context.kind === ActionContextKind.Event || context.kind === ActionContextKind.AtEvent;
 }
 
+export function isAttributeValueAction(context: ActionContext): context is AttributeValueActionContext {
+    return context.kind === ActionContextKind.AttributeValue;
+}
+
+export function isPropertyValueAction(context: ActionContext): context is PropertyValueActionContext {
+    return context.kind === ActionContextKind.PropertyValue;
+}
+
+export interface ActionContext {
+    kind: ActionContextKind;
+    tagName: string;
+    textSpan: tss.TextSpan;
+}
+
 export interface TagActionContext extends ActionContext { }
 
 export interface AttributeLikeActionContext extends ActionContext { }
@@ -145,6 +195,16 @@ export interface PropertyActionContext extends AttributeLikeActionContext {
 
 export interface EventActionContext extends AttributeLikeActionContext {
     eventName: string;
+}
+
+export interface AttributeValueActionContext extends ActionContext {
+    attributeName: string;
+    attributeValue: string;
+}
+
+export interface PropertyValueActionContext extends ActionContext {
+    propertyName: string;
+    propertyValue: string;
 }
 
 export enum ActionContextKind {
