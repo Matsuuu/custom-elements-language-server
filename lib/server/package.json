@@ -1,6 +1,6 @@
 {
     "name": "custom-elements-languageserver",
-    "version": "0.0.1-reserving",
+    "version": "0.0.2",
     "description": "",
     "main": "dist/server.js",
     "scripts": {
