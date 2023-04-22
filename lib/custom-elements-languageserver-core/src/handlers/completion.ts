@@ -5,6 +5,7 @@ import { isAttributeNameAction, isEndTagAction, isEventNameAction, isPropertyNam
 import { findCustomElementTagLike, findDeclarationForTagName } from "../cem/cem-helpers.js";
 import { getCEMData } from "../export.js";
 import { completionItemToCompletionEntry } from "../interop.js";
+import { ClassField } from "custom-elements-manifest";
 
 export function getCompletionEntries(document: HTMLLanguageService.TextDocument, projectBasePath: string, position: tss.LineAndCharacter, htmlLanguageService: HtmlLanguageService) {
     const actionContext = resolveActionContext(htmlLanguageService, document, position);
@@ -73,7 +74,7 @@ export function getCompletionEntries(document: HTMLLanguageService.TextDocument,
                     defaultValueDocumentation,
                     "```",
                 ];
-                const documentation = documentationParts.join("\n");
+                const documentation = documentationParts.filter(row => row.length > 0).join("\n");
                 cemCompletions.push({ name: attr.name, kind: tss.ScriptElementKind.memberVariableElement, sortText: attr.name, labelDetails: { description: documentation } });
             });
         }
@@ -95,10 +96,20 @@ export function getCompletionEntries(document: HTMLLanguageService.TextDocument,
     if (isPropertyNameAction(actionContext)) {
         const classDeclaration = findDeclarationForTagName(cemCollection, actionContext.tagName);
         if (classDeclaration) {
-            const properties = classDeclaration?.members?.filter(mem => mem.kind === "field") ?? [];
+            const properties = classDeclaration?.members?.filter((mem): mem is ClassField => mem.kind === "field") ?? [];
             properties?.forEach(prop => {
                 const propertyNameWithPeriodPrefix = "." + prop.name;
-                cemCompletions.push({ name: prop.name, kind: tss.ScriptElementKind.memberVariableElement, sortText: propertyNameWithPeriodPrefix });
+
+                const defaultValueDocumentation = prop.default ? `(Default: ${prop.default})` : "";
+                const documentationParts = [
+                    "```javascript",
+                    `${prop.name}="${prop.type?.text}"`,
+                    defaultValueDocumentation,
+                    "```",
+                ];
+                const documentation = documentationParts.filter(row => row.length > 0).join("\n");
+
+                cemCompletions.push({ name: prop.name, kind: tss.ScriptElementKind.memberVariableElement, sortText: propertyNameWithPeriodPrefix, labelDetails: { description: documentation } });
             });
         }
     }
