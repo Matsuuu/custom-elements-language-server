@@ -3,6 +3,7 @@
     "displayName": "Custom Elements Language Server",
     "description": "A language server for Custom Elements and Web Components",
     "author": "Matsuuu <huhta.matias@gmail.com>",
+    "icon": "assets/custom-elements.png",
     "license": "MIT",
     "version": "0.0.1",
     "publisher": "Matsuuu",
