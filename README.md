@@ -1,7 +1,14 @@
 # Custom Elements Language Server
 
 > **Note**
-> This repository / project is still Work In Progress. Rapid changes and refactors are going to happen.
+> This project is in Alpha phase right now. Major changes might occur.
+
+## Usage
+
+The best way to utilize the Custom Elements Language Server is to enable the [Custom Elements Manifest](https://github.com/webcomponents/custom-elements-manifest)(CEM) in your project by installing
+a CEM generator like one provided by [The Open WC Team](https://github.com/open-wc/custom-elements-manifest/tree/master/packages/analyzer).
+
+Generating a CEM in watch mode will provide you with the best user experience. If your dependencies ship with a Custom Elements Manifest, those will be utilized also.
 
 ## Installing
 
@@ -9,7 +16,7 @@
 
 For VS Code, you are able to install the Custom Elements Language Server through the extension Marketplace.
 
-[You can find the plugin here](https://google.com) // TODO: Add the actual plugin link when released
+[You can find the plugin here](https://marketplace.visualstudio.com/items?itemName=Matsuuu.custom-elements-language-server-project)
 
 ---
 
@@ -28,7 +35,7 @@ npm install -g custom-elements-languageserver
 With a library like [nvim-lspconfig](https://github.com/neovim/nvim-lspconfig) the client setup should be as easy as
 
 ```lua
-require'lspconfig'.tsserver.setup{}
+require'lspconfig'.custom_elements_language_server.setup{}
 ```
 
 ### Other editors
