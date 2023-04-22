@@ -6,7 +6,7 @@ import { documents } from "../text-documents";
 import { getLanguageService, getProjectBasePath } from "../language-services/language-services";
 import { Handler, isJavascriptFile } from "./handler";
 import { wait } from "../wait";
-import { getCompletionEntries } from "custom-elements-languageserver-core";
+import { elementKindToCompletionKind, getCompletionEntries } from "custom-elements-languageserver-core";
 
 export const CompletionsHandler: Handler<CompletionParams, CompletionList> = {
     handle: (completionParams: CompletionParams) => {
@@ -63,7 +63,7 @@ function completionEntryToCompletionItem(completionsEntry: ts.CompletionEntry): 
     // TODO: Fill the rest
     return {
         label: completionsEntry.name,
-        kind: CompletionItemKind.Class,
+        kind: elementKindToCompletionKind(completionsEntry.kind),
         documentation: {
             kind: "markdown",
             value: completionsEntry.labelDetails?.description ?? ''

@@ -15,6 +15,10 @@ function completionKindToScriptElementKind(kind: CompletionItemKind): tss.Script
     return completionItemKindMappings[kind];
 }
 
+export function elementKindToCompletionKind(kind: tss.ScriptElementKind): CompletionItemKind {
+    return scriptElementKindMappings[kind] ?? CompletionItemKind.Text;
+}
+
 const completionItemKindMappings: { [index: number]: tss.ScriptElementKind } = {
     [CompletionItemKind.Method]: tss.ScriptElementKind.memberFunctionElement,
     [CompletionItemKind.Function]: tss.ScriptElementKind.functionElement,
@@ -34,4 +38,25 @@ const completionItemKindMappings: { [index: number]: tss.ScriptElementKind } = {
     [CompletionItemKind.File]: tss.ScriptElementKind.moduleElement,
     [CompletionItemKind.Snippet]: tss.ScriptElementKind.unknown,
     [CompletionItemKind.Text]: tss.ScriptElementKind.unknown,
+};
+
+const scriptElementKindMappings: { [key in tss.ScriptElementKind]?: CompletionItemKind } = {
+    [tss.ScriptElementKind.memberFunctionElement]: CompletionItemKind.Method,
+    [tss.ScriptElementKind.functionElement]: CompletionItemKind.Function,
+    [tss.ScriptElementKind.constructorImplementationElement]: CompletionItemKind.Constructor,
+    [tss.ScriptElementKind.variableElement]: CompletionItemKind.Field,
+    [tss.ScriptElementKind.variableElement]: CompletionItemKind.Variable,
+    [tss.ScriptElementKind.classElement]: CompletionItemKind.Class,
+    [tss.ScriptElementKind.interfaceElement]: CompletionItemKind.Interface,
+    [tss.ScriptElementKind.moduleElement]: CompletionItemKind.Module,
+    [tss.ScriptElementKind.memberVariableElement]: CompletionItemKind.Property,
+    [tss.ScriptElementKind.constElement]: CompletionItemKind.Unit,
+    [tss.ScriptElementKind.constElement]: CompletionItemKind.Value,
+    [tss.ScriptElementKind.enumElement]: CompletionItemKind.Enum,
+    [tss.ScriptElementKind.keyword]: CompletionItemKind.Keyword,
+    [tss.ScriptElementKind.constElement]: CompletionItemKind.Color,
+    [tss.ScriptElementKind.alias]: CompletionItemKind.Reference,
+    [tss.ScriptElementKind.moduleElement]: CompletionItemKind.File,
+    [tss.ScriptElementKind.unknown]: CompletionItemKind.Snippet,
+    [tss.ScriptElementKind.unknown]: CompletionItemKind.Text,
 };
