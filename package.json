@@ -17,7 +17,8 @@
         "onLanguage:plaintext",
         "onLanguage:javascript",
         "onLanguage:typescript",
-        "onLanguage:html"
+        "onLanguage:html",
+        "workspaceContains:**/package.json"
     ],
     "main": "./dist/client/vscode/src/extension",
     "contributes": {
