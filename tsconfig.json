@@ -26,6 +26,8 @@
 
     "include": [
         "./lib/client/vscode",
+        "./lib/template-language-service",
+        "./lib/custom-elements-languageserver-core",
         "./lib/server"
     ]
 }
