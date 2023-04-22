@@ -24,6 +24,8 @@ export function getCompletionEntries(document: HTMLLanguageService.TextDocument,
         };
     }
 
+    console.log(actionContext)
+
     if (isTagAction(actionContext)) {
 
         const similiarTags = findCustomElementTagLike(cemCollection, actionContext.tagName);
@@ -64,7 +66,15 @@ export function getCompletionEntries(document: HTMLLanguageService.TextDocument,
         if (classDeclaration) {
             const attributes = classDeclaration.attributes;
             attributes?.forEach(attr => {
-                cemCompletions.push({ name: attr.name, kind: tss.ScriptElementKind.memberVariableElement, sortText: attr.name });
+                const defaultValueDocumentation = attr.default ? `(Default: ${attr.default})` : "";
+                const documentationParts = [
+                    "```javascript",
+                    `${attr.name}="${attr.type?.text}"`,
+                    defaultValueDocumentation,
+                    "```",
+                ];
+                const documentation = documentationParts.join("\n");
+                cemCompletions.push({ name: attr.name, kind: tss.ScriptElementKind.memberVariableElement, sortText: attr.name, labelDetails: { description: documentation } });
             });
         }
     }

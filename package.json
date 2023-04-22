@@ -88,6 +88,7 @@
         "format": "npx prettier --write .",
         "localinstall": "npm run build:all && npm run install:server",
         "build:final": "esbuild ./lib/client/vscode/src/extension.ts ./lib/server/src/server.ts --bundle --platform=node --external:vscode --outdir=dist",
+        "build:dev": "npm run build && npm run build:final",
         "bundle": "npm run build:all && npm run build:final",
         "package": "vsce package",
         "build-and-package": "npm run bundle && npm run package"
@@ -109,8 +110,8 @@
     },
     "homepage": "https://github.com/Matsuuu/custom-elements-language-server#readme",
     "workspaces": [
-        "./lib/template-language-service",
         "./lib/custom-elements-languageserver-core",
+        "./lib/template-language-service",
         "./lib/server"
     ]
 }

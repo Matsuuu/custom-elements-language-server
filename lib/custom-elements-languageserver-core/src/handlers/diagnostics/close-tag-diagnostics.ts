@@ -7,7 +7,6 @@ import { CustomElementsLanguageServiceRequest } from "../../request.js";
 
 export function getMissingCloseTagDiagnostics(nodeOffset: number, request: CustomElementsLanguageServiceRequest): tss.Diagnostic[] {
     const { document, htmlLanguageService, filePath, project } = request;
-    console.log("getMissingCloseTagDiagnostics")
     const customElementTagNodes = getCustomElementTagsInContext(htmlLanguageService, document);
     const sourceFile = getSourceFile(filePath, undefined, project);
 

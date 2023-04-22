@@ -10,4 +10,10 @@ class ImportingClass extends LitElement {
   }
 }
 
+
+function foo(value: string) {
+
+}
+
+
 customElements.define("importing-element", ImportingClass);
