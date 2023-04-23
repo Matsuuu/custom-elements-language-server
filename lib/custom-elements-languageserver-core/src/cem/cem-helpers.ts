@@ -4,7 +4,6 @@ import { getPathAsJsFile } from "../ts/filepath-transformers.js";
 import { CEMCollection } from "./cem-cache.js";
 import { CEMInstance } from "./cem-data.js";
 
-// Map<tagName, ClassModule>
 const CEMClassCache: Map<string, Module> = new Map();
 // TODO: Make this a map with Map<string, CustomElementDeclaration> or something similiar
 // if there's a perf benefit from it
