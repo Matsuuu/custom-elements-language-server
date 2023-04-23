@@ -6,7 +6,6 @@ import * as fs from "fs";
 import { getPathAsDtsFile, getPathAsJsFile, getPathAsTsFile } from "./filepath-transformers.js";
 
 const PROGRAM_CACHE = new Map<string, ts.Program>();
-const PACKAGE_MAIN_FILE_CACHE = new Map<string, string>();
 
 export function getOrCreateProgram(fullPath: string) {
     if (PROGRAM_CACHE.has(fullPath)) {
