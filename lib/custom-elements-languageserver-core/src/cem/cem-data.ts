@@ -65,11 +65,11 @@ export class CEMInstance {
         this.cem = JSON.parse(cemFile);
     }
 
-    static fromLocalPath(projectPath: string) {
+    static fromLocalPath(projectPath: string): CEMInstance | undefined {
 
         const packageJsonPath = projectPath + "/package.json";
         if (!fs.existsSync(packageJsonPath)) {
-            return;
+            return undefined;
         }
 
         const packageJsonFile = fs.readFileSync(packageJsonPath, "utf8");
@@ -78,10 +78,7 @@ export class CEMInstance {
         // if (!packageJson.customElements) return;
         // TODO: Give a warning of missing entry, ask to add
         //
-        let cemPath = `${projectPath}/${packageJson.customElements}`;
-        if (!packageJson.customElements || !fs.existsSync(cemPath)) {
-            cemPath = `${projectPath}/custom-elements.json`;
-        }
+        const cemPath = `${projectPath}/${packageJson.customElements}`;
 
         return new CEMInstance({
             cemPath,
@@ -91,7 +88,7 @@ export class CEMInstance {
         })
     }
 
-    static fromDependency(dependency: ImportedDependency) {
+    static fromDependency(dependency: ImportedDependency): CEMInstance | undefined {
         const packageJsonPath = dependency.path + "package.json";
         if (!fs.existsSync(packageJsonPath)) {
             return undefined;
@@ -103,9 +100,6 @@ export class CEMInstance {
 
 
         const cemPath = dependency.path + packageJson.customElements;
-        if (!packageJson.customElements || !fs.existsSync(cemPath)) {
-            return undefined;
-        }
 
         return new CEMInstance({
             cemPath,
