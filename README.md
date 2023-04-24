@@ -45,7 +45,7 @@ npm install -g custom-elements-languageserver
 With a library like [nvim-lspconfig](https://github.com/neovim/nvim-lspconfig) the client setup should be as easy as
 
 ```lua
-require'lspconfig'.custom_elements_language_server.setup{}
+require'lspconfig'.custom_elements_ls.setup{}
 ```
 
 ### Other editors
