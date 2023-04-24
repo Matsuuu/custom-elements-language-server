@@ -3,11 +3,6 @@
     "version": "0.0.1",
     "license": "MIT",
     "main": "dist/export.js",
-    "dependencies": {
-        "typescript": "^5.0.2",
-        "typescript-template-language-service-decorator": "^2.3.1",
-        "vscode-html-languageservice": "^5.0.2"
-    },
     "scripts": {
         "start": "npm run watch",
         "watch": "npm run build -- --watch",
@@ -16,6 +11,9 @@
         "types": "tsc --emitDeclarationOnly"
     },
     "devDependencies": {
+        "typescript": "^5.0.2",
+        "typescript-template-language-service-decorator": "^2.3.1",
+        "vscode-html-languageservice": "^5.0.2",
         "@types/node": "^18.11.9",
         "custom-elements-manifest": "^2.0.0"
     }

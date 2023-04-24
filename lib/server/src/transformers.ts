@@ -2,7 +2,7 @@ import { CODE_ACTIONS } from "custom-elements-languageserver-core";
 import ts from "typescript";
 import { Hover, Location, Position, Range, TextDocumentPositionParams, Diagnostic, DiagnosticSeverity } from "vscode-languageserver";
 import { TextDocument } from "vscode-languageserver-textdocument";
-import { TextDocuments } from "vscode-languageserver/node.js";
+import { TextDocuments } from "vscode-languageserver";
 import { scanDocument } from "./text-documents.js";
 
 export interface UsableTextDocumentData {

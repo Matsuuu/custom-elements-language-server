@@ -1,4 +1,4 @@
-import { createConnection, DidChangeConfigurationNotification, DidChangeConfigurationParams, InitializeParams, InitializeResult, ProposedFeatures, TextDocumentSyncKind, WorkspaceFolder } from "vscode-languageserver/node.js";
+import { createConnection, DidChangeConfigurationNotification, DidChangeConfigurationParams, InitializeParams, InitializeResult, ProposedFeatures, TextDocumentSyncKind, WorkspaceFolder } from "vscode-languageserver";
 import { DEFAULT_SETTINGS, LanguageServerSettings, setCapabilities, setGlobalSettings } from "./settings";
 import { documentSettings, initDocuments } from "./text-documents";
 import { uriToFileName } from "./transformers";

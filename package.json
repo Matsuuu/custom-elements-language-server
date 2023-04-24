@@ -82,8 +82,8 @@
         ]
     },
     "scripts": {
-        "build": "npm run build --workspaces",
-        "build:all": "npm run build:with-types --workspaces",
+        "build": "npm run build --workspaces --if-present",
+        "build:all": "npm run build:with-types --workspaces --if-present",
         "dev": "concurrently \"cd lib/server && npm run start\" \"cd lib/html-template-literal-tsserver-plugin && npm run start\"",
         "install:server": "cd lib/server && npm install -g .",
         "format": "npx prettier --write .",
@@ -113,6 +113,7 @@
     "workspaces": [
         "./lib/custom-elements-languageserver-core",
         "./lib/template-language-service",
-        "./lib/server"
+        "./lib/server",
+        "./lib/client/vscode"
     ]
 }

@@ -1,7 +1,7 @@
 import * as path from "path";
 import { commands, window, workspace, ExtensionContext } from "vscode";
 
-import { Disposable, LanguageClient, LanguageClientOptions, ServerOptions, TransportKind } from "vscode-languageclient/node.js";
+import { Disposable, LanguageClient, LanguageClientOptions, ServerOptions, TransportKind } from "vscode-languageclient";
 
 let client: LanguageClient;
 

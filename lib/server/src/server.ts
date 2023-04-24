@@ -1,6 +1,6 @@
 import {
     DidChangeTextDocumentParams,
-} from "vscode-languageserver/node.js";
+} from "vscode-languageserver";
 
 console.log("NODE VERSION: ", process.version);
 console.log("Startup at ", new Date());
