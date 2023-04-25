@@ -11,8 +11,13 @@ export function getTypingDiagnostics(request: CustomElementsLanguageServiceReque
     const system = new VirtualSystem();
     const host = createVirtualCompilerHost(system, project.getCompilerOptions(), ts);
 
+    // TODO: Make this mapping actually work
+    // Maybe iterate from sourcefiles etc.
+    const rootFiles = [...project.getRootFiles()];
+    debugger;
+
     const typecheckProgram = ts.createProgram({
-        rootNames: [...project.getRootFiles()],
+        rootNames: rootFiles,
         options: project.getCompilerOptions(),
         host
     });

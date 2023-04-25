@@ -33,7 +33,7 @@ export class VirtualSystem implements ts.System {
     files: Map<string, string> = new Map();
 
     constructor() {
-        this.files = initializeVirtualFileSystemMap()
+        // this.files = initializeVirtualFileSystemMap()
     }
 
     directoryExists(dirName: string): boolean {
