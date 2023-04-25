@@ -9,7 +9,6 @@ export const temp = html`
     project-name="foo" 
     .projectName="" 
     .color="#ff094"
-    @my-custom-event="${() => { console.log('foo') }}"
     ></example-project>
 
     <example-project></example-project>

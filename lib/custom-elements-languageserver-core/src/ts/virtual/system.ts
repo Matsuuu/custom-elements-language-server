@@ -4,6 +4,8 @@ import path from "path";
 import fs from "fs";
 
 export function initializeVirtualFileSystemMap(): Map<string, string> {
+    // TODO: These need to be put somewhere as we can't expect the
+    // user to have these in their project
     function loadTypescriptLibFile(filename: string) {
         const libDir = path.dirname(require.resolve("typescript"));
         return fs.readFileSync(path.resolve(libDir, filename), "utf-8");

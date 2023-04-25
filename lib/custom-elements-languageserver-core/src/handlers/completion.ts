@@ -26,8 +26,6 @@ export function getCompletionEntries(document: HTMLLanguageService.TextDocument,
         };
     }
 
-    console.log(actionContext)
-
     if (isTagAction(actionContext)) {
 
         const similiarTags = findCustomElementTagLike(cemCollection, actionContext.tagName);

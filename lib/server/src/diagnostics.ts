@@ -10,6 +10,7 @@ import { createCustomElementsLanguageServiceRequest } from "./language-services/
 import { documents } from "./text-documents";
 
 export async function runDiagnostics(uri: string, textDoc: TextDocument) {
+    console.log("Run diagnostics");
     if (isJavascriptFile(uri)) {
         handleJavascriptDiagnostics(uri, textDoc);
     } else {
@@ -18,6 +19,7 @@ export async function runDiagnostics(uri: string, textDoc: TextDocument) {
 }
 
 function handleJavascriptDiagnostics(uri: string, textDoc: TextDocument) {
+    console.log("Run diagnostics JS");
     const fileName = uriToFileName(uri);
     const languageService = getLanguageService(fileName, textDoc.getText());
 
@@ -28,12 +30,13 @@ function handleJavascriptDiagnostics(uri: string, textDoc: TextDocument) {
 
         connection.sendDiagnostics({ uri: textDoc.uri, diagnostics: sendableDiagnostics });
     } catch (ex) {
-
+        console.warn("Diagnostics failed ", ex);
     }
 
 }
 
 function handleHTMLOrOtherFileDiagnostics(uri: string, textDoc: TextDocument) {
+    console.log("Run diagnostics HTML");
     const usableData = textDocumentDataToUsableDataFromUri(documents, uri);
     const doc = documents.get(uri);
 
