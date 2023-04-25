@@ -16,7 +16,7 @@ export const temp = html`
     
     <example-project .color="">
 
-    <sl-button size="" .variant=""></sl-button>
+    <sl-button></sl-button>
   
     <sl-input @sl-blur="${() => { }}"></sl-input>
 

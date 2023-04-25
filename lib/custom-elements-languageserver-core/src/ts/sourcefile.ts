@@ -1,32 +1,9 @@
 import ts from "typescript";
 import tss from "typescript/lib/tsserverlibrary.js";
-import { getFilePathFolder, isDependencyImport, resolveImportPath } from "../handlers/diagnostics/imports.js";
+import { getFilePathFolder, isDependencyImport } from "../handlers/diagnostics/imports.js";
 import * as path from "path";
 import * as fs from "fs";
 import { getPathAsDtsFile, getPathAsJsFile, getPathAsTsFile } from "./filepath-transformers.js";
-
-const PROGRAM_CACHE = new Map<string, ts.Program>();
-
-export function getOrCreateProgram(fullPath: string) {
-    if (PROGRAM_CACHE.has(fullPath)) {
-        return PROGRAM_CACHE.get(fullPath) as ts.Program;
-    }
-
-    const program = ts.createProgram({
-        rootNames: [fullPath],
-        options: {
-            allowJs: true,
-            lib: [
-                "DOM"
-            ]
-        },
-        host: ts.createCompilerHost({}, true),
-    });
-
-    PROGRAM_CACHE.set(fullPath, program);
-
-    return program;
-}
 
 export function getSourceFile(baseOrFullPath: string, classPath: string | undefined, project: tss.server.Project) {
     const fullClassPath = classPath === undefined ?
