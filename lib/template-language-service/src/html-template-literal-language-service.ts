@@ -9,6 +9,7 @@ import {
     getImportDiagnostics,
     getMissingCloseTagDiagnostics,
     getQuickInfo,
+    getTypingDiagnostics,
 } from "custom-elements-languageserver-core";
 import { CustomElementsLanguageServiceRequest } from "custom-elements-languageserver-core/dist/request";
 
@@ -67,6 +68,7 @@ export class HTMLTemplateLiteralLanguageService implements TemplateLanguageServi
 
         const importDiagnostics = getImportDiagnostics(request);
         const nonClosedTagDiagnostics = getMissingCloseTagDiagnostics(context.node.pos, request);
+        const typingDiagnostics = getTypingDiagnostics(request);
 
         return [...importDiagnostics, ...nonClosedTagDiagnostics];
     }

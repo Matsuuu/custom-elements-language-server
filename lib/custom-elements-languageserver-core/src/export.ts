@@ -9,4 +9,5 @@ export * from "./handlers/completion.js";
 export * from "./scanners/action-context.js";
 export * from "./handlers/diagnostics/close-tag-diagnostics.js";
 export * from "./handlers/diagnostics/import-diagnostics.js";
+export * from "./handlers/diagnostics/typing-diagnostics.js";
 export * from "./interop.js";
