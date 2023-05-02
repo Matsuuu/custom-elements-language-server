@@ -34,11 +34,12 @@ export class CEMInstance {
             return;
         }
 
-        let cemFile;
 
-        if (fs.existsSync(builderData.cemPath)) {
-            cemFile = fs.readFileSync(builderData.cemPath, "utf8");
+        if (!fs.existsSync(builderData.cemPath)) {
+            console.log("Could not find 'customElements' entry in package.json at " + builderData.packageJsonPath);
+            return;
         }
+        const cemFile = fs.readFileSync(builderData.cemPath, "utf8");
 
         if (!cemFile) {
             // TODO: Logger and some message

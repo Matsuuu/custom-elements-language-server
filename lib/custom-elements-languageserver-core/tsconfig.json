@@ -6,6 +6,7 @@
         "module": "ESNext",
         "moduleResolution": "nodenext",
         "outDir": "./dist",
+        "skipLibCheck": true,
         "declaration": true,
 
         "experimentalDecorators": true,
