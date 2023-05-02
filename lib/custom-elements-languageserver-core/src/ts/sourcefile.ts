@@ -18,11 +18,8 @@ export function getSourceFile(baseOrFullPath: string, classPath: string | undefi
     // @ts-ignore
     const sourceFile = project.getSourceFile(fullClassPath);
 
-    const rootFiles = project.getRootFiles();
-    // @ts-ignore
-    const sfs = rootFiles.map(rf => project.getSourceFile(rf as tss.Path));
 
-    const manifest = analyzeLocalProject(sfs);
+    const manifest = analyzeLocalProject(project);
 
     return sourceFile;
 }

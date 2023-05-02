@@ -5,21 +5,20 @@ import { litPlugin } from "@custom-elements-manifest/analyzer/src/features/frame
 
 import tss from "typescript/lib/tsserverlibrary.js";
 
-export function analyzeLocalProject(sourceFiles: (tss.SourceFile | undefined)[]) {
+export function analyzeLocalProject(project: tss.server.Project) {
 
     console.log("Building manifest");
 
-    // const modules = [ts.createSourceFile(
-    //     'src/my-element.js',
-    //     'export function foo() {}',
-    //     ts.ScriptTarget.ES2015,
-    //     true,
-    // )];
+    const rootFiles = project.getRootFiles();
+    const sourceFiles = rootFiles
+        // @ts-ignore
+        .map(rf => project.getSourceFile(rf as tss.Path))
+        .filter(sf => sf !== undefined) as tss.SourceFile[];
 
     const modifiedSourceFiles = sourceFiles.map(sf => {
         return ts.createSourceFile(
-            sf?.fileName,
-            sf?.getFullText(),
+            sf.fileName,
+            sf.getFullText(),
             ts.ScriptTarget.ES2015,
             true
         )
@@ -37,4 +36,3 @@ export function analyzeLocalProject(sourceFiles: (tss.SourceFile | undefined)[])
 
     return manifest;
 }
-
