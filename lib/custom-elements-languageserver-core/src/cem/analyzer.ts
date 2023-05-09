@@ -3,7 +3,7 @@ import { create, ts } from "@custom-elements-manifest/analyzer";
 // @ts-expect-error
 import { litPlugin } from "@custom-elements-manifest/analyzer/src/features/framework-plugins/lit/lit.js";
 // @ts-expect-error
-import { Package } from "custom-elements-manifest";
+import { JavaScriptExport, Package } from "custom-elements-manifest";
 // TODO: Can we fix these imports?
 import tss from "typescript/lib/tsserverlibrary.js";
 import fs from "fs";
@@ -59,6 +59,12 @@ export function analyzeLocalProject(project: tss.server.Project): AnalyzerOutput
 function normalizeManifest(manifest: Package, basePath: string) {
     manifest.modules?.forEach((mod) => {
         mod.path = mod.path.replace(basePath + "/", "");
+        mod.exports?.forEach(exp => {
+            const moduleExport = exp as JavaScriptExport; // TODO: Can this cause trouble?
+            if (moduleExport.declaration.module) {
+                moduleExport.declaration.module = moduleExport.declaration.module.replace(basePath + "/", "");
+            }
+        });
     });
 }
 

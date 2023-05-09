@@ -64,7 +64,6 @@ export function getCompletionEntries(request: CustomElementsLanguageServiceReque
         // the closing tag is already present.
     }
 
-    // TODO: Add extra completion info
     if (isAttributeNameAction(actionContext)) {
         const classDeclaration = findDeclarationForTagName(cemCollection, actionContext.tagName);
         if (classDeclaration) {
