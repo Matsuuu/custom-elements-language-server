@@ -3,6 +3,7 @@ import { CEMInstance } from "./cem-data.js";
 // @ts-expect-error
 import { JavaScriptModule } from "custom-elements-manifest";
 import { addReferenceToModule, JavaScriptModuleWithRef } from "./cem-helpers.js";
+import tss from "typescript/lib/tsserverlibrary.js";
 
 export class CEMCollection {
     public id: number = Date.now() + Math.floor(Math.random() * 999);
@@ -11,10 +12,10 @@ export class CEMCollection {
     private _modules: Array<JavaScriptModule> | undefined;
     private _modulesWithRefs: Array<JavaScriptModuleWithRef> | undefined;
 
-    constructor(basePath: string) {
+    constructor(project: tss.server.Project, basePath: string) {
         const dependencyPackages = getDependencyPackagesWithCEMs(basePath + "/node_modules");
 
-        const cemData = CEMInstance.fromLocalPath(basePath);
+        const cemData = CEMInstance.fromLocalPath(project, basePath);
         const dependencyCems = Object.values(dependencyPackages)
             .map(CEMInstance.fromDependency)
             .filter(cemIsNotUndefined)
@@ -61,14 +62,15 @@ export class CEMCollection {
 
 const CEM_COLLECTION_CACHE = new Map<string, CEMCollection>();
 
-export function getCEMData(projectBasePath: string): CEMCollection {
+export function getCEMData(project: tss.server.Project, projectBasePath: string): CEMCollection {
     const existingCollection = CEM_COLLECTION_CACHE.get(projectBasePath);
     if (existingCollection) {
+        // TODO: Do this through a watcher instead of on every request?
         existingCollection?.refreshLocal();
         return existingCollection;
     }
 
-    const cemCollection = new CEMCollection(projectBasePath);
+    const cemCollection = new CEMCollection(project, projectBasePath);
     CEM_COLLECTION_CACHE.set(projectBasePath, cemCollection);
     return cemCollection;
 }

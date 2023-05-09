@@ -1,8 +1,9 @@
 import { html } from "lit-html";
 import { repeat } from "lit/directives/repeat.js";
 import "./importing-element.js";
-import "./example-project.js";
 import "@shoelace-style/shoelace/dist/components/button/button.js";
+import "@shoelace-style/shoelace/dist/components/input/input.js";
+import "./ExampleProject.js";
 
 export const temp = html`
     <example-project my-attribute="f" 
@@ -13,11 +14,9 @@ export const temp = html`
     ></example-project>
 
     <example-project></example-project>
-    
+
     <example-project .color="">
 
-    <sl-button></sl-button>
-  
     <sl-input @sl-blur="${() => { }}"></sl-input>
 
     <p>Foo</p>

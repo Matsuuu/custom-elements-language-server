@@ -7,14 +7,18 @@ import { getCEMData } from "../export.js";
 import { completionItemToCompletionEntry } from "../interop.js";
 // @ts-expect-error
 import { ClassField } from "custom-elements-manifest";
+import { CustomElementsLanguageServiceRequest } from "../request.js";
 
-export function getCompletionEntries(document: HTMLLanguageService.TextDocument, projectBasePath: string, position: tss.LineAndCharacter, htmlLanguageService: HtmlLanguageService) {
+export function getCompletionEntries(request: CustomElementsLanguageServiceRequest) {
+
+    const { project, projectBasePath, htmlLanguageService, document, position } = request;
+
     const actionContext = resolveActionContext(htmlLanguageService, document, position);
 
     const htmlLSCompletions = getDefaultCompletionItems(document, position, htmlLanguageService);
     const defaultCompletionItems = htmlLSCompletions.items.map(completionItemToCompletionEntry);
 
-    const cemCollection = getCEMData(projectBasePath);
+    const cemCollection = getCEMData(project, projectBasePath);
     let cemCompletions: tss.CompletionEntry[] = [];
 
     if (!cemCollection) {
@@ -25,8 +29,6 @@ export function getCompletionEntries(document: HTMLLanguageService.TextDocument,
             entries: [...defaultCompletionItems],
         };
     }
-
-    console.log(actionContext)
 
     if (isTagAction(actionContext)) {
 
@@ -62,7 +64,6 @@ export function getCompletionEntries(document: HTMLLanguageService.TextDocument,
         // the closing tag is already present.
     }
 
-    // TODO: Add extra completion info
     if (isAttributeNameAction(actionContext)) {
         const classDeclaration = findDeclarationForTagName(cemCollection, actionContext.tagName);
         if (classDeclaration) {

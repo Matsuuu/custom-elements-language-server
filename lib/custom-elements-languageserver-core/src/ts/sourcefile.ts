@@ -10,17 +10,12 @@ export function getSourceFile(baseOrFullPath: string, classPath: string | undefi
         baseOrFullPath :
         [baseOrFullPath, classPath].filter(p => p.trim().length > 0).join("/");
 
-    const program = project;
-
-    // NOTE: this makes everything slow as shit
-    // program.getDeclarationDiagnostics();
-
-    if (!program) {
+    if (!project) {
         return undefined;
     }
 
     // @ts-ignore
-    const sourceFile = program.getSourceFile(fullClassPath);
+    const sourceFile = project.getSourceFile(fullClassPath);
 
     return sourceFile;
 }
