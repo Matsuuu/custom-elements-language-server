@@ -90,9 +90,7 @@ export class CEMInstance {
         const packageJsonFile = fs.readFileSync(packageJsonPath, "utf8");
         const packageJson = JSON.parse(packageJsonFile);
         const packageName = packageJson.name;
-        // if (!packageJson.customElements) return;
-        // TODO: Give a warning of missing entry, ask to add
-        //
+
         const analyzerOutput = analyzeLocalProject(project);
         const cemSourcePath = packageJson.customElements
             ? `${projectPath}/${packageJson.customElements}`
