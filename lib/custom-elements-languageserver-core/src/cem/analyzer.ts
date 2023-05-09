@@ -42,9 +42,8 @@ export function analyzeLocalProject(project: tss.server.Project) {
     normalizeManifest(manifest, basePath);
 
     console.log("Building manifest done, writing to file.");
-    console.log("Manifest size: ", JSON.stringify(manifest).length);
     const savePath = cacheCurrentCEM(basePath, manifest);
-    console.log("Manifest file wroitten to ", savePath);
+    console.log("Manifest file written to ", savePath);
 
     return manifest;
 }
