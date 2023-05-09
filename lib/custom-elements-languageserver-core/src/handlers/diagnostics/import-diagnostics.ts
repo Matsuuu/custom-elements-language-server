@@ -26,7 +26,7 @@ export function getImportDiagnostics(request: CustomElementsLanguageServiceReque
     // Might lead to some false negatives.
     const sourceFileNames = associatedFiles;
 
-    const cemCollection = getCEMData(projectBasePath);
+    const cemCollection = getCEMData(project, projectBasePath);
     if (!cemCollection.hasData()) {
         return [];
     }
@@ -45,7 +45,7 @@ export function getImportDiagnostics(request: CustomElementsLanguageServiceReque
             continue;
         }
         const cemInstanceRef = definition.cem;
-        const fullImportPath = `${cemInstanceRef.cemFolderPath}/${definition.path}`;
+        const fullImportPath = `${cemInstanceRef.cemSourcePath}/${definition.path}`;
         if (!sourceFilesContainFilePath(sourceFileNames, fullImportPath)) {
 
             const relativeImportPath = resolveImportPath(fullImportPath, filePathWithoutFile);

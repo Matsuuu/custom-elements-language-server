@@ -13,7 +13,12 @@ import path from "path";
 const CEM_CACHE_DIR = "/node_modules/.cache/custom-elements-language-server";
 const CEM_CACHE_NAME = "custom-elements.json";
 
-export function analyzeLocalProject(project: tss.server.Project) {
+export interface AnalyzerOutput {
+    filePath: string;
+    manifest: Package;
+}
+
+export function analyzeLocalProject(project: tss.server.Project): AnalyzerOutput {
 
     console.log("Building manifest");
 
@@ -45,7 +50,10 @@ export function analyzeLocalProject(project: tss.server.Project) {
     const savePath = cacheCurrentCEM(basePath, manifest);
     console.log("Manifest file written to ", savePath);
 
-    return manifest;
+    return {
+        manifest,
+        filePath: savePath
+    }
 }
 
 function normalizeManifest(manifest: Package, basePath: string) {

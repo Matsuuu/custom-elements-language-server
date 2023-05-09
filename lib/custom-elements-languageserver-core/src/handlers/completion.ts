@@ -10,16 +10,15 @@ import { ClassField } from "custom-elements-manifest";
 import { CustomElementsLanguageServiceRequest } from "../request.js";
 
 export function getCompletionEntries(request: CustomElementsLanguageServiceRequest) {
-    debugger;
 
-    const { projectBasePath, htmlLanguageService, document, position } = request;
+    const { project, projectBasePath, htmlLanguageService, document, position } = request;
 
     const actionContext = resolveActionContext(htmlLanguageService, document, position);
 
     const htmlLSCompletions = getDefaultCompletionItems(document, position, htmlLanguageService);
     const defaultCompletionItems = htmlLSCompletions.items.map(completionItemToCompletionEntry);
 
-    const cemCollection = getCEMData(projectBasePath);
+    const cemCollection = getCEMData(project, projectBasePath);
     let cemCompletions: tss.CompletionEntry[] = [];
 
     if (!cemCollection) {
@@ -30,8 +29,6 @@ export function getCompletionEntries(request: CustomElementsLanguageServiceReque
             entries: [...defaultCompletionItems],
         };
     }
-
-    console.log(actionContext)
 
     if (isTagAction(actionContext)) {
 
