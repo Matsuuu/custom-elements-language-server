@@ -36,7 +36,7 @@ export function analyzeLocalProject(project: tss.server.Project) {
     const manifest: Package = create({
         modules: modifiedSourceFiles,
         plugins: [...litPlugin()],
-        context: { dev: true }
+        context: { dev: false }
     });
 
     normalizeManifest(manifest, basePath);
