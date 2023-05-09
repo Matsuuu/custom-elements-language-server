@@ -4,7 +4,6 @@ import { getFilePathFolder, isDependencyImport } from "../handlers/diagnostics/i
 import * as path from "path";
 import * as fs from "fs";
 import { getPathAsDtsFile, getPathAsJsFile, getPathAsTsFile } from "./filepath-transformers.js";
-import { analyzeLocalProject } from "../cem/analyzer.js";
 
 export function getSourceFile(baseOrFullPath: string, classPath: string | undefined, project: tss.server.Project) {
     const fullClassPath = classPath === undefined ?
@@ -17,9 +16,6 @@ export function getSourceFile(baseOrFullPath: string, classPath: string | undefi
 
     // @ts-ignore
     const sourceFile = project.getSourceFile(fullClassPath);
-
-
-    const manifest = analyzeLocalProject(project);
 
     return sourceFile;
 }
