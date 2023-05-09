@@ -32,6 +32,9 @@ export class ExampleProject extends LitElement {
 
     myAttribute = "bar";
 
+    @property({type: String})
+    matias: string = "foo";
+
     constructor() {
         super();
         /**

@@ -65,6 +65,7 @@ const CEM_COLLECTION_CACHE = new Map<string, CEMCollection>();
 export function getCEMData(project: tss.server.Project, projectBasePath: string): CEMCollection {
     const existingCollection = CEM_COLLECTION_CACHE.get(projectBasePath);
     if (existingCollection) {
+        // TODO: Do this through a watcher instead of on every request?
         existingCollection?.refreshLocal();
         return existingCollection;
     }
