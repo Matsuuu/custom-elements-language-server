@@ -35,7 +35,7 @@ export const DefinitionHandler: Handler<DefinitionParams, Location[] | undefined
             return undefined;
         }
 
-        const request = createCustomElementsLanguageServiceRequest(basePath, doc, definitionParams.position, project);
+        const request = createCustomElementsLanguageServiceRequest(usableData.fileName, basePath, doc, definitionParams.position, project);
         const definitions = getGoToDefinitionEntries(request);
 
         const definitionLocations = definitions?.map(documentSpanToLocation) ?? [];

@@ -2,12 +2,14 @@
 import { Package } from "custom-elements-manifest";
 import * as fs from "fs";
 import { ImportedDependency } from "../dependencies/dependency-package-resolver.js";
+import { analyzeLocalProject } from "./analyzer.js";
 
 interface CEMInstanceBuilderData {
     cemPath: string,
     packagePath: string,
     packageName: string,
     packageJsonPath: string,
+    refresher: (_this: CEMInstance) => void;
 }
 
 export class CEMInstance {
@@ -85,7 +87,9 @@ export class CEMInstance {
             cemPath,
             packagePath: projectPath,
             packageJsonPath,
-            packageName
+            packageName,
+            //refresher: (_this: CEMInstance) => analyzeLocalProject()
+            refresher: () => { }
         })
     }
 
@@ -106,7 +110,8 @@ export class CEMInstance {
             cemPath,
             packagePath: dependency.path,
             packageJsonPath,
-            packageName
+            packageName,
+            refresher: () => { } // Currently no need to refresh dependency CEM's
         })
     }
 

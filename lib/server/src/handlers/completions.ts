@@ -1,12 +1,12 @@
 import ts from "typescript";
-import * as HTMLLanguageService from "vscode-html-languageservice/lib/esm/htmlLanguageService.js";
-import { CompletionList, CompletionParams, CompletionItem, CompletionItemKind } from "vscode-languageserver";
+import { CompletionList, CompletionParams, CompletionItem } from "vscode-languageserver";
 import { textDocumentDataToUsableData } from "../transformers";
 import { documents } from "../text-documents";
-import { getLanguageService, getProjectBasePath } from "../language-services/language-services";
+import { getLanguageService, getProjectBasePath, getProjectForCurrentFile } from "../language-services/language-services";
 import { Handler, isJavascriptFile } from "./handler";
 import { wait } from "../wait";
 import { elementKindToCompletionKind, getCompletionEntries } from "custom-elements-languageserver-core";
+import { createCustomElementsLanguageServiceRequest } from "../language-services/request";
 
 export const CompletionsHandler: Handler<CompletionParams, CompletionList> = {
     handle: (completionParams: CompletionParams) => {
@@ -30,14 +30,20 @@ export const CompletionsHandler: Handler<CompletionParams, CompletionList> = {
     },
     onHTMLOrOtherFile: (completionParams: CompletionParams) => {
         const usableData = textDocumentDataToUsableData(documents, completionParams);
-        const languageService = HTMLLanguageService.getLanguageService();
         const doc = documents.get(completionParams.textDocument.uri);
         if (!doc) {
             return CompletionList.create();
         }
+        const project = getProjectForCurrentFile(usableData.fileName, usableData.fileContent);
         const basePath = getProjectBasePath(usableData.fileName);
 
-        const completions = getCompletionEntries(doc, basePath, completionParams.position, languageService);
+        if (!project) {
+            return CompletionList.create();
+        }
+
+        const request = createCustomElementsLanguageServiceRequest(usableData.fileName, basePath, doc, completionParams.position, project);
+        //const completions = getCompletionEntries(doc, basePath, completionParams.position, languageService);
+        const completions = getCompletionEntries(request);
 
         return completionsToList(completions);
     }

@@ -36,7 +36,7 @@ export const HoverHandler: Handler<HoverParams, Hover> = {
         }
 
 
-        const request = createCustomElementsLanguageServiceRequest(basePath, doc, hoverInfo.position, project);
+        const request = createCustomElementsLanguageServiceRequest(usableData.fileName, basePath, doc, hoverInfo.position, project);
         const quickInfo = getQuickInfo(request);
 
         return quickInfoToHover(usableData.fileName, quickInfo);

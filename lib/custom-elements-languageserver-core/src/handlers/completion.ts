@@ -7,8 +7,13 @@ import { getCEMData } from "../export.js";
 import { completionItemToCompletionEntry } from "../interop.js";
 // @ts-expect-error
 import { ClassField } from "custom-elements-manifest";
+import { CustomElementsLanguageServiceRequest } from "../request.js";
 
-export function getCompletionEntries(document: HTMLLanguageService.TextDocument, projectBasePath: string, position: tss.LineAndCharacter, htmlLanguageService: HtmlLanguageService) {
+export function getCompletionEntries(request: CustomElementsLanguageServiceRequest) {
+    debugger;
+
+    const { projectBasePath, htmlLanguageService, document, position } = request;
+
     const actionContext = resolveActionContext(htmlLanguageService, document, position);
 
     const htmlLSCompletions = getDefaultCompletionItems(document, position, htmlLanguageService);

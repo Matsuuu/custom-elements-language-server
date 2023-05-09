@@ -44,7 +44,7 @@ function handleHTMLOrOtherFileDiagnostics(uri: string, textDoc: TextDocument) {
         return;
     }
 
-    const request = createCustomElementsLanguageServiceRequest(basePath, doc, { line: 0, character: 0 }, project);
+    const request = createCustomElementsLanguageServiceRequest(usableData.fileName, basePath, doc, { line: 0, character: 0 }, project);
 
     const missingTagDiagnostics = getMissingCloseTagDiagnostics(0, request);
 
