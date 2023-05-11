@@ -1,8 +1,6 @@
 // @ts-expect-error
 import { create, ts } from "@custom-elements-manifest/analyzer";
 // @ts-expect-error
-import { litPlugin } from "@custom-elements-manifest/analyzer/src/features/framework-plugins/lit/lit.js";
-// @ts-expect-error
 import { JavaScriptExport, Package } from "custom-elements-manifest";
 // TODO: Can we fix these imports?
 import tss from "typescript/lib/tsserverlibrary.js";
@@ -40,7 +38,7 @@ export function analyzeLocalProject(project: tss.server.Project): AnalyzerOutput
 
     const manifest: Package = create({
         modules: modifiedSourceFiles,
-        plugins: [...litPlugin()],
+        plugins: [],
         context: { dev: false }
     });
 
