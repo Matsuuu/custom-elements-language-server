@@ -6,10 +6,13 @@ import { JavaScriptExport, Package } from "custom-elements-manifest";
 import tss from "typescript/lib/tsserverlibrary.js";
 import fs from "fs";
 import path from "path";
+import { readConfig } from '@web/config-loader';
+}
 
 // Pathing to ${projectPath}/node_modules/.cache/custom-elements-language-server
 const CEM_CACHE_DIR = "/node_modules/.cache/custom-elements-language-server";
 const CEM_CACHE_NAME = "custom-elements.json";
+const CEM_CONFIG_FILE_NAME = "custom-elements-manifest.config.js";
 
 export interface AnalyzerOutput {
     filePath: string;
@@ -27,14 +30,17 @@ export function analyzeLocalProject(project: tss.server.Project): AnalyzerOutput
         .map(rf => project.getSourceFile(rf as tss.Path))
         .filter(sf => sf !== undefined) as tss.SourceFile[];
 
-    const modifiedSourceFiles = sourceFiles.map(sf => {
+    // TODO: Is this step necessary?
+    const modifiedSourceFiles: ts.SourceFile[] = sourceFiles.map(sf => {
         return ts.createSourceFile(
             sf.fileName,
             sf.getFullText(),
             ts.ScriptTarget.ES2015,
             true
         )
-    })
+    });
+
+    const projectConfig = getPossibleProjectConfig(basePath);
 
     const manifest: Package = create({
         modules: modifiedSourceFiles,
@@ -42,7 +48,7 @@ export function analyzeLocalProject(project: tss.server.Project): AnalyzerOutput
         context: { dev: false }
     });
 
-    normalizeManifest(manifest, basePath);
+    normalizeManifest(basePath, manifest);
 
     console.log("Building manifest done, writing to file.");
     const savePath = cacheCurrentCEM(basePath, manifest);
@@ -54,7 +60,7 @@ export function analyzeLocalProject(project: tss.server.Project): AnalyzerOutput
     }
 }
 
-function normalizeManifest(manifest: Package, basePath: string) {
+function normalizeManifest(basePath: string, manifest: Package) {
     manifest.modules?.forEach((mod) => {
         mod.path = mod.path.replace(basePath + "/", "");
         mod.exports?.forEach(exp => {
@@ -77,3 +83,10 @@ function cacheCurrentCEM(projectPath: string, manifest: Package) {
 
     return savePath;
 }
+
+function getPossibleProjectConfig(basePath: string) {
+    const config = readConfig("custom-elements-manifest.config", undefined, basePath);
+    // TODO: Go through the config and get the good bits like in https://github.com/open-wc/custom-elements-manifest/blob/master/packages/analyzer/cli.js#LL34C19-L34C19
+    console.log(config);
+}
+
