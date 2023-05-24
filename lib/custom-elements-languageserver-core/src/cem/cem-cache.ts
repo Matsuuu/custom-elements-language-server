@@ -70,6 +70,8 @@ export function getCEMData(project: tss.server.Project, projectBasePath: string)
     const existingCollection = CEM_COLLECTION_CACHE.get(projectBasePath);
     if (existingCollection) {
         // TODO: Do this through a watcher instead of on every request?
+        // TODO: This is now needed more than before since we need to have 
+        // the asynchronous context in here.
         existingCollection?.refreshLocal();
         return existingCollection;
     }
