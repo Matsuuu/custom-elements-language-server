@@ -19,7 +19,7 @@ export interface AnalyzerOutput {
     manifest: Package;
 }
 
-export function analyzeLocalProject(project: tss.server.Project): AnalyzerOutput {
+export async function analyzeLocalProject(project: tss.server.Project): Promise<AnalyzerOutput> {
 
     console.log("Building manifest");
 
@@ -40,7 +40,7 @@ export function analyzeLocalProject(project: tss.server.Project): AnalyzerOutput
         )
     });
 
-    const projectConfig = getPossibleProjectConfig(basePath);
+    const projectConfig = await getPossibleProjectConfig(basePath);
 
     const manifest: Package = create({
         modules: modifiedSourceFiles,
@@ -84,9 +84,8 @@ function cacheCurrentCEM(projectPath: string, manifest: Package) {
     return savePath;
 }
 
-function getPossibleProjectConfig(basePath: string) {
-    const config = readConfig("custom-elements-manifest.config", undefined, basePath);
+async function getPossibleProjectConfig(basePath: string) {
+    const config = await readConfig("custom-elements-manifest.config", undefined, basePath);
     // TODO: Go through the config and get the good bits like in https://github.com/open-wc/custom-elements-manifest/blob/master/packages/analyzer/cli.js#LL34C19-L34C19
-    console.log(config);
+    console.log("=== CEM CONFIG", config);
 }
-

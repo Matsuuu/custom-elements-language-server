@@ -12,10 +12,14 @@ export class CEMCollection {
     private _modules: Array<JavaScriptModule> | undefined;
     private _modulesWithRefs: Array<JavaScriptModuleWithRef> | undefined;
 
-    constructor(project: tss.server.Project, basePath: string) {
-        const dependencyPackages = getDependencyPackagesWithCEMs(basePath + "/node_modules");
+    constructor(private project: tss.server.Project, private basePath: string) {
+        this.initializeCEMs();
+    }
 
-        const cemData = CEMInstance.fromLocalPath(project, basePath);
+    private async initializeCEMs() {
+        const dependencyPackages = getDependencyPackagesWithCEMs(this.basePath + "/node_modules");
+
+        const cemData = await CEMInstance.fromLocalPath(this.project, this.basePath);
         const dependencyCems = Object.values(dependencyPackages)
             .map(CEMInstance.fromDependency)
             .filter(cemIsNotUndefined)

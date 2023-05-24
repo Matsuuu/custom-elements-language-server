@@ -11,8 +11,10 @@ interface CEMInstanceBuilderData {
     packagePath: string,
     packageName: string,
     packageJsonPath: string,
-    refresher: (_this: CEMInstance) => void;
+    refresher: RefresherFunction
 }
+
+type RefresherFunction = (_this: CEMInstance) => Promise<void> | void;
 
 export class CEMInstance {
     public cem: Package | undefined;
@@ -27,7 +29,7 @@ export class CEMInstance {
     public packageJsonPath: string | undefined;
     public packageJson: Object | undefined;
     public isDependency: boolean = false;
-    public refresher: (_this: CEMInstance) => void = () => { };
+    public refresher: RefresherFunction = () => { };
 
     constructor(builderData: CEMInstanceBuilderData) {
         this.isDependency = builderData.packageJsonPath.includes("node_modules");
@@ -72,15 +74,15 @@ export class CEMInstance {
         this.refresher = builderData.refresher;
     }
 
-    refresh() {
+    async refresh() {
         if (!this.cemPath) return;
 
-        this.refresher(this);
+        await this.refresher(this);
         const cemFile = fs.readFileSync(this.cemPath, "utf8");
         this.cem = JSON.parse(cemFile);
     }
 
-    static fromLocalPath(project: tss.server.Project, projectPath: string): CEMInstance | undefined {
+    static async fromLocalPath(project: tss.server.Project, projectPath: string): Promise<CEMInstance | undefined> {
 
         const packageJsonPath = projectPath + "/package.json";
         if (!fs.existsSync(packageJsonPath)) {
@@ -91,7 +93,7 @@ export class CEMInstance {
         const packageJson = JSON.parse(packageJsonFile);
         const packageName = packageJson.name;
 
-        const analyzerOutput = analyzeLocalProject(project);
+        const analyzerOutput = await analyzeLocalProject(project);
         const cemSourcePath = packageJson.customElements
             ? `${projectPath}/${packageJson.customElements}`
             : `${projectPath}`;
