@@ -13,7 +13,6 @@
     "devDependencies": {
         "@custom-elements-manifest/analyzer": "^0.8.1",
         "@types/node": "^18.11.9",
-        "@web/config-loader": "^0.2.1",
         "custom-elements-manifest": "^2.0.0",
         "typescript": "^5.0.2",
         "typescript-template-language-service-decorator": "^2.3.1",

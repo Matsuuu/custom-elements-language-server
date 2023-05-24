@@ -1,14 +1,10 @@
 // @ts-expect-error
 import { create, ts } from "@custom-elements-manifest/analyzer";
-// @ts-expect-error
 import { JavaScriptExport, Package } from "custom-elements-manifest";
 // TODO: Can we fix these imports?
 import tss from "typescript/lib/tsserverlibrary.js";
 import fs from "fs";
 import path from "path";
-// TODO: Awaiting typing fix
-// @ts-expect-error
-import { readConfig } from '@web/config-loader';
 
 // Pathing to ${projectPath}/node_modules/.cache/custom-elements-language-server
 const CEM_CACHE_DIR = "/node_modules/.cache/custom-elements-language-server";
@@ -41,11 +37,12 @@ export async function analyzeLocalProject(project: tss.server.Project): Promise<
         )
     });
 
-    const projectConfig = await getPossibleProjectConfig(basePath);
+    const projectConfig = getPossibleProjectConfig(basePath);
     const frameworkPlugins = await getFrameworkPlugins(projectConfig);
 
     const plugins = [...(projectConfig.plugins || []), ...frameworkPlugins]
 
+    console.log(plugins.length + " plugins enabled in CEM generation.");
 
     const manifest: Package = create({
         modules: modifiedSourceFiles,
@@ -84,15 +81,19 @@ function cacheCurrentCEM(projectPath: string, manifest: Package) {
         fs.mkdirSync(cachePath, { recursive: true });
     }
     const savePath = path.resolve(cachePath, CEM_CACHE_NAME);
-    fs.writeFileSync(savePath, JSON.stringify(manifest), "utf8");
+    const manifestAsString = JSON.stringify(manifest);
+    fs.writeFileSync(savePath, manifestAsString, "utf8");
+
+    console.log("Manifest size: ", manifestAsString.length);
 
     return savePath;
 }
 
-async function getPossibleProjectConfig(basePath: string) {
-    const config = await readConfig("custom-elements-manifest.config", undefined, basePath);
-    // TODO: Go through the config and get the good bits like in https://github.com/open-wc/custom-elements-manifest/blob/master/packages/analyzer/cli.js#LL34C19-L34C19
-    console.log("=== CEM CONFIG", config);
+function getPossibleProjectConfig(basePath: string) {
+    // TODO: Write synchronous config reader
+    const config = {
+        plugins: []
+    };
 
     return config;
 }
