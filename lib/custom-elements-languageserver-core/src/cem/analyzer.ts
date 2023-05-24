@@ -6,8 +6,8 @@ import { JavaScriptExport, Package } from "custom-elements-manifest";
 import tss from "typescript/lib/tsserverlibrary.js";
 import fs from "fs";
 import path from "path";
+// @ts-expect-error
 import { readConfig } from '@web/config-loader';
-}
 
 // Pathing to ${projectPath}/node_modules/.cache/custom-elements-language-server
 const CEM_CACHE_DIR = "/node_modules/.cache/custom-elements-language-server";
