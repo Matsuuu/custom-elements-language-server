@@ -6,6 +6,7 @@ import { JavaScriptExport, Package } from "custom-elements-manifest";
 import tss from "typescript/lib/tsserverlibrary.js";
 import fs from "fs";
 import path from "path";
+// TODO: Awaiting typing fix
 // @ts-expect-error
 import { readConfig } from '@web/config-loader';
 
@@ -41,10 +42,14 @@ export async function analyzeLocalProject(project: tss.server.Project): Promise<
     });
 
     const projectConfig = await getPossibleProjectConfig(basePath);
+    const frameworkPlugins = await getFrameworkPlugins(projectConfig);
+
+    const plugins = [...(projectConfig.plugins || []), ...frameworkPlugins]
+
 
     const manifest: Package = create({
         modules: modifiedSourceFiles,
-        plugins: [],
+        plugins: plugins,
         context: { dev: false }
     });
 
@@ -88,4 +93,44 @@ async function getPossibleProjectConfig(basePath: string) {
     const config = await readConfig("custom-elements-manifest.config", undefined, basePath);
     // TODO: Go through the config and get the good bits like in https://github.com/open-wc/custom-elements-manifest/blob/master/packages/analyzer/cli.js#LL34C19-L34C19
     console.log("=== CEM CONFIG", config);
+
+    return config;
 }
+
+// https://github.com/open-wc/custom-elements-manifest/blob/master/packages/analyzer/src/utils/cli-helpers.js#L88
+
+async function getFrameworkPlugins(options: any) {
+    let plugins: any[] = [];
+    if (options?.litelement) {
+        // @ts-expect-error
+        const { litPlugin } = await import('@custom-elements-manifest/analyzer/src/features/framework-plugins/lit/lit.js');
+        plugins = [...(litPlugin() || [])]
+    }
+
+    if (options?.fast) {
+        // @ts-expect-error
+        const { fastPlugin } = await import('@custom-elements-manifest/analyzer/src/features/framework-plugins/fast/fast.js');
+        plugins = [...(fastPlugin() || [])]
+    }
+
+    if (options?.stencil) {
+        // @ts-expect-error
+        const { stencilPlugin } = await import('@custom-elements-manifest/analyzer/src/features/framework-plugins/stencil/stencil.js');
+        plugins.push(stencilPlugin());
+    }
+
+    if (options?.catalyst) {
+        // @ts-expect-error
+        const { catalystPlugin } = await import('@custom-elements-manifest/analyzer/src/features/framework-plugins/catalyst/catalyst.js');
+        plugins = [...(catalystPlugin() || [])]
+    }
+
+    if (options?.['catalyst-major-2']) {
+        // @ts-expect-error
+        const { catalystPlugin2 } = await import('@custom-elements-manifest/analyzer/src/features/framework-plugins/catalyst-major-2/catalyst.js');
+        plugins = [...(catalystPlugin2() || [])]
+    }
+
+    return plugins;
+}
+
