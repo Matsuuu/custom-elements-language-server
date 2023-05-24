@@ -1,5 +1,6 @@
 // @ts-expect-error
 import { create, ts } from "@custom-elements-manifest/analyzer";
+// @ts-ignore
 import { JavaScriptExport, Package } from "custom-elements-manifest";
 // TODO: Can we fix these imports?
 import tss from "typescript/lib/tsserverlibrary.js";
@@ -9,7 +10,7 @@ import path from "path";
 // Pathing to ${projectPath}/node_modules/.cache/custom-elements-language-server
 const CEM_CACHE_DIR = "/node_modules/.cache/custom-elements-language-server";
 const CEM_CACHE_NAME = "custom-elements.json";
-const CEM_CONFIG_FILE_NAME = "custom-elements-manifest.config.js";
+const CEM_CONFIG_FILE_NAME = "custom-elements-manifest.config";
 
 export interface AnalyzerOutput {
     filePath: string;
@@ -37,10 +38,10 @@ export async function analyzeLocalProject(project: tss.server.Project): Promise<
         )
     });
 
-    const projectConfig = getPossibleProjectConfig(basePath);
+    const projectConfig = await getPossibleProjectConfig(basePath);
     const frameworkPlugins = await getFrameworkPlugins(projectConfig);
 
-    const plugins = [...(projectConfig.plugins || []), ...frameworkPlugins]
+    const plugins = [...(projectConfig?.plugins || []), ...frameworkPlugins]
 
     console.log(plugins.length + " plugins enabled in CEM generation.");
 
@@ -89,11 +90,27 @@ function cacheCurrentCEM(projectPath: string, manifest: Package) {
     return savePath;
 }
 
-function getPossibleProjectConfig(basePath: string) {
-    // TODO: Write synchronous config reader
-    const config = {
-        plugins: []
-    };
+async function getPossibleProjectConfig(basePath: string) {
+    const possibleConfigPaths = [
+        basePath + "/" + CEM_CONFIG_FILE_NAME + ".js",
+        basePath + "/" + CEM_CONFIG_FILE_NAME + ".mjs",
+        basePath + "/" + CEM_CONFIG_FILE_NAME + ".cjs",
+    ]
+
+    let importedConfig;
+    for (const possibleConfigPath of possibleConfigPaths) {
+        if (fs.existsSync(possibleConfigPath)) {
+            console.log("Found CEM config at ", possibleConfigPath);
+            importedConfig = await import(possibleConfigPath);
+            break;
+        }
+    }
+
+    if (!importedConfig) {
+        return undefined;
+    }
+
+    const config = importedConfig.default;
 
     return config;
 }
@@ -102,6 +119,8 @@ function getPossibleProjectConfig(basePath: string) {
 
 async function getFrameworkPlugins(options: any) {
     let plugins: any[] = [];
+    // TODO: We can't have them dynamically imported. Just import them at the top
+    // of the file and set them here.
     if (options?.litelement) {
         // @ts-expect-error
         const { litPlugin } = await import('@custom-elements-manifest/analyzer/src/features/framework-plugins/lit/lit.js');
