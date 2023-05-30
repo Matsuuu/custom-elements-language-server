@@ -1,5 +1,15 @@
 // @ts-expect-error
 import { create, ts } from "@custom-elements-manifest/analyzer";
+// @ts-expect-error
+import { litPlugin } from "@custom-elements-manifest/analyzer/src/features/framework-plugins/lit/lit.js";
+// @ts-expect-error
+import { fastPlugin } from "@custom-elements-manifest/analyzer/src/features/framework-plugins/fast/fast.js";
+// @ts-expect-error
+import { stencilPlugin } from "@custom-elements-manifest/analyzer/src/features/framework-plugins/stencil/stencil.js";
+// @ts-expect-error
+import { catalystPlugin } from "@custom-elements-manifest/analyzer/src/features/framework-plugins/catalyst/catalyst.js";
+// @ts-expect-error
+import { catalystPlugin2 } from "@custom-elements-manifest/analyzer/src/features/framework-plugins/catalyst-major-2/catalyst.js";
 // @ts-ignore
 import { JavaScriptExport, Package } from "custom-elements-manifest";
 // TODO: Can we fix these imports?
@@ -119,35 +129,24 @@ async function getPossibleProjectConfig(basePath: string) {
 
 async function getFrameworkPlugins(options: any) {
     let plugins: any[] = [];
-    // TODO: We can't have them dynamically imported. Just import them at the top
-    // of the file and set them here.
+
     if (options?.litelement) {
-        // @ts-expect-error
-        const { litPlugin } = await import('@custom-elements-manifest/analyzer/src/features/framework-plugins/lit/lit.js');
         plugins = [...(litPlugin() || [])]
     }
 
     if (options?.fast) {
-        // @ts-expect-error
-        const { fastPlugin } = await import('@custom-elements-manifest/analyzer/src/features/framework-plugins/fast/fast.js');
         plugins = [...(fastPlugin() || [])]
     }
 
     if (options?.stencil) {
-        // @ts-expect-error
-        const { stencilPlugin } = await import('@custom-elements-manifest/analyzer/src/features/framework-plugins/stencil/stencil.js');
         plugins.push(stencilPlugin());
     }
 
     if (options?.catalyst) {
-        // @ts-expect-error
-        const { catalystPlugin } = await import('@custom-elements-manifest/analyzer/src/features/framework-plugins/catalyst/catalyst.js');
         plugins = [...(catalystPlugin() || [])]
     }
 
     if (options?.['catalyst-major-2']) {
-        // @ts-expect-error
-        const { catalystPlugin2 } = await import('@custom-elements-manifest/analyzer/src/features/framework-plugins/catalyst-major-2/catalyst.js');
         plugins = [...(catalystPlugin2() || [])]
     }
 
