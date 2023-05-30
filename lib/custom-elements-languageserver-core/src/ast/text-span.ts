@@ -1,4 +1,3 @@
-// @ts-expect-error
 import { JavaScriptModule } from "custom-elements-manifest";
 import ts from "typescript";
 import tss from "typescript/lib/tsserverlibrary.js";

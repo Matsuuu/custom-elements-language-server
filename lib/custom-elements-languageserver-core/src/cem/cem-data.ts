@@ -1,4 +1,3 @@
-// @ts-expect-error
 import { Package } from "custom-elements-manifest";
 import tss from "typescript/lib/tsserverlibrary.js";
 import * as fs from "fs";

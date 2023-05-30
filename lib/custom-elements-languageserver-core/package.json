@@ -2,6 +2,7 @@
     "name": "custom-elements-languageserver-core",
     "version": "0.0.1",
     "license": "MIT",
+    "type": "module",
     "main": "dist/export.js",
     "scripts": {
         "start": "npm run watch",

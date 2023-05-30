@@ -5,7 +5,6 @@ import { isAttributeNameAction, isEndTagAction, isEventNameAction, isPropertyNam
 import { findCustomElementTagLike, findDeclarationForTagName } from "../cem/cem-helpers.js";
 import { getCEMData } from "../export.js";
 import { completionItemToCompletionEntry } from "../interop.js";
-// @ts-expect-error
 import { ClassField } from "custom-elements-manifest";
 import { CustomElementsLanguageServiceRequest } from "../request.js";
 

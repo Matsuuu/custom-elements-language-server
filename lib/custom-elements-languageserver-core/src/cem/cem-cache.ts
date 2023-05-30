@@ -1,6 +1,5 @@
 import { getDependencyPackagesWithCEMs } from "../dependencies/dependency-package-resolver.js";
 import { CEMInstance } from "./cem-data.js";
-// @ts-expect-error
 import { JavaScriptModule } from "custom-elements-manifest";
 import { addReferenceToModule, JavaScriptModuleWithRef } from "./cem-helpers.js";
 import tss from "typescript/lib/tsserverlibrary.js";
