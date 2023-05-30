@@ -1,3 +1,4 @@
+// @ts-expect-error
 import TemplateLanguageServicePlugin from "template-language-service";
 import tss from "typescript/lib/tsserverlibrary.js";
 import fs from "fs";

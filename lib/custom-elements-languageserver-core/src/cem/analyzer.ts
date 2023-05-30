@@ -109,14 +109,14 @@ async function getPossibleProjectConfig(basePath: string) {
 
     let importedConfig;
     for (const possibleConfigPath of possibleConfigPaths) {
-        if (fs.existsSync(possibleConfigPath)) {
+        if (fs.existsSync(possibleConfigPath) && false) {
             console.log("Found CEM config at ", possibleConfigPath);
             importedConfig = await import(possibleConfigPath);
             break;
         }
     }
 
-    if (!importedConfig) {
+    if (!importedConfig || true) {
         return undefined;
     }
 
