@@ -1,8 +1,6 @@
 import { html } from "lit-html";
 import { repeat } from "lit/directives/repeat.js";
 import "./importing-element.js";
-import "@shoelace-style/shoelace/dist/components/button/button.js";
-import "@shoelace-style/shoelace/dist/components/input/input.js";
 import "./ExampleProject.js";
 
 export const temp = html`

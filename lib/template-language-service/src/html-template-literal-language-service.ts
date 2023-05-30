@@ -2,7 +2,7 @@ import ts from "typescript";
 import tss from "typescript/lib/tsserverlibrary.js";
 import { TemplateContext, TemplateLanguageService } from "typescript-template-language-service-decorator";
 import { LanguageService as HtmlLanguageService } from "vscode-html-languageservice/lib/esm/htmlLanguageService.js";
-import { createTextDocumentFromContext } from "./text-document";
+import { createTextDocumentFromContext } from "./text-document.js";
 import {
     getCompletionEntries,
     getGoToDefinitionEntries,
@@ -10,7 +10,7 @@ import {
     getMissingCloseTagDiagnostics,
     getQuickInfo,
 } from "custom-elements-languageserver-core";
-import { CustomElementsLanguageServiceRequest } from "custom-elements-languageserver-core/dist/request";
+import { CustomElementsLanguageServiceRequest } from "custom-elements-languageserver-core/dist/request.js";
 
 export function createCustomElementsLanguageServiceRequest(context: TemplateContext, position: ts.LineAndCharacter, htmlLanguageService: HtmlLanguageService): CustomElementsLanguageServiceRequest {
     const document = createTextDocumentFromContext(context);

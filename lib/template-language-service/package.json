@@ -2,11 +2,12 @@
     "name": "template-language-service",
     "version": "1.0.0",
     "description": "",
+    "type": "module",
     "main": "dist/index.js",
     "scripts": {
         "start": "npm run watch",
         "watch": "npm run build -- --watch",
-        "build": "esbuild ./src/index.ts --bundle --external:vscode --platform=node --sourcemap --outdir=dist",
+        "build": "esbuild ./src/index.ts --bundle --external:vscode --platform=node --format=esm --sourcemap --outdir=dist",
         "build:with-types": "npm run build && npm run types",
         "types": "tsc --emitDeclarationOnly"
     },
