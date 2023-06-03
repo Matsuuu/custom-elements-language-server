@@ -18,6 +18,8 @@ export const temp = html`
 
     <sl-input @sl-blur="${() => { }}"></sl-input>
 
+    <sl-button></sl-button>
+
     <p>Foo</p>
 
     <img src="" />

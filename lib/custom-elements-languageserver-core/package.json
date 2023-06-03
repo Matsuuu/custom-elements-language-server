@@ -2,12 +2,11 @@
     "name": "custom-elements-languageserver-core",
     "version": "0.0.1",
     "license": "MIT",
-    "type": "module",
     "main": "dist/export.js",
     "scripts": {
         "start": "npm run watch",
         "watch": "npm run build -- --watch",
-        "build": "esbuild ./src/export.ts --bundle --external:vscode --platform=node --format=esm --sourcemap --outdir=dist",
+        "build": "esbuild ./src/export.ts --bundle --external:vscode --platform=node --sourcemap --outdir=dist",
         "build:with-types": "npm run build && npm run types",
         "types": "tsc --emitDeclarationOnly"
     },

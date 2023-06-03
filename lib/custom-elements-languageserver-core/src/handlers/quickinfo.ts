@@ -1,3 +1,4 @@
+// @ts-expect-error
 import type { ClassField, CustomElement, JavaScriptModule } from "custom-elements-manifest";
 import ts from "typescript";
 import tss from "typescript/lib/tsserverlibrary.js";

@@ -103,6 +103,7 @@ function cacheCurrentCEM(projectPath: string, manifest: Package) {
 }
 
 async function getPossibleProjectConfig(basePath: string) {
+    return undefined;
     const possibleConfigPaths = [
         basePath + "/" + CEM_CONFIG_FILE_NAME + ".js",
         basePath + "/" + CEM_CONFIG_FILE_NAME + ".mjs",
