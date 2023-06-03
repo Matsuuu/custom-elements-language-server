@@ -135,22 +135,27 @@ async function getFrameworkPlugins(options: any) {
     let plugins: any[] = [];
 
     if (options?.litelement) {
+        console.log("Adding LitPlugin");
         plugins = [...(litPlugin() || [])]
     }
 
     if (options?.fast) {
+        console.log("Adding FastPlugin");
         plugins = [...(fastPlugin() || [])]
     }
 
     if (options?.stencil) {
+        console.log("Adding StencilPlugin");
         plugins.push(stencilPlugin());
     }
 
     if (options?.catalyst) {
+        console.log("Adding CatalystPlugin")
         plugins = [...(catalystPlugin() || [])]
     }
 
     if (options?.['catalyst-major-2']) {
+        console.log("Adding CatalystPlugin2")
         plugins = [...(catalystPlugin2() || [])]
     }
 
