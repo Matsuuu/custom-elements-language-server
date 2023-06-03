@@ -1,4 +1,5 @@
-import plugin from "template-language-service";
+// @ts-expect-error
+import TemplateLanguageServicePlugin from "template-language-service";
 import tss from "typescript/lib/tsserverlibrary.js";
 import fs from "fs";
 
@@ -28,7 +29,7 @@ export class LanguageServiceManager {
             throw new Error("Failed to initialize Plugin Creation Info");
         }
 
-        const templateLiteralTSServerPlugin = plugin({ typescript: tss, project });
+        const templateLiteralTSServerPlugin = TemplateLanguageServicePlugin({ typescript: tss, project });
         const languageService = templateLiteralTSServerPlugin.create(pluginCreateInfo);
 
         if (!languageService) {

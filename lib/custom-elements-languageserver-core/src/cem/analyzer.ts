@@ -1,5 +1,7 @@
 // @ts-expect-error
 import { create, ts } from "@custom-elements-manifest/analyzer";
+// TODO: Now that we're in module land, could we actually just dynamically import these? 
+// Or is it still a "not packaged" problem?
 // @ts-expect-error
 import { litPlugin } from "@custom-elements-manifest/analyzer/src/features/framework-plugins/lit/lit.js";
 // @ts-expect-error
@@ -101,8 +103,10 @@ function cacheCurrentCEM(projectPath: string, manifest: Package) {
 }
 
 async function getPossibleProjectConfig(basePath: string) {
+    // Comment out the other possible CEM config files for now since
+    // we can't support .js files with module syntax.
     const possibleConfigPaths = [
-        basePath + "/" + CEM_CONFIG_FILE_NAME + ".js",
+        //basePath + "/" + CEM_CONFIG_FILE_NAME + ".js",
         basePath + "/" + CEM_CONFIG_FILE_NAME + ".mjs",
         basePath + "/" + CEM_CONFIG_FILE_NAME + ".cjs",
     ]
