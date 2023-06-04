@@ -18,6 +18,7 @@ import { JavaScriptExport, Package } from "custom-elements-manifest";
 import tss from "typescript/lib/tsserverlibrary.js";
 import fs from "fs";
 import path from "path";
+import { LogLevel, Logger } from "../logger/logger";
 
 // Pathing to ${projectPath}/node_modules/.cache/custom-elements-language-server
 const CEM_CACHE_DIR = "/node_modules/.cache/custom-elements-language-server";
@@ -135,27 +136,22 @@ async function getFrameworkPlugins(options: any) {
     let plugins: any[] = [];
 
     if (options?.litelement) {
-        console.log("Adding LitPlugin");
         plugins = [...(litPlugin() || [])]
     }
 
     if (options?.fast) {
-        console.log("Adding FastPlugin");
         plugins = [...(fastPlugin() || [])]
     }
 
     if (options?.stencil) {
-        console.log("Adding StencilPlugin");
         plugins.push(stencilPlugin());
     }
 
     if (options?.catalyst) {
-        console.log("Adding CatalystPlugin")
         plugins = [...(catalystPlugin() || [])]
     }
 
     if (options?.['catalyst-major-2']) {
-        console.log("Adding CatalystPlugin2")
         plugins = [...(catalystPlugin2() || [])]
     }
 

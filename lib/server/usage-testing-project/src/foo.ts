@@ -12,7 +12,6 @@ export const temp = html`
     ></example-project>
 
     <example-project></example-project>
-
     
     <example-project .color="">
 
@@ -21,6 +20,7 @@ export const temp = html`
     <sl-button></sl-button>
 
     <p>Foo</p>
+
 
     <img src="" />
 
