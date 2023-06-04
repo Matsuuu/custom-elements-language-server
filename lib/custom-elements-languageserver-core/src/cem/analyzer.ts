@@ -136,27 +136,22 @@ async function getFrameworkPlugins(options: any) {
     let plugins: any[] = [];
 
     if (options?.litelement) {
-        Logger.getInstance().log({ level: LogLevel.INFO, message: "Adding LitPlugin" })
         plugins = [...(litPlugin() || [])]
     }
 
     if (options?.fast) {
-        Logger.getInstance().log({ level: LogLevel.INFO, message: "Adding FastPlugin" })
         plugins = [...(fastPlugin() || [])]
     }
 
     if (options?.stencil) {
-        Logger.getInstance().log({ level: LogLevel.INFO, message: "Adding StencilPlugin" })
         plugins.push(stencilPlugin());
     }
 
     if (options?.catalyst) {
-        Logger.getInstance().log({ level: LogLevel.INFO, message: "Adding CatalystPlugin" })
         plugins = [...(catalystPlugin() || [])]
     }
 
     if (options?.['catalyst-major-2']) {
-        Logger.getInstance().log({ level: LogLevel.INFO, message: "Adding CatalystPlugin2" })
         plugins = [...(catalystPlugin2() || [])]
     }
 

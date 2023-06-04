@@ -12,7 +12,6 @@ export const temp = html`
     ></example-project>
 
     <example-project></example-project>
-
     
     <example-project .color="">
 

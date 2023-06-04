@@ -1,6 +1,6 @@
 import fs from "fs";
 
-const DEBUG = false;
+const DEBUG = true;
 
 export enum LogLevel {
     INFO = 1,
@@ -24,7 +24,8 @@ export class Logger {
         return Logger._instance;
     }
 
-    public log(message: LogMessage) {
+    public async log(message: LogMessage) {
+        // This function is set as async so that it doesn't block execution
         if (message.level < this.level) {
             return;
         }
