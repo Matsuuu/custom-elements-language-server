@@ -4,6 +4,7 @@ import { TemplateContext, TemplateLanguageService } from "typescript-template-la
 import { LanguageService as HtmlLanguageService } from "vscode-html-languageservice/lib/esm/htmlLanguageService.js";
 import { createTextDocumentFromContext } from "./text-document.js";
 import {
+    getCEMData,
     getCompletionEntries,
     getGoToDefinitionEntries,
     getImportDiagnostics,
@@ -31,6 +32,9 @@ export class HTMLTemplateLiteralLanguageService implements TemplateLanguageServi
 
     constructor(private readonly typescript: typeof tss, private readonly htmlLanguageService: HtmlLanguageService, project: tss.server.Project) {
         HTMLTemplateLiteralLanguageService.project = project;
+        // For now, trigger the CEM data fetch as soon as we have a environment setup.
+        // Later on we should figure a better trigger as we move to the file watcher setup.
+        getCEMData(project, project.getCurrentDirectory());
     }
 
     getDefinitionAtPosition(context: TemplateContext, position: ts.LineAndCharacter): ts.DefinitionInfo[] {
