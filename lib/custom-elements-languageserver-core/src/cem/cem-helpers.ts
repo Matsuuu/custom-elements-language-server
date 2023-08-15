@@ -23,8 +23,8 @@ export type JavaScriptModuleWithRef = JavaScriptModule & CEMRef;
 export type CustomElementWithRef = CustomElement & CEMRef;
 
 export function findClassForTagName(cemCollection: CEMCollection, tagName: string): JavaScriptModuleWithRef | undefined {
-    // TODO: Cache
-    const declarationModule = cemCollection.modules.find(mod => moduleHasCustomElementExportByName(mod, tagName));
+    // TODO: Cache?
+    const declarationModule = cemCollection.modules.find(mod => moduleHasCustomElementExportOrDefinitionByName(mod, tagName));
     if (!declarationModule) return undefined;
 
     const declarationExport = declarationModule.exports?.find(exp => exportHasCustomElementExportByName(exp, tagName));
@@ -105,8 +105,8 @@ export function findCustomElementDefinitionModule(cemCollection: CEMCollection, 
 }
 
 export function moduleHasTagDeclaration(mod: JavaScriptModule, tagName: string): boolean {
-    return (mod.exports?.some(exp => exp.kind === "custom-element-definition" && exp.name === tagName)
-        || mod.declarations?.some(decl => isCustomElementDeclaration(decl) && decl.customElement === true && decl.tagName === tagName))
+    return (mod.exports?.some(exp => exportHasCustomElementExportByName(exp, tagName))
+        || mod.declarations?.some(decl => declarationHasCustomElementDeclarationByName(decl, tagName)))
         ?? false;
 }
 
@@ -128,12 +128,17 @@ export function exportHasCustomElementExport(modExport: Export) {
     return modExport.kind === "custom-element-definition";
 }
 
-export function moduleHasCustomElementExportByName(mod: Module, tagName: string) {
-    return mod.exports?.some(exp => exportHasCustomElementExportByName(exp, tagName));
+export function moduleHasCustomElementExportOrDefinitionByName(mod: Module, tagName: string) {
+    return mod.exports?.some(exp => exportHasCustomElementExportByName(exp, tagName))
+        || mod.declarations?.some(decl => declarationHasCustomElementDeclarationByName(decl, tagName));
 }
 
 export function exportHasCustomElementExportByName(modExport: Export, tagName: string) {
     return modExport.kind === "custom-element-definition" && modExport.name === tagName;
+}
+
+export function declarationHasCustomElementDeclarationByName(modDeclaration: Declaration, tagName: string) {
+    return isCustomElementDeclaration(modDeclaration) && modDeclaration.tagName === tagName;
 }
 
 export function findModuleByPath(cemCollection: CEMCollection, path: string) {
