@@ -42,7 +42,6 @@ export const CompletionsHandler: Handler<CompletionParams, CompletionList> = {
         }
 
         const request = createCustomElementsLanguageServiceRequest(usableData.fileName, basePath, doc, completionParams.position, project);
-        //const completions = getCompletionEntries(doc, basePath, completionParams.position, languageService);
         const completions = getCompletionEntries(request);
 
         return completionsToList(completions);

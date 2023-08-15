@@ -3,7 +3,7 @@
 ?>
 
 <div>
-  <sl-button>
-    
+  <sl-button variant="">
+  
   
 </div>

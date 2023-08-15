@@ -7,6 +7,15 @@ let client: LanguageClient;
 
 const disposables: Disposable[] = [];
 
+const SUPPORTED_LANGUAGES = [
+    "html",
+    "typescript",
+    "javascript",
+    "php",
+    "vue"
+    // TODO: Need to add jsx etc.?
+]
+
 function registerCommands(context: ExtensionContext) {
     const restartCommandDisposable = commands.registerCommand('extension.restart', async () => {
         deactivate();
@@ -17,6 +26,7 @@ function registerCommands(context: ExtensionContext) {
 
 
 export function activate(context: ExtensionContext) {
+    console.log("CONTEXT: ", context);
     let serverPath = path.join("dist", "server", "src", "server.js");
     if (process.env.CUSTOM_ELEMENTS_LANGUAGE_SERVER_PATH) {
         serverPath = process.env.CUSTOM_ELEMENTS_LANGUAGE_SERVER_PATH;
@@ -43,10 +53,7 @@ export function activate(context: ExtensionContext) {
     // Options to control the language client
     let clientOptions: LanguageClientOptions = {
         documentSelector: [
-            { scheme: "file", language: "plaintext" },
-            { scheme: "file", language: "html" },
-            { scheme: "file", language: "typescript" },
-            { scheme: "file", language: "javascript" }, // TODO: Need to add jsx etc.?
+            ...SUPPORTED_LANGUAGES.map(lang => ({ scheme: "file", language: lang }))
         ],
         synchronize: {
             // Notify the server about file changes to '.clientrc files contained in the workspace
