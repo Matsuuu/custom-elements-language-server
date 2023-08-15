@@ -6,12 +6,21 @@ import { isJavascriptFile } from "./handlers/handler.js";
 import { getProjectForCurrentFile, updateLanguageServiceForFile } from "./language-services/language-services.js";
 import { runDiagnostics } from "./diagnostics.js";
 import { connection } from "./connection.js";
-import { textDocumentDataToUsableDataFromUri } from "./transformers.js";
+import { textDocumentDataToUsableDataFromUri, UsableTextDocumentData } from "./transformers.js";
 import { refreshCEMData } from "custom-elements-languageserver-core";
 import { wait } from "./wait.js";
 
 export const documentSettings = new Map<string, LanguageServerSettings>();
 export let documents: TextDocuments<TextDocument> = new TextDocuments(TextDocument);
+
+function refreshCEM(usableData: UsableTextDocumentData) {
+    updateLanguageServiceForFile(usableData.fileName, usableData.fileContent);
+    const project = getProjectForCurrentFile(usableData.fileName, usableData.fileContent);
+
+    if (project) {
+        refreshCEMData(project.getCurrentDirectory());
+    }
+}
 
 export function initDocuments() {
     documents = new TextDocuments(TextDocument);
@@ -20,12 +29,8 @@ export function initDocuments() {
 
     documents.onDidSave(async (e) => {
         const usableData = textDocumentDataToUsableDataFromUri(documents, e.document.uri);
-        updateLanguageServiceForFile(usableData.fileName, usableData.fileContent);
-        const project = getProjectForCurrentFile(usableData.fileName, usableData.fileContent);
-
-        if (project) {
-            refreshCEMData(project.getCurrentDirectory());
-        }
+        refreshCEM(usableData);
+        runDiagnostics(e.document.uri, e.document);
     })
 
 
@@ -34,11 +39,8 @@ export function initDocuments() {
     });
 
     documents.onDidOpen(e => {
-        const fileName = e.document.uri.replace("file://", "");
-        if (isJavascriptFile(e.document.uri)) {
-            updateLanguageServiceForFile(fileName, e.document.getText());
-        }
-
+        const usableData = textDocumentDataToUsableDataFromUri(documents, e.document.uri);
+        refreshCEM(usableData);
         runDiagnostics(e.document.uri, e.document);
     });
 }

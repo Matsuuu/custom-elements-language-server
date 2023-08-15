@@ -122,7 +122,7 @@ async function getPossibleProjectConfig(basePath: string) {
     }
 
     if (!importedConfig) {
-        return undefined;
+        return DEFAULT_CONFIG;
     }
 
     const config = importedConfig.default;
@@ -158,3 +158,14 @@ async function getFrameworkPlugins(options: any) {
     return plugins;
 }
 
+
+const DEFAULT_CONFIG = {
+    exclude: [],
+    dependencies: true,
+    dev: false,
+    packagejson: true,
+    litelement: true,
+    plugins: [
+
+    ]
+}
