@@ -28,11 +28,9 @@ export function findClassForTagName(cemCollection: CEMCollection, tagName: strin
     if (!declarationModule) return undefined;
 
     const declarationExport = declarationModule.exports?.find(exp => exportHasCustomElementExportByName(exp, tagName));
-    if (!declarationExport) return undefined;
+    // if (!declarationExport) return undefined;
 
-    const declaration = declarationExport.declaration;
-    const classPath = declaration.module;
-
+    const classPath = declarationExport?.declaration?.module ?? declarationModule.path;
     if (!classPath) return undefined;
 
     const mod = findModuleByPath(cemCollection, classPath);

@@ -57,15 +57,15 @@ export class CEMCollection {
     }
 
     public refreshLocal() {
-        this._localCEM?.refresh();
         this._modules = undefined;
         this._modulesWithRefs = undefined;
+        this._localCEM?.refresh();
     }
 
     public refresh() {
-        this.cems.forEach(cem => cem.refresh());
         this._modules = undefined;
         this._modulesWithRefs = undefined;
+        this.cems.forEach(cem => cem.refresh());
     }
 
     public hasData() {
