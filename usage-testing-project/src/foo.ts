@@ -12,8 +12,9 @@ export const temp = html`
     ></example-project>
 
     <example-project></example-project>
-    
+  
     <example-project .color="">
+    
 
     <sl-input @sl-blur="${() => { }}"></sl-input>
 
@@ -21,9 +22,7 @@ export const temp = html`
 
     <p>Foo</p>
 
-
     <img src="" />
-
   
     <input type="text" />
 
