@@ -38,7 +38,7 @@ export function initDocuments() {
         documentSettings.delete(e.document.uri);
     });
 
-    documents.onDidOpen(e => {
+    documents.onDidOpen(async (e) => {
         const usableData = textDocumentDataToUsableDataFromUri(documents, e.document.uri);
         refreshCEM(usableData);
         runDiagnostics(e.document.uri, e.document);
