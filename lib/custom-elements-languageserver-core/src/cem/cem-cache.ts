@@ -26,7 +26,9 @@ export class CEMCollection {
             .filter(cemInstance => cemInstance.isValid());
 
         this._localCEM = cemData;
-        this._cems = [cemData, ...dependencyCems].filter(cemIsNotUndefined);
+        this._cems = dependencyCems.filter(cemIsNotUndefined);
+
+        console.log(`CEM Cache initialized. LocalCEM Present: ${this._localCEM !== undefined}. Dependency CEM Count: ${dependencyCems.length}`);
     }
 
     public get modules(): Array<JavaScriptModule> {

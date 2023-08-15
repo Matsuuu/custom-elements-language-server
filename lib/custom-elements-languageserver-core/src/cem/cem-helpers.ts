@@ -75,7 +75,7 @@ export function getCustomElementTags(cemCollection: CEMCollection): CEMTagInfo[]
     const customElementDeclarations = cemCollection.modules.filter(mod => moduleHasCustomElementExport(mod));
 
     return customElementDeclarations.map(mod => {
-        const tagName = mod.exports?.filter(exportHasCustomElementExport).map(exp => exp.name)[0];
+        const tagName = getModuleTagName(mod);
         if (tagName) {
             const classInfo = findClassForTagName(cemCollection, tagName);
             const classDeclaration = classInfo?.declarations
@@ -90,6 +90,11 @@ export function getCustomElementTags(cemCollection: CEMCollection): CEMTagInfo[]
         }
         return undefined;
     }).filter((entry): entry is CEMTagInfo => entry !== undefined);
+}
+
+function getModuleTagName(mod: JavaScriptModule) {
+    return mod.exports?.filter(exportHasCustomElementExport).map(exp => exp.name)[0]
+        ?? mod.declarations?.filter(isCustomElementDeclaration).map(decl => decl.tagName)[0];
 }
 
 export function findCustomElementDefinitionModule(cemCollection: CEMCollection, tagName: string): JavaScriptModuleWithRef | undefined {
@@ -113,7 +118,7 @@ export function findTagNameForClass(cemCollection: CEMCollection, className: str
 }
 
 export function moduleHasCustomElementExport(mod: Module) {
-    return mod.exports?.some(exp => exportHasCustomElementExport(exp));
+    return mod.exports?.some(exp => exportHasCustomElementExport(exp)) || mod.declarations?.some(decl => (decl as CustomElementDeclaration).customElement === true);
 }
 
 export function exportHasCustomElementExport(modExport: Export) {

@@ -18,6 +18,7 @@ const SUPPORTED_LANGUAGES = [
 
 function registerCommands(context: ExtensionContext) {
     const restartCommandDisposable = commands.registerCommand('extension.restart', async () => {
+        client.stop();
         deactivate();
         activate(context);
     });

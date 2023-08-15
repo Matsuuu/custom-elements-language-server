@@ -50,6 +50,7 @@ export class LanguageServiceManager {
 
         const resolvedProjectIsConfiguredProject = isConfiguredProject(project);
         if (!resolvedProjectIsConfiguredProject) {
+            // TODO: Send a notification to user, suggesting setting up a jsconfig/tsconfig
             // TODO: Can we do anything with a project that's not configured?
             return undefined;
         }
