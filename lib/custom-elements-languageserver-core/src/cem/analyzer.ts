@@ -32,7 +32,7 @@ export interface AnalyzerOutput {
 
 export async function analyzeLocalProject(project: tss.server.Project): Promise<AnalyzerOutput> {
 
-    console.log("Building manifest");
+    // console.log("Building manifest");
 
     const basePath = project.getCurrentDirectory();
     const rootFiles = project.getRootFiles();
@@ -56,7 +56,7 @@ export async function analyzeLocalProject(project: tss.server.Project): Promise<
 
     const plugins = [...(projectConfig?.plugins || []), ...frameworkPlugins]
 
-    console.log(plugins.length + " plugins enabled in CEM generation.");
+    // console.log(plugins.length + " plugins enabled in CEM generation.");
 
     const manifest: Package = create({
         modules: modifiedSourceFiles,
@@ -66,9 +66,9 @@ export async function analyzeLocalProject(project: tss.server.Project): Promise<
 
     normalizeManifest(basePath, manifest);
 
-    console.log("Building manifest done, writing to file.");
+    // console.log("Building manifest done, writing to file.");
     const savePath = cacheCurrentCEM(basePath, manifest);
-    console.log("Manifest file written to ", savePath);
+    // console.log("Manifest file written to ", savePath);
 
     return {
         manifest,
@@ -91,7 +91,7 @@ function normalizeManifest(basePath: string, manifest: Package) {
 function cacheCurrentCEM(projectPath: string, manifest: Package) {
     const cachePath = path.join(projectPath, CEM_CACHE_DIR);
     if (!fs.existsSync(cachePath)) {
-        console.log("Creating cache path ", cachePath);
+        // console.log("Creating cache path ", cachePath);
         fs.mkdirSync(cachePath, { recursive: true });
     }
     const savePath = path.resolve(cachePath, CEM_CACHE_NAME);
@@ -115,7 +115,7 @@ async function getPossibleProjectConfig(basePath: string) {
     let importedConfig;
     for (const possibleConfigPath of possibleConfigPaths) {
         if (fs.existsSync(possibleConfigPath)) {
-            console.log("Found CEM config at ", possibleConfigPath);
+            // console.log("Found CEM config at ", possibleConfigPath);
             importedConfig = await import(possibleConfigPath);
             break;
         }

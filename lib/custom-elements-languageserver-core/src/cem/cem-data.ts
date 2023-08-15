@@ -79,6 +79,7 @@ export class CEMInstance {
 
         await this.refresher(this);
         const cemFile = fs.readFileSync(this.cemPath, "utf8");
+        console.log("Read CEM. File size: ", cemFile.length);
         this.cem = JSON.parse(cemFile);
     }
 
@@ -105,8 +106,8 @@ export class CEMInstance {
             packagePath: projectPath,
             packageJsonPath,
             packageName,
-            refresher: (_this: CEMInstance) => {
-                analyzeLocalProject(project);
+            refresher: async (_this: CEMInstance) => {
+                await analyzeLocalProject(project);
             }
         })
     }

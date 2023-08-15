@@ -7,8 +7,8 @@ import tss from "typescript/lib/tsserverlibrary.js";
 
 export class CEMCollection {
     public id: number = Date.now() + Math.floor(Math.random() * 999);
-    public cems: Array<CEMInstance> = [];
-    public localCEM: CEMInstance | undefined;
+    private _cems: Array<CEMInstance> = [];
+    private _localCEM: CEMInstance | undefined;
     private _modules: Array<JavaScriptModule> | undefined;
     private _modulesWithRefs: Array<JavaScriptModuleWithRef> | undefined;
 
@@ -25,15 +25,23 @@ export class CEMCollection {
             .filter(cemIsNotUndefined)
             .filter(cemInstance => cemInstance.isValid());
 
-        this.localCEM = cemData;
-        this.cems = [cemData, ...dependencyCems].filter(cemIsNotUndefined);
+        this._localCEM = cemData;
+        this._cems = [cemData, ...dependencyCems].filter(cemIsNotUndefined);
     }
 
     public get modules(): Array<JavaScriptModule> {
         if (!this._modules) {
+            console.log("Re-sourcing modules. ");
             this._modules = this.cems.flatMap(instance => instance.cem?.modules ?? []);
         }
         return this._modules;
+    }
+
+    public get cems(): Array<CEMInstance> {
+        if (!this._localCEM) {
+            return [...this._cems];
+        }
+        return [this._localCEM, ...this._cems];
     }
 
     // TODO: Do we need both of these module getters? we should prefer this one
@@ -48,7 +56,7 @@ export class CEMCollection {
     }
 
     public refreshLocal() {
-        this.localCEM?.refresh();
+        this._localCEM?.refresh();
         this._modules = undefined;
         this._modulesWithRefs = undefined;
     }
@@ -67,8 +75,8 @@ export class CEMCollection {
 const CEM_COLLECTION_CACHE = new Map<string, CEMCollection>();
 
 export function getCEMData(project: tss.server.Project, projectBasePath: string): CEMCollection {
-    console.log("FETCHING THAT CEM YES")
     const existingCollection = CEM_COLLECTION_CACHE.get(projectBasePath);
+    console.log("Fetch CEM");
     if (existingCollection) {
         // TODO: Do this through a watcher instead of on every request?
         // TODO: This is now needed more than before since we need to have 
@@ -82,7 +90,7 @@ export function getCEMData(project: tss.server.Project, projectBasePath: string)
     return cemCollection;
 }
 
-export function refreshCEMData(project: tss.server.Project, projectBasePath: string) {
+export function refreshCEMData(projectBasePath: string) {
     const existingCollection = CEM_COLLECTION_CACHE.get(projectBasePath);
     if (!existingCollection) {
         console.warn("Tried to refresh a non-existant cache. Attempted " + projectBasePath + ", but the only ones available are: ", [...CEM_COLLECTION_CACHE.keys()]);

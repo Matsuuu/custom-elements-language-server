@@ -8,6 +8,7 @@ import { runDiagnostics } from "./diagnostics.js";
 import { connection } from "./connection.js";
 import { textDocumentDataToUsableDataFromUri } from "./transformers.js";
 import { refreshCEMData } from "custom-elements-languageserver-core";
+import { wait } from "./wait.js";
 
 export const documentSettings = new Map<string, LanguageServerSettings>();
 export let documents: TextDocuments<TextDocument> = new TextDocuments(TextDocument);
@@ -17,14 +18,13 @@ export function initDocuments() {
     // Only keep settings for open documents
     documents.listen(connection);
 
-    documents.onDidSave(e => {
-        console.log("SAVE ", e)
+    documents.onDidSave(async (e) => {
         const usableData = textDocumentDataToUsableDataFromUri(documents, e.document.uri);
+        updateLanguageServiceForFile(usableData.fileName, usableData.fileContent);
         const project = getProjectForCurrentFile(usableData.fileName, usableData.fileContent);
-        console.log(project);
 
         if (project) {
-            refreshCEMData(project, project.getCurrentDirectory());
+            refreshCEMData(project.getCurrentDirectory());
         }
     })
 
