@@ -32,7 +32,7 @@ export class ExampleProject extends LitElement {
 
     myAttribute = "bar";
 
-    matias = "foo";
+    matias = "BORK BORK";
 
     constructor() {
         super();
