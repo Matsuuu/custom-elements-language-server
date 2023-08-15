@@ -7,7 +7,8 @@
         "start": "npm run watch",
         "watch": "npm run build -- --watch",
         "build": "esbuild ./src/server.ts --bundle --platform=node --external:vscode --sourcemap --outdir=dist",
-        "build:with-types": "npm run build"
+        "build:with-types": "npm run build",
+        "prepublishOnly": "npx copyfiles ../../README.md ./server/README.md"
     },
     "bin": {
         "custom-elements-languageserver": "./bin/custom-elements-languageserver.js"
