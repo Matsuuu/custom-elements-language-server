@@ -1,6 +1,6 @@
 {
     "paths": ["src/**"],
-    "exclude": ["usage-testing-project", "out"],
+    "exclude": ["out"],
     "compilerOptions": {
         "target": "ESNext",
         "module": "ESNext",

@@ -32,6 +32,6 @@
         "onLanguage:plaintext",
         "onLanguage:javascript",
         "onLanguage:typescript",
-        "onLanguage:html"
+        "onLanguage:html",
     ]
 }
