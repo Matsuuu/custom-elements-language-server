@@ -9,8 +9,6 @@ export function getMissingCloseTagDiagnostics(nodeOffset: number, request: Custo
     const { document, htmlLanguageService, filePath, project } = request;
     const customElementTagNodes = getCustomElementTagsInContext(htmlLanguageService, document);
     const sourceFile = getSourceFile(filePath, undefined, project);
-    console.log("SourceFile: ", sourceFile);
-    console.log("Filepath: ", filePath);
 
     return customElementTagNodes
         .filter(nodeIsNotClosed)

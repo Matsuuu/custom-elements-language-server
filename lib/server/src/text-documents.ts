@@ -3,9 +3,11 @@ import tss from "typescript/lib/tsserverlibrary.js";
 import { getCapabilities, getGlobalSettings, LanguageServerSettings } from "./settings.js";
 import { TextDocuments, _Connection } from "vscode-languageserver";
 import { isJavascriptFile } from "./handlers/handler.js";
-import { updateLanguageServiceForFile } from "./language-services/language-services.js";
+import { getProjectForCurrentFile, updateLanguageServiceForFile } from "./language-services/language-services.js";
 import { runDiagnostics } from "./diagnostics.js";
 import { connection } from "./connection.js";
+import { textDocumentDataToUsableDataFromUri } from "./transformers.js";
+import { refreshCEMData } from "custom-elements-languageserver-core";
 
 export const documentSettings = new Map<string, LanguageServerSettings>();
 export let documents: TextDocuments<TextDocument> = new TextDocuments(TextDocument);
@@ -14,6 +16,17 @@ export function initDocuments() {
     documents = new TextDocuments(TextDocument);
     // Only keep settings for open documents
     documents.listen(connection);
+
+    documents.onDidSave(e => {
+        console.log("SAVE ", e)
+        const usableData = textDocumentDataToUsableDataFromUri(documents, e.document.uri);
+        const project = getProjectForCurrentFile(usableData.fileName, usableData.fileContent);
+        console.log(project);
+
+        if (project) {
+            refreshCEMData(project, project.getCurrentDirectory());
+        }
+    })
 
 
     documents.onDidClose(e => {

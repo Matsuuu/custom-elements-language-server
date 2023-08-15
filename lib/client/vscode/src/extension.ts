@@ -26,7 +26,6 @@ function registerCommands(context: ExtensionContext) {
 
 
 export function activate(context: ExtensionContext) {
-    console.log("CONTEXT: ", context);
     let serverPath = path.join("dist", "server", "src", "server.js");
     if (process.env.CUSTOM_ELEMENTS_LANGUAGE_SERVER_PATH) {
         serverPath = process.env.CUSTOM_ELEMENTS_LANGUAGE_SERVER_PATH;

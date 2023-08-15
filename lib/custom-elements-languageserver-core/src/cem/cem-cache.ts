@@ -72,13 +72,23 @@ export function getCEMData(project: tss.server.Project, projectBasePath: string)
         // TODO: Do this through a watcher instead of on every request?
         // TODO: This is now needed more than before since we need to have 
         // the asynchronous context in here.
-        existingCollection?.refreshLocal();
+        // existingCollection?.refreshLocal();
         return existingCollection;
     }
 
     const cemCollection = new CEMCollection(project, projectBasePath);
     CEM_COLLECTION_CACHE.set(projectBasePath, cemCollection);
     return cemCollection;
+}
+
+export function refreshCEMData(project: tss.server.Project, projectBasePath: string) {
+    const existingCollection = CEM_COLLECTION_CACHE.get(projectBasePath);
+    if (!existingCollection) {
+        console.warn("Tried to refresh a non-existant cache. Attempted " + projectBasePath + ", but the only ones available are: ", [...CEM_COLLECTION_CACHE.keys()]);
+        return;
+    }
+    console.log("REFRESH CEM DATA");
+    existingCollection?.refreshLocal();
 }
 
 function cemIsNotUndefined(cemInstance: CEMInstance | undefined): cemInstance is CEMInstance {

@@ -18,7 +18,9 @@ return {
       'typescript',
       'typescriptreact',
       'typescript.tsx',
-      'html'
+      'html',
+      'vue',
+      'php'
     },
     root_dir = function(fname)
       return util.root_pattern 'tsconfig.json'(fname)
