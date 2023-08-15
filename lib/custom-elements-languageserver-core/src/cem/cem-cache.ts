@@ -31,7 +31,6 @@ export class CEMCollection {
 
     public get modules(): Array<JavaScriptModule> {
         if (!this._modules) {
-            console.log("Re-sourcing modules. ");
             this._modules = this.cems.flatMap(instance => instance.cem?.modules ?? []);
         }
         return this._modules;
@@ -76,7 +75,6 @@ const CEM_COLLECTION_CACHE = new Map<string, CEMCollection>();
 
 export function getCEMData(project: tss.server.Project, projectBasePath: string): CEMCollection {
     const existingCollection = CEM_COLLECTION_CACHE.get(projectBasePath);
-    console.log("Fetch CEM");
     if (existingCollection) {
         // TODO: Do this through a watcher instead of on every request?
         // TODO: This is now needed more than before since we need to have 
@@ -96,7 +94,6 @@ export function refreshCEMData(projectBasePath: string) {
         console.warn("Tried to refresh a non-existant cache. Attempted " + projectBasePath + ", but the only ones available are: ", [...CEM_COLLECTION_CACHE.keys()]);
         return;
     }
-    console.log("REFRESH CEM DATA");
     existingCollection?.refreshLocal();
 }
 

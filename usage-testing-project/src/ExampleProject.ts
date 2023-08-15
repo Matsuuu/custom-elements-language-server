@@ -32,6 +32,8 @@ export class ExampleProject extends LitElement {
 
     myAttribute = "bar";
 
+    matias = "foo";
+
     constructor() {
         super();
         /**
