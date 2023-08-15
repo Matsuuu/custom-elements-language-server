@@ -100,11 +100,14 @@ function getModuleTagName(mod: JavaScriptModule) {
 export function findCustomElementDefinitionModule(cemCollection: CEMCollection, tagName: string): JavaScriptModuleWithRef | undefined {
     return cemCollection.modulesWithReferences?.filter(mod =>
         mod.kind === "javascript-module" &&
-        mod.exports?.some(exp =>
-            exp.kind === "custom-element-definition" &&
-            exp.name === tagName
-        )
+        moduleHasTagDeclaration(mod, tagName)
     )?.[0] ?? undefined
+}
+
+export function moduleHasTagDeclaration(mod: JavaScriptModule, tagName: string): boolean {
+    return (mod.exports?.some(exp => exp.kind === "custom-element-definition" && exp.name === tagName)
+        || mod.declarations?.some(decl => isCustomElementDeclaration(decl) && decl.customElement === true && decl.tagName === tagName))
+        ?? false;
 }
 
 export function findTagNameForClass(cemCollection: CEMCollection, className: string) {
