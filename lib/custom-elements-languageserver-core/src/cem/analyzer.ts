@@ -32,7 +32,7 @@ export interface AnalyzerOutput {
 
 export async function analyzeLocalProject(project: tss.server.Project): Promise<AnalyzerOutput> {
 
-    // console.log("Building manifest");
+    console.log("Building manifest for project ", project.getCurrentDirectory());
 
     const basePath = project.getCurrentDirectory();
     const rootFiles = project.getRootFiles();
@@ -66,7 +66,6 @@ export async function analyzeLocalProject(project: tss.server.Project): Promise<
 
     normalizeManifest(basePath, manifest);
 
-    // console.log("Building manifest done, writing to file.");
     const savePath = cacheCurrentCEM(basePath, manifest);
     // console.log("Manifest file written to ", savePath);
 
@@ -90,15 +89,18 @@ function normalizeManifest(basePath: string, manifest: Package) {
 
 function cacheCurrentCEM(projectPath: string, manifest: Package) {
     const cachePath = path.join(projectPath, CEM_CACHE_DIR);
+    console.log("Checking for cache path at " + cachePath);
     if (!fs.existsSync(cachePath)) {
-        // console.log("Creating cache path ", cachePath);
+        console.log("Creating cache path ", cachePath);
         fs.mkdirSync(cachePath, { recursive: true });
     }
+
     const savePath = path.resolve(cachePath, CEM_CACHE_NAME);
+    console.log("Building manifest done, writing to file. at " + savePath);
     const manifestAsString = JSON.stringify(manifest);
     fs.writeFileSync(savePath, manifestAsString, "utf8");
 
-    console.log("Manifest built. Filesize: ", manifestAsString.length);
+    console.log(`Manifest built to ${savePath}. Filesize: `, manifestAsString.length);
 
     return savePath;
 }

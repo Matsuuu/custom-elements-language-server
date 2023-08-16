@@ -86,6 +86,7 @@ export class CEMInstance {
 
         const packageJsonPath = projectPath + "/package.json";
         if (!fs.existsSync(packageJsonPath)) {
+            console.warn("Could not find a project in path ", projectPath + "/package.json");
             return undefined;
         }
 

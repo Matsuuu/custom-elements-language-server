@@ -17,6 +17,7 @@ export class CEMCollection {
     }
 
     private async initializeCEMs() {
+        console.log("Initializing CEM's");
         const dependencyPackages = getDependencyPackagesWithCEMs(this.basePath + "/node_modules");
 
         const cemData = await CEMInstance.fromLocalPath(this.project, this.basePath);
