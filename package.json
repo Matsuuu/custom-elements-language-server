@@ -92,7 +92,7 @@
         "build:dev": "npm run build:final -- --watch --sourcemap",
         "bundle": "npm run build:all && npm run build:final",
         "package": "vsce package",
-        "build-and-package": "npm run bundle && npm run package"
+        "build-and-package": "rm -rf ./dist && npm run bundle && npm run package"
     },
     "devDependencies": {
         "concurrently": "^7.5.0",
