@@ -1,7 +1,6 @@
 import { Logger } from "./logger.js";
 import tss from "typescript/lib/tsserverlibrary.js";
 import path from "path";
-import { tssIteratorToArray } from "./transformers.js";
 
 const logger = new Logger();
 
@@ -32,10 +31,6 @@ export class ProjectService extends tss.server.ProjectService {
 
     constructor(options: tss.server.ProjectServiceOptions) {
         super(options);
-    }
-
-    public getConfiguredProjects(): Array<string> {
-        return tssIteratorToArray(this.configuredProjects.keys());
     }
 
     public openAndGetProjectForFile(fileName: string, fileContent: string | undefined) {
