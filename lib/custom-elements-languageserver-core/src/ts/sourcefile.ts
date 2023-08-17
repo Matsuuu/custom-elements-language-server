@@ -14,8 +14,14 @@ export function getSourceFile(baseOrFullPath: string, classPath: string | undefi
         return undefined;
     }
 
+
     // @ts-ignore
     const sourceFile = project.getSourceFile(fullClassPath);
+
+    if (false) { // DEBUG OPTION
+        const fileNames = project.getFileNames(true);
+        debugger;
+    }
 
     return sourceFile;
 }

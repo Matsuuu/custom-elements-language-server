@@ -2,6 +2,7 @@
 import { Package } from "custom-elements-manifest";
 import tss from "typescript/lib/tsserverlibrary.js";
 import * as fs from "fs";
+import url from "url";
 import { ImportedDependency } from "../dependencies/dependency-package-resolver.js";
 import { analyzeLocalProject } from "./analyzer.js";
 
@@ -98,7 +99,7 @@ export class CEMInstance {
         const cemSourcePath = packageJson.customElements
             ? `${projectPath}/${packageJson.customElements}`
             : `${projectPath}`;
-        const cemPath = analyzerOutput.filePath;
+        const cemPath = tss.server.toNormalizedPath(analyzerOutput.filePath);
 
         return new CEMInstance({
             cemPath,
