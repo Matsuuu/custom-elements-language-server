@@ -5,7 +5,7 @@
     "author": "Matsuuu <huhta.matias@gmail.com>",
     "icon": "assets/custom-elements.png",
     "license": "MIT",
-    "version": "0.0.6",
+    "version": "0.0.7",
     "publisher": "Matsuuu",
     "categories": [],
     "keywords": [
@@ -89,7 +89,7 @@
         "format": "npx prettier --write .",
         "localinstall": "npm run build:all && npm run install:server",
         "build:final": "esbuild ./lib/client/vscode/src/extension.ts ./lib/server/src/server.ts --bundle --platform=node --external:vscode --outdir=dist",
-        "build:dev": "npm run build:final -- --watch",
+        "build:dev": "npm run build:final -- --watch --sourcemap",
         "bundle": "npm run build:all && npm run build:final",
         "package": "vsce package",
         "build-and-package": "npm run bundle && npm run package"
