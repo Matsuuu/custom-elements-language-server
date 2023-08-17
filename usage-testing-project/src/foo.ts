@@ -1,7 +1,6 @@
 import { html } from "lit-html";
 import { repeat } from "lit/directives/repeat.js";
 import "./importing-element.js";
-import "./ExampleProject.js";
 
 export const temp = html`
     <example-project my-attribute="f" 
@@ -11,7 +10,7 @@ export const temp = html`
     @my-custom-event="${() => { console.log('foo') }}"
     ></example-project>
 
-    <example-project></example-project>
+    <example-project>
   
     <example-project .color="">
       

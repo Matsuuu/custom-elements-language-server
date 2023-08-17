@@ -18,6 +18,7 @@ import { JavaScriptExport, Package } from "custom-elements-manifest";
 import tss from "typescript/lib/tsserverlibrary.js";
 import fs from "fs";
 import path from "path";
+import url from "url";
 import { LogLevel, Logger } from "../logger/logger";
 
 // Pathing to ${projectPath}/node_modules/.cache/custom-elements-language-server
@@ -110,8 +111,8 @@ async function getPossibleProjectConfig(basePath: string) {
     // we can't support .js files with module syntax.
     const possibleConfigPaths = [
         //basePath + "/" + CEM_CONFIG_FILE_NAME + ".js",
-        basePath + "/" + CEM_CONFIG_FILE_NAME + ".mjs",
-        basePath + "/" + CEM_CONFIG_FILE_NAME + ".cjs",
+        url.pathToFileURL(basePath + "/" + CEM_CONFIG_FILE_NAME + ".mjs"),
+        url.pathToFileURL(basePath + "/" + CEM_CONFIG_FILE_NAME + ".cjs"),
     ]
 
     let importedConfig;
