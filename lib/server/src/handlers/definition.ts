@@ -20,7 +20,6 @@ export const DefinitionHandler: Handler<DefinitionParams, Location[] | undefined
         const definitions = languageService?.getDefinitionAtPosition(usableData.fileName, usableData.position);
 
         const definitionLocations = definitions?.map(documentSpanToLocation) ?? [];
-        debugger;
         return definitionLocations;
     },
     onHTMLOrOtherFile: (definitionParams) => {

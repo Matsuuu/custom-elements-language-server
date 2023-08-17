@@ -6,7 +6,7 @@ console.log("NODE VERSION: ", process.version);
 console.log("Startup at ", new Date());
 
 import { TextDocument } from "vscode-languageserver-textdocument";
-import { documents, initDocuments } from "./text-documents.js";
+import { documents } from "./text-documents.js";
 import { ReferenceHandler } from "./handlers/references.js";
 import { CodeActionHandler } from "./handlers/code-actions.js";
 import { HoverHandler } from "./handlers/hover.js";
@@ -17,7 +17,6 @@ import { connection, initConnection } from "./connection.js";
 import { runDiagnostics } from "./diagnostics.js";
 
 initConnection();
-initDocuments();
 
 connection.onCompletion(CompletionsHandler.handle);
 connection.onHover(HoverHandler.handle);

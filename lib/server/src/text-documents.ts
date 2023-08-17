@@ -2,13 +2,11 @@ import { TextDocument } from "vscode-languageserver-textdocument";
 import tss from "typescript/lib/tsserverlibrary.js";
 import { getCapabilities, getGlobalSettings, LanguageServerSettings } from "./settings.js";
 import { TextDocuments, _Connection } from "vscode-languageserver";
-import { isJavascriptFile } from "./handlers/handler.js";
 import { getProjectForCurrentFile, updateLanguageServiceForFile } from "./language-services/language-services.js";
 import { runDiagnostics } from "./diagnostics.js";
 import { connection } from "./connection.js";
 import { textDocumentDataToUsableDataFromUri, UsableTextDocumentData } from "./transformers.js";
 import { refreshCEMData } from "custom-elements-languageserver-core";
-import { wait } from "./wait.js";
 
 export const documentSettings = new Map<string, LanguageServerSettings>();
 export let documents: TextDocuments<TextDocument> = new TextDocuments(TextDocument);
@@ -23,6 +21,7 @@ function refreshCEM(usableData: UsableTextDocumentData) {
 }
 
 export function initDocuments() {
+    console.log("Initializing documents");
     documents = new TextDocuments(TextDocument);
     // Only keep settings for open documents
     documents.listen(connection);
