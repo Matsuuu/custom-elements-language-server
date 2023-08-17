@@ -52,6 +52,8 @@ export async function analyzeLocalProject(project: tss.server.Project): Promise<
         )
     });
 
+    console.log("Analyzing " + modifiedSourceFiles.length + " files.");
+
     const projectConfig = await getPossibleProjectConfig(basePath);
     const frameworkPlugins = await getFrameworkPlugins(projectConfig);
 
