@@ -33,9 +33,7 @@ export function textDocumentDataToUsableDataFromUri(documents: TextDocuments<Tex
 
 export function textDocumentDataToUsableData(documents: TextDocuments<TextDocument>, textDocumentData: TextDocumentPositionParams): UsableTextDocumentData {
     const fileName = url.fileURLToPath(textDocumentData.textDocument.uri);
-    // const doc = documents.get(textDocumentData.textDocument.uri);
-    // TODO: Check if this is breaking on linux
-    const doc = documents.get(fileName);
+    const doc = documents.get(textDocumentData.textDocument.uri);
 
     return {
         fileName,
