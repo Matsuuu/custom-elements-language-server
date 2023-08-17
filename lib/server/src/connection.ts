@@ -4,6 +4,7 @@ import { documentSettings, initDocuments } from "./text-documents";
 import { uriToFileName } from "./transformers";
 import fs from "fs";
 import path from "path";
+import url from "url";
 import { updateLanguageServiceForFile } from "./language-services/language-services";
 
 export let connection = createConnection(ProposedFeatures.all);
@@ -79,6 +80,7 @@ function onInitialize(params: InitializeParams) {
 }
 
 function onInitialized() {
+    console.log("Connection initialized");
     if (hasConfigurationCapability) {
         // Register for all configuration changes.
         connection.client.register(DidChangeConfigurationNotification.type, undefined);
@@ -107,20 +109,28 @@ interface PackageJsonLike {
 }
 
 async function initializeProjectsInWorkSpaceFolders(workspaceFolders: WorkspaceFolder[]) {
+    console.log("Initializing workspaces.");
     workspaceFolders?.forEach(workSpaceFolder => {
-        let fileName = uriToFileName(workSpaceFolder.uri);
-        const packageJsonPath = fileName + "/package.json";
+        console.log("Initializing workspace " + workSpaceFolder.name + " @ " + decodeURI(workSpaceFolder.uri));
+        let fileName = url.fileURLToPath(workSpaceFolder.uri);
+        const packageJsonPath = path.resolve(fileName, "package.json");
+        console.log("Package JSON path ", packageJsonPath);
         if (fs.existsSync(packageJsonPath)) {
             try {
                 const packageJson = JSON.parse(fs.readFileSync(packageJsonPath, "utf8")) as PackageJsonLike;
                 const mainFileName = packageJson.main ?? packageJson.module;
                 if (mainFileName) {
                     const mainFilePath = path.resolve(fileName, mainFileName);
+                    debugger;
                     updateLanguageServiceForFile(mainFilePath, undefined);
+                } else {
+                    console.warn("Could not find a main or module file");
                 }
             } catch (ex) {
                 console.warn("Couldn't open project " + fileName, ex);
             }
+        } else {
+            console.warn("Did not find package.json for project");
         }
     })
 }

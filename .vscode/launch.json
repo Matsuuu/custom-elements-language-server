@@ -24,11 +24,7 @@
             "localRoot": "${workspaceRoot}",
             "runtimeExecutable": "${execPath}",
             "args": ["--extensionDevelopmentPath=${workspaceRoot}"],
-            "outFiles": ["$./dist/client/vscode/**/*.js"],
-            "preLaunchTask": {
-                "type": "npm",
-                "script": "watch"
-            }
+            "outFiles": ["$./dist/client/vscode/**/*.js"]
         },
         {
             "type": "node",
