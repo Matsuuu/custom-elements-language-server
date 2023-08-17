@@ -67,7 +67,16 @@ export function activate(context: ExtensionContext) {
     client = new LanguageClient("customElementsLanguageServer", "Custom Elements Language Services", serverOptions, clientOptions);
 
     // Start the client. This will also launch the server
-    client.start();
+    const clientStartedPromise = client.start();
+
+    clientStartedPromise
+        .then(() => {
+            console.log("Connection to server established");
+        })
+        .catch(err => {
+            console.error("Could not connect to Language Server ", err);
+        });
+
 
     registerCommands(context);
 }

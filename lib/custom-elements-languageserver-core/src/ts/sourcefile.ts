@@ -78,9 +78,6 @@ function resolveAbsoluteFileToImport(importFilePath: string, basePath: string, s
     const packagePath = path.resolve(basePath, "node_modules", importFilePath);
     const dependencyPackageJsonPath = packagePath + "/package.json";
     if (!fs.existsSync(dependencyPackageJsonPath)) {
-        // TODO: Handle this? Is it needed?
-        // If you end up in here. Please report this bug
-        debugger;
         return undefined;
     }
     const dependencyPackageJson = JSON.parse(fs.readFileSync(dependencyPackageJsonPath, "utf8"));

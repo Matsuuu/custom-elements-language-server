@@ -9,6 +9,7 @@ import { updateLanguageServiceForFile } from "./language-services/language-servi
 export let connection = createConnection(ProposedFeatures.all);
 
 export function initConnection() {
+    console.log("Initializing connection");
     connection = createConnection(ProposedFeatures.all);
 
     connection.onInitialize(onInitialize);
