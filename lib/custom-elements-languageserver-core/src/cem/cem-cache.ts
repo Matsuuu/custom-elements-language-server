@@ -29,6 +29,7 @@ export class CEMCollection {
         this._localCEM = cemData;
         this._cems = dependencyCems.filter(cemIsNotUndefined);
 
+        this.refresh(); // Initialize modules
         console.log(`CEM Cache initialized. LocalCEM Present: ${this._localCEM !== undefined}. Dependency CEM Count: ${dependencyCems.length}`);
     }
 
@@ -92,6 +93,7 @@ export function getCEMData(project: tss.server.Project, projectBasePath: string)
 }
 
 export function refreshCEMData(projectBasePath: string) {
+    console.log("CEM REFRESH");
     const existingCollection = CEM_COLLECTION_CACHE.get(projectBasePath);
     if (!existingCollection) {
         console.warn("Tried to refresh a non-existant cache. Attempted " + projectBasePath + ", but the only ones available are: ", [...CEM_COLLECTION_CACHE.keys()]);

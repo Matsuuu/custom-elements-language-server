@@ -39,13 +39,9 @@ export class ProjectService extends tss.server.ProjectService {
     }
 
     public openAndGetProjectForFile(fileName: string, fileContent: string | undefined) {
-        console.log("Open and get project for file ", fileName);
-        console.log("Filecontent: ", fileContent?.length || 0);
-        
         const fileOpenResult = this.openClientFile(fileName, fileContent);
 
         const scriptInfo = this.getScriptInfoForNormalizedPath(tss.server.toNormalizedPath(fileName));
-        console.log("Script info is undefined: ", scriptInfo === undefined);
         return scriptInfo?.containingProjects[0];
     }
 }

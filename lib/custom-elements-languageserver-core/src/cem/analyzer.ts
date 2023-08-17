@@ -52,6 +52,8 @@ export async function analyzeLocalProject(project: tss.server.Project): Promise<
         )
     });
 
+    console.log("Analyzing " + modifiedSourceFiles.length + " files.");
+
     const projectConfig = await getPossibleProjectConfig(basePath);
     const frameworkPlugins = await getFrameworkPlugins(projectConfig);
 
@@ -119,7 +121,7 @@ async function getPossibleProjectConfig(basePath: string) {
     for (const possibleConfigPath of possibleConfigPaths) {
         if (fs.existsSync(possibleConfigPath)) {
             // console.log("Found CEM config at ", possibleConfigPath);
-            importedConfig = await import(possibleConfigPath);
+            importedConfig = await import(possibleConfigPath.href);
             break;
         }
     }
