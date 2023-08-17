@@ -1,7 +1,6 @@
 import { createConnection, DidChangeConfigurationNotification, DidChangeConfigurationParams, InitializeParams, InitializeResult, ProposedFeatures, TextDocumentSyncKind, WorkspaceFolder } from "vscode-languageserver";
 import { DEFAULT_SETTINGS, LanguageServerSettings, setCapabilities, setGlobalSettings } from "./settings";
 import { documentSettings, initDocuments } from "./text-documents";
-import { uriToFileName } from "./transformers";
 import fs from "fs";
 import path from "path";
 import url from "url";
@@ -121,7 +120,6 @@ async function initializeProjectsInWorkSpaceFolders(workspaceFolders: WorkspaceF
                 const mainFileName = packageJson.main ?? packageJson.module;
                 if (mainFileName) {
                     const mainFilePath = path.resolve(fileName, mainFileName);
-                    debugger;
                     updateLanguageServiceForFile(mainFilePath, undefined);
                 } else {
                     console.warn("Could not find a main or module file");

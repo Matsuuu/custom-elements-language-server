@@ -38,10 +38,12 @@ export class ProjectService extends tss.server.ProjectService {
     }
 
     public openAndGetProjectForFile(fileName: string, fileContent: string | undefined) {
+        console.log("Open and get project for file ", fileName);
         const fileOpenResult = this.openClientFile(fileName, fileContent);
 
         // @ts-ignore I don't know why the typing here is so scuffed
         const scriptInfo = this.getScriptInfoForNormalizedPath(fileName);
+        console.log("Script info is undefined: ", scriptInfo === undefined);
         return scriptInfo?.containingProjects[0];
     }
 }

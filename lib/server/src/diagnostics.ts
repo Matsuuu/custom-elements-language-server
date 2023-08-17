@@ -1,11 +1,12 @@
 import { getMissingCloseTagDiagnostics } from "custom-elements-languageserver-core";
 import ts from "typescript";
+import url from "url";
 import { Diagnostic } from "vscode-languageserver";
 import { TextDocument } from "vscode-languageserver-textdocument";
 import { connection } from "./connection";
 import { isJavascriptFile } from "./handlers/handler";
 import { getLanguageService, getProjectBasePath, getProjectForCurrentFile } from "./language-services/language-services";
-import { textDocumentDataToUsableDataFromUri, tsDiagnosticToDiagnostic, uriToFileName } from "./transformers";
+import { textDocumentDataToUsableDataFromUri, tsDiagnosticToDiagnostic } from "./transformers";
 import { createCustomElementsLanguageServiceRequest } from "./language-services/request";
 import { documents } from "./text-documents";
 
@@ -18,7 +19,7 @@ export async function runDiagnostics(uri: string, textDoc: TextDocument) {
 }
 
 function handleJavascriptDiagnostics(uri: string, textDoc: TextDocument) {
-    const fileName = uriToFileName(uri);
+    const fileName = url.fileURLToPath(uri);
     const languageService = getLanguageService(fileName, textDoc.getText());
 
     try {

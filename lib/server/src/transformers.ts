@@ -1,5 +1,6 @@
 import { CODE_ACTIONS } from "custom-elements-languageserver-core";
 import ts from "typescript";
+import url from "url";
 import { Hover, Location, Position, Range, TextDocumentPositionParams, Diagnostic, DiagnosticSeverity } from "vscode-languageserver";
 import { TextDocument } from "vscode-languageserver-textdocument";
 import { TextDocuments } from "vscode-languageserver";
@@ -11,18 +12,16 @@ export interface UsableTextDocumentData {
     fileContent: string;
 }
 
-export function uriToFileName(uri: string) {
-    // TODO: Other cases handled?
-    const fileName = uri.replace("file://", "");
-    return fileName;
-}
-
 export function fileNameToUri(fileName: string) {
+    // TODO: Check if we could change this to this
+    url.pathToFileURL(fileName);
+    //
     return "file://" + fileName;
 }
 
 export function textDocumentDataToUsableDataFromUri(documents: TextDocuments<TextDocument>, uri: string): UsableTextDocumentData {
-    const fileName = uriToFileName(uri);
+
+    const fileName = url.fileURLToPath(uri);
     const doc = documents.get(uri);
 
     return {
@@ -33,8 +32,10 @@ export function textDocumentDataToUsableDataFromUri(documents: TextDocuments<Tex
 }
 
 export function textDocumentDataToUsableData(documents: TextDocuments<TextDocument>, textDocumentData: TextDocumentPositionParams): UsableTextDocumentData {
-    const fileName = uriToFileName(textDocumentData.textDocument.uri);
-    const doc = documents.get(textDocumentData.textDocument.uri);
+    const fileName = url.fileURLToPath(textDocumentData.textDocument.uri);
+    // const doc = documents.get(textDocumentData.textDocument.uri);
+    // TODO: Check if this is breaking on linux
+    const doc = documents.get(fileName);
 
     return {
         fileName,
