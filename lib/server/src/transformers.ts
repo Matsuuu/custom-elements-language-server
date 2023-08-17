@@ -12,13 +12,6 @@ export interface UsableTextDocumentData {
     fileContent: string;
 }
 
-export function fileNameToUri(fileName: string) {
-    // TODO: Check if we could change this to this
-    url.pathToFileURL(fileName);
-    //
-    return "file://" + fileName;
-}
-
 export function textDocumentDataToUsableDataFromUri(documents: TextDocuments<TextDocument>, uri: string): UsableTextDocumentData {
 
     const fileName = url.fileURLToPath(uri);
@@ -60,7 +53,7 @@ export function positionToOffset(document: TextDocument, position: Position): nu
 }
 
 export function documentSpanToLocation(documentSpan: ts.DocumentSpan): Location {
-    const uri = fileNameToUri(documentSpan.fileName);
+    const uri = documentSpan.fileName;
     const textDocument = scanDocument(documentSpan.fileName);
 
     let contextSpan = documentSpan.contextSpan;

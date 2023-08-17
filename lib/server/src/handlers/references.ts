@@ -3,8 +3,9 @@ import tss from "typescript/lib/tsserverlibrary.js";
 import { ReferenceParams, Location, Range } from "vscode-languageserver";
 import { getProjectForCurrentFile } from "../language-services/language-services.js";
 import { documents, scanDocument } from "../text-documents.js";
-import { fileNameToUri, offsetToPosition, positionToOffset, textDocumentDataToUsableData } from "../transformers.js";
+import { offsetToPosition, positionToOffset, textDocumentDataToUsableData } from "../transformers.js";
 import { Handler, isJavascriptFile } from "./handler.js";
+import url from "url";
 
 export const ReferenceHandler: Handler<ReferenceParams, Location[]> = {
     handle: (params: ReferenceParams) => {
@@ -31,7 +32,12 @@ export function getReferencesAtPosition(referenceParams: ReferenceParams) {
     const usableData = textDocumentDataToUsableData(documents, referenceParams);
     const project = getProjectForCurrentFile(usableData.fileName, usableData.fileContent);
     const basePath = project?.getCurrentDirectory() ?? "";
-    const cemCollection = getCEMData(basePath);
+    debugger;
+    if (!project) {
+        return [];
+    }
+
+    const cemCollection = getCEMData(project, basePath);
     if (!cemCollection.hasData()) {
         return [];
     }
@@ -82,7 +88,8 @@ export function getReferencesAtPosition(referenceParams: ReferenceParams) {
             const tagLength = `<${tagName}`.length;
             const content = templateExp.getFullText();
             const matches = [...content.matchAll(new RegExp(`<${tagName}`, "gi"))];
-            const uri = fileNameToUri(file.path);
+            const uri = url.pathToFileURL(file.path).href;
+            debugger;
             const doc = scanDocument(file.path);
             if (!doc) {
                 return [];

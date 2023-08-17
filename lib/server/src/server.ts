@@ -21,7 +21,7 @@ initConnection();
 connection.onCompletion(CompletionsHandler.handle);
 connection.onHover(HoverHandler.handle);
 connection.onDefinition(DefinitionHandler.handle);
-connection.onReferences(ReferenceHandler.handle);
+// connection.onReferences(ReferenceHandler.handle);
 connection.onCodeAction(CodeActionHandler.handle)
 connection.onCodeActionResolve(CodeActionResolveHandler.handle);
 
