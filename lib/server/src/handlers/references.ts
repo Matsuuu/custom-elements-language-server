@@ -32,7 +32,6 @@ export function getReferencesAtPosition(referenceParams: ReferenceParams) {
     const usableData = textDocumentDataToUsableData(documents, referenceParams);
     const project = getProjectForCurrentFile(usableData.fileName, usableData.fileContent);
     const basePath = project?.getCurrentDirectory() ?? "";
-    debugger;
     if (!project) {
         return [];
     }
@@ -89,7 +88,6 @@ export function getReferencesAtPosition(referenceParams: ReferenceParams) {
             const content = templateExp.getFullText();
             const matches = [...content.matchAll(new RegExp(`<${tagName}`, "gi"))];
             const uri = url.pathToFileURL(file.path).href;
-            debugger;
             const doc = scanDocument(file.path);
             if (!doc) {
                 return [];

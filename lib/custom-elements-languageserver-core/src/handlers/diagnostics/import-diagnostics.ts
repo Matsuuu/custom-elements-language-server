@@ -9,6 +9,7 @@ import { getFilePathFolder, resolveImportPath } from "./imports.js";
 import { CODE_ACTIONS } from "../enum/code-actions.js";
 import { getPathAsDtsFile, getPathAsJsFile, getPathAsTsFile } from "../../ts/filepath-transformers.js";
 import { CustomElementsLanguageServiceRequest } from "../../request.js";
+import { normalizePath } from "../../interop.js";
 
 export function getImportDiagnostics(request: CustomElementsLanguageServiceRequest): tss.Diagnostic[] {
     const { filePath, document, htmlLanguageService, projectBasePath, project } = request;
@@ -45,7 +46,8 @@ export function getImportDiagnostics(request: CustomElementsLanguageServiceReque
             continue;
         }
         const cemInstanceRef = definition.cem;
-        const fullImportPath = `${cemInstanceRef.cemSourcePath}/${definition.path}`;
+        const fullImportPath = normalizePath(`${cemInstanceRef.cemSourcePath}/${definition.path}`);
+
         if (!sourceFilesContainFilePath(sourceFileNames, fullImportPath)) {
 
             const relativeImportPath = resolveImportPath(fullImportPath, filePathWithoutFile);

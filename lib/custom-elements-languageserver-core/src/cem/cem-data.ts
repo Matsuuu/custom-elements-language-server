@@ -5,6 +5,7 @@ import * as fs from "fs";
 import url from "url";
 import { ImportedDependency } from "../dependencies/dependency-package-resolver.js";
 import { analyzeLocalProject } from "./analyzer.js";
+import { normalizePath } from "../interop.js";
 
 interface CEMInstanceBuilderData {
     cemPath: string,
@@ -99,7 +100,7 @@ export class CEMInstance {
         const cemSourcePath = packageJson.customElements
             ? `${projectPath}/${packageJson.customElements}`
             : `${projectPath}`;
-        const cemPath = tss.server.toNormalizedPath(analyzerOutput.filePath);
+        const cemPath = normalizePath(analyzerOutput.filePath);
 
         return new CEMInstance({
             cemPath,

@@ -2,6 +2,10 @@ import ts from "typescript";
 import tss from "typescript/lib/tsserverlibrary.js";
 import { CompletionItem, CompletionItemKind } from "vscode-languageserver-types";
 
+export function normalizePath(path: string) {
+    return tss.server.toNormalizedPath(path);
+}
+
 export function completionItemToCompletionEntry(completionItem: CompletionItem): ts.CompletionEntry {
     return {
         name: completionItem.label,

@@ -4,6 +4,7 @@ import { getFilePathFolder, isDependencyImport } from "../handlers/diagnostics/i
 import * as path from "path";
 import * as fs from "fs";
 import { getPathAsDtsFile, getPathAsJsFile, getPathAsTsFile } from "./filepath-transformers.js";
+import { normalizePath } from "../interop.js";
 
 export function getSourceFile(baseOrFullPath: string, classPath: string | undefined, project: tss.server.Project) {
     const fullClassPath = classPath === undefined ?
@@ -74,11 +75,11 @@ function tryGetSourceFileForImport(absoluteImportPath: string, project: tss.serv
 function resolveAbsoluteFileToImport(importFilePath: string, basePath: string, sourceFile: ts.SourceFile) {
 
     if (!isDependencyImport(importFilePath)) {
-        return path.resolve(getFilePathFolder(sourceFile.fileName), importFilePath);
+        return normalizePath(path.resolve(getFilePathFolder(sourceFile.fileName), importFilePath));
     }
 
     if (importFilePath.includes(".js")) {
-        return path.resolve(basePath, "node_modules", importFilePath);
+        return normalizePath(path.resolve(basePath, "node_modules", importFilePath));
     }
 
     const packagePath = path.resolve(basePath, "node_modules", importFilePath);
@@ -89,6 +90,6 @@ function resolveAbsoluteFileToImport(importFilePath: string, basePath: string, s
     const dependencyPackageJson = JSON.parse(fs.readFileSync(dependencyPackageJsonPath, "utf8"));
     const mainFilePath: string = dependencyPackageJson.main;
 
-    return packagePath + "/" + mainFilePath;
+    return normalizePath(packagePath + "/" + mainFilePath);
 }
 

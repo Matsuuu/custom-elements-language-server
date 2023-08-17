@@ -1,5 +1,6 @@
 import * as path from "path";
 import { getPathAsJsFile } from "../../ts/filepath-transformers.js";
+import { normalizePath } from "../../interop.js";
 
 export function resolveImportPath(fullImportPath: string, filePathWithoutFile: string) {
 
@@ -15,6 +16,7 @@ export function resolveImportPath(fullImportPath: string, filePathWithoutFile: s
 
     if (relativeImportPath.includes("node_modules")) {
         relativeImportPath = relativeImportPath.substring(relativeImportPath.indexOf("node_modules") + "node_modules/".length);
+        return normalizePath(relativeImportPath);
     } else if (!relativeImportPath.startsWith(".")) {
         relativeImportPath = "./" + relativeImportPath;
     }

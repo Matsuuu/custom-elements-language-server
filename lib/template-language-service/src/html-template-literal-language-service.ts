@@ -10,6 +10,7 @@ import {
     getImportDiagnostics,
     getMissingCloseTagDiagnostics,
     getQuickInfo,
+    normalizePath,
 } from "custom-elements-languageserver-core";
 import { CustomElementsLanguageServiceRequest } from "custom-elements-languageserver-core/dist/request.js";
 import tss from "typescript/lib/tsserverlibrary.js";
@@ -19,7 +20,7 @@ export function createCustomElementsLanguageServiceRequest(context: TemplateCont
     const projectBasePath = getProjectBasePath(context);
 
     return {
-        filePath: tss.server.toNormalizedPath(context.fileName),
+        filePath: normalizePath(context.fileName),
         projectBasePath,
         document,
         position,
