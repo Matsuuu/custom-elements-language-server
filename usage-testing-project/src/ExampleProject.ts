@@ -108,5 +108,3 @@ export class ExampleProject extends LitElement {
         `;
     }
 }
-
-customElements.define("example-project", ExampleProject)

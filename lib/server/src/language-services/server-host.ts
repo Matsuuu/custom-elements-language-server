@@ -20,7 +20,8 @@ export class ServerHost implements tss.server.ServerHost {
     constructor() {
         this.args = tss.sys.args;
         this.newLine = tss.sys.newLine;
-        this.useCaseSensitiveFileNames = tss.sys.useCaseSensitiveFileNames;
+        // this.useCaseSensitiveFileNames = tss.sys.useCaseSensitiveFileNames;
+        this.useCaseSensitiveFileNames = true;
     }
 
     watchFile(path: string, callback: tss.FileWatcherCallback, pollingInterval?: number | undefined, options?: tss.WatchOptions | undefined): tss.FileWatcher {

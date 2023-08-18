@@ -42,7 +42,7 @@ export async function analyzeLocalProject(project: tss.server.Project): Promise<
         .map(rf => project.getSourceFile(rf as tss.Path))
         .filter(sf => sf !== undefined) as tss.SourceFile[];
 
-    // TODO: Is this step necessary?
+    // TODO: Is this step necessary? Might be to hold analyzer ts version mismatch errors from happening.
     const modifiedSourceFiles: ts.SourceFile[] = sourceFiles.map(sf => {
         return ts.createSourceFile(
             sf.fileName,
