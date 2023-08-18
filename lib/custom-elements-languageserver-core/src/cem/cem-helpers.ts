@@ -70,7 +70,7 @@ interface CEMTagInfo {
 }
 
 export function getCustomElementTags(cemCollection: CEMCollection): CEMTagInfo[] {
-    const customElementDeclarations = cemCollection.modules.filter(mod => moduleHasCustomElementExport(mod));
+    const customElementDeclarations = cemCollection.modules.filter(mod => moduleHasCustomElementExportOrDefinition(mod));
 
     return customElementDeclarations.map(mod => {
         const tagName = getModuleTagName(mod);
@@ -124,6 +124,11 @@ export function moduleHasCustomElementExport(mod: Module) {
 
 export function exportHasCustomElementExport(modExport: Export) {
     return modExport.kind === "custom-element-definition";
+}
+
+export function moduleHasCustomElementExportOrDefinition(mod: Module) {
+    return mod.exports?.some(exp => exportHasCustomElementExport(exp))
+        || mod.declarations?.some(decl => isCustomElementDeclaration(decl));
 }
 
 export function moduleHasCustomElementExportOrDefinitionByName(mod: Module, tagName: string) {

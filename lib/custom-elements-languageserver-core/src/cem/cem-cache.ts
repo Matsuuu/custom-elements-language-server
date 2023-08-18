@@ -78,23 +78,31 @@ export class CEMCollection {
 const CEM_COLLECTION_CACHE = new Map<string, CEMCollection>();
 
 export function getCEMData(project: tss.server.Project, projectBasePath: string): CEMCollection {
-    const existingCollection = CEM_COLLECTION_CACHE.get(projectBasePath);
+    const existingCollection = getCEMFromCache(project);
     if (existingCollection) {
-        // TODO: Do this through a watcher instead of on every request?
-        // TODO: This is now needed more than before since we need to have 
-        // the asynchronous context in here.
-        // existingCollection?.refreshLocal();
         return existingCollection;
     }
 
     const cemCollection = new CEMCollection(project, projectBasePath);
-    CEM_COLLECTION_CACHE.set(projectBasePath, cemCollection);
+    setToCEMCache(project, cemCollection);
     return cemCollection;
 }
 
+function getCEMFromCache(project: tss.server.Project) {
+    return CEM_COLLECTION_CACHE.get(project.getCurrentDirectory());
+}
+
+function getCEMFromCacheByPath(projectDirectory: string) {
+    return CEM_COLLECTION_CACHE.get(projectDirectory);
+}
+
+function setToCEMCache(project: tss.server.Project, cemCollection: CEMCollection) {
+    CEM_COLLECTION_CACHE.set(project.getCurrentDirectory(), cemCollection);
+} 
+
 export function refreshCEMData(projectBasePath: string) {
     console.log("CEM REFRESH");
-    const existingCollection = CEM_COLLECTION_CACHE.get(projectBasePath);
+    const existingCollection = getCEMFromCacheByPath(projectBasePath);
     if (!existingCollection) {
         console.warn("Tried to refresh a non-existant cache. Attempted " + projectBasePath + ", but the only ones available are: ", [...CEM_COLLECTION_CACHE.keys()]);
         return;

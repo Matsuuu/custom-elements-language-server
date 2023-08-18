@@ -16,7 +16,7 @@ export function getCompletionEntries(request: CustomElementsLanguageServiceReque
     const actionContext = resolveActionContext(htmlLanguageService, document, position);
 
     const htmlLSCompletions = getDefaultCompletionItems(document, position, htmlLanguageService);
-    const defaultCompletionItems = htmlLSCompletions.items.map(completionItemToCompletionEntry);
+    // const defaultCompletionItems = htmlLSCompletions.items.map(completionItemToCompletionEntry);
 
     const cemCollection = getCEMData(project, projectBasePath);
     let cemCompletions: tss.CompletionEntry[] = [];
@@ -26,7 +26,8 @@ export function getCompletionEntries(request: CustomElementsLanguageServiceReque
             isGlobalCompletion: false,
             isMemberCompletion: false,
             isNewIdentifierLocation: false,
-            entries: [...defaultCompletionItems],
+            // entries: [...defaultCompletionItems],
+            entries: [],
         };
     }
 
@@ -118,7 +119,8 @@ export function getCompletionEntries(request: CustomElementsLanguageServiceReque
         isGlobalCompletion: false,
         isMemberCompletion: false,
         isNewIdentifierLocation: false,
-        entries: [...defaultCompletionItems, ...cemCompletions],
+        // entries: [...defaultCompletionItems, ...cemCompletions],
+        entries: [...cemCompletions],
     };
 }
 
