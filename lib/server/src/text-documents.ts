@@ -1,5 +1,6 @@
 import { TextDocument } from "vscode-languageserver-textdocument";
 import tss from "typescript/lib/tsserverlibrary.js";
+import url from "url";
 import { getCapabilities, getGlobalSettings, LanguageServerSettings } from "./settings.js";
 import { TextDocuments, _Connection } from "vscode-languageserver";
 import { getProjectForCurrentFile, updateLanguageServiceForFile } from "./language-services/language-services.js";
@@ -45,6 +46,9 @@ export function initDocuments() {
 }
 
 export function scanDocument(uri: string): TextDocument {
+    if (uri.startsWith("file://")) {
+        uri = url.fileURLToPath(uri);
+    }
     const languageId = uri.split(".").slice(-1)[0];
     const content = tss.sys.readFile(uri, "utf8") ?? "";
     return TextDocument.create(uri, languageId, 0, content);
