@@ -16,6 +16,7 @@ export const temp = html`
   
     <example-project .color="">
 
+    <weird-element></weird-element>
       
     <sl-input @sl-blur="${() => { }}"></sl-input>
 
