@@ -15,13 +15,14 @@ import { CompletionsHandler } from "./handlers/completions.js";
 import { CodeActionResolveHandler } from "./handlers/code-action-resolve.js";
 import { connection, initConnection } from "./connection.js";
 import { runDiagnostics } from "./diagnostics.js";
+import { CEMUpdatedEvent, LanguageServerEventHost } from "custom-elements-languageserver-core";
 
 initConnection();
 
 connection.onCompletion(CompletionsHandler.handle);
 connection.onHover(HoverHandler.handle);
 connection.onDefinition(DefinitionHandler.handle);
-// connection.onReferences(ReferenceHandler.handle);
+connection.onReferences(ReferenceHandler.handle);
 connection.onCodeAction(CodeActionHandler.handle)
 connection.onCodeActionResolve(CodeActionResolveHandler.handle);
 
@@ -36,3 +37,15 @@ connection.onDidChangeTextDocument((params: DidChangeTextDocumentParams) => {
     runDiagnostics(params.textDocument.uri, updatedDoc);
 });
 
+LanguageServerEventHost.getInstance().addEventListener("cem-updated", (event: Event) => {
+    if (!(event instanceof CEMUpdatedEvent)) {
+        return;
+    }
+
+    console.log("Cem updated");
+    const docs = documents.all();
+    docs.forEach((doc) => {
+        runDiagnostics(doc.uri, doc);
+    });
+    // RUN DIAG
+});

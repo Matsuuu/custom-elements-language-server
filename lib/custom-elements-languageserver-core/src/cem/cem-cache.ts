@@ -4,6 +4,7 @@ import { CEMInstance } from "./cem-data.js";
 import { JavaScriptModule } from "custom-elements-manifest";
 import { addReferenceToModule, JavaScriptModuleWithRef } from "./cem-helpers.js";
 import tss from "typescript/lib/tsserverlibrary.js";
+import { CEMUpdatedEvent, LanguageServerEventHost } from "../export.js";
 
 export class CEMCollection {
     public id: number = Date.now() + Math.floor(Math.random() * 999);
@@ -58,16 +59,18 @@ export class CEMCollection {
         return this._modulesWithRefs;
     }
 
-    public refreshLocal() {
+    public async refreshLocal() {
         this._modules = undefined;
         this._modulesWithRefs = undefined;
-        this._localCEM?.refresh();
+        await this._localCEM?.refresh();
+        LanguageServerEventHost.broadcast(new CEMUpdatedEvent(this));
     }
 
-    public refresh() {
+    public async refresh() {
         this._modules = undefined;
         this._modulesWithRefs = undefined;
-        this.cems.forEach(cem => cem.refresh());
+        await Promise.all(this.cems.map(cem => cem.refresh()));
+        LanguageServerEventHost.broadcast(new CEMUpdatedEvent(this));
     }
 
     public hasData() {
@@ -98,7 +101,7 @@ function getCEMFromCacheByPath(projectDirectory: string) {
 
 function setToCEMCache(project: tss.server.Project, cemCollection: CEMCollection) {
     CEM_COLLECTION_CACHE.set(project.getCurrentDirectory(), cemCollection);
-} 
+}
 
 export function refreshCEMData(projectBasePath: string) {
     console.log("CEM REFRESH");
