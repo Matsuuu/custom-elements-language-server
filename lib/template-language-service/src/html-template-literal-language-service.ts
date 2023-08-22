@@ -13,7 +13,6 @@ import {
     normalizePath,
 } from "custom-elements-languageserver-core";
 import { CustomElementsLanguageServiceRequest } from "custom-elements-languageserver-core/dist/request.js";
-import tss from "typescript/lib/tsserverlibrary.js";
 
 export function createCustomElementsLanguageServiceRequest(context: TemplateContext, position: ts.LineAndCharacter, htmlLanguageService: HtmlLanguageService): CustomElementsLanguageServiceRequest {
     const document = createTextDocumentFromContext(context);

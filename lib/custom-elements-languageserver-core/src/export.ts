@@ -10,3 +10,5 @@ export * from "./scanners/action-context.js";
 export * from "./handlers/diagnostics/close-tag-diagnostics.js";
 export * from "./handlers/diagnostics/import-diagnostics.js";
 export * from "./interop.js";
+export * from "./events/event-source.js"
+export * from "./events/cem-updated-event.js"

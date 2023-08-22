@@ -11,6 +11,7 @@ import { createCustomElementsLanguageServiceRequest } from "./language-services/
 import { documents } from "./text-documents";
 
 export async function runDiagnostics(uri: string, textDoc: TextDocument) {
+    console.log("Running diagnostics for ", uri);
     if (isJavascriptFile(uri)) {
         handleJavascriptDiagnostics(uri, textDoc);
     } else {
