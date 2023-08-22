@@ -6,10 +6,12 @@ import path from "path";
 import url from "url";
 import { updateLanguageServiceForFile } from "./language-services/language-services";
 
+// @ts-ignore
 export let connection = createConnection(ProposedFeatures.all);
 
 export function initConnection() {
     console.log("Initializing connection");
+    // @ts-ignore
     connection = createConnection(ProposedFeatures.all);
 
     connection.onInitialize(onInitialize);
