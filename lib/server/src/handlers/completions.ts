@@ -1,8 +1,8 @@
 import ts from "typescript";
-import { CompletionList, CompletionParams, CompletionItem, TextDocumentPositionParams } from "vscode-languageserver";
-import { UsableTextDocumentData, textDocumentDataToUsableData } from "../transformers";
+import { CompletionList, CompletionParams, CompletionItem } from "vscode-languageserver";
+import { textDocumentDataToUsableData } from "../transformers";
 import { documents } from "../text-documents";
-import { getLanguageService, getProjectBasePath, getProjectForCurrentFile } from "../language-services/language-services";
+import { getLanguageService } from "../language-services/language-services";
 import { Handler, isJavascriptFile } from "./handler";
 import { wait } from "../wait";
 import { elementKindToCompletionKind, getCompletionEntries } from "custom-elements-languageserver-core";
