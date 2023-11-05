@@ -1,16 +1,17 @@
 import ts from "typescript";
-import { CompletionList, CompletionParams, CompletionItem } from "vscode-languageserver";
-import { textDocumentDataToUsableData } from "../transformers";
+import { CompletionList, CompletionParams, CompletionItem, TextDocumentPositionParams } from "vscode-languageserver";
+import { UsableTextDocumentData, textDocumentDataToUsableData } from "../transformers";
 import { documents } from "../text-documents";
 import { getLanguageService, getProjectBasePath, getProjectForCurrentFile } from "../language-services/language-services";
 import { Handler, isJavascriptFile } from "./handler";
 import { wait } from "../wait";
 import { elementKindToCompletionKind, getCompletionEntries } from "custom-elements-languageserver-core";
 import { createCustomElementsLanguageServiceRequest } from "../language-services/request";
+import { generateLanguageServiceQueryData } from "./handler-helper";
 
 export const CompletionsHandler: Handler<CompletionParams, CompletionList> = {
     handle: (completionParams: CompletionParams) => {
-        return new Promise(async (resolve) => {
+        return new Promise(async resolve => {
             await wait(50);
             if (isJavascriptFile(completionParams)) {
                 resolve(CompletionsHandler.onJavascriptFile(completionParams));
@@ -22,37 +23,50 @@ export const CompletionsHandler: Handler<CompletionParams, CompletionList> = {
     onJavascriptFile: (completionParams: CompletionParams) => {
         const usableData = textDocumentDataToUsableData(documents, completionParams);
         const languageService = getLanguageService(usableData.fileName, usableData.fileContent);
+        const queryData = generateLanguageServiceQueryData(usableData, completionParams);
 
         const completionsOpts: ts.GetCompletionsAtPositionOptions = {};
-        const completions = languageService?.getCompletionsAtPosition(usableData.fileName, usableData.position, completionsOpts);
+        let completions = languageService?.getCompletionsAtPosition(queryData.fileName, usableData.position, completionsOpts);
+        if (completions === undefined) {
+            if (!queryData.isValid) {
+                return CompletionList.create();
+            }
+            const request = createCustomElementsLanguageServiceRequest(
+                queryData.fileName,
+                queryData.basePath,
+                queryData.doc!,
+                queryData.position,
+                queryData.project!,
+            );
+            completions = getCompletionEntries(request);
+        }
 
         return completionsToList(completions);
     },
     onHTMLOrOtherFile: (completionParams: CompletionParams) => {
         const usableData = textDocumentDataToUsableData(documents, completionParams);
-        const doc = documents.get(completionParams.textDocument.uri);
-        if (!doc) {
-            return CompletionList.create();
-        }
-        const project = getProjectForCurrentFile(usableData.fileName, usableData.fileContent);
-        const basePath = getProjectBasePath(usableData.fileName);
-
-        if (!project) {
+        const queryData = generateLanguageServiceQueryData(usableData, completionParams);
+        if (!queryData.isValid) {
             return CompletionList.create();
         }
 
-        const request = createCustomElementsLanguageServiceRequest(usableData.fileName, basePath, doc, completionParams.position, project);
+        const request = createCustomElementsLanguageServiceRequest(
+            queryData.fileName,
+            queryData.basePath,
+            queryData.doc!,
+            completionParams.position,
+            queryData.project!,
+        );
         const completions = getCompletionEntries(request);
 
         return completionsToList(completions);
-    }
-}
+    },
+};
 
 function completionsToList(completions: ts.WithMetadata<ts.CompletionInfo> | undefined) {
     if (!completions) return CompletionList.create();
     return CompletionList.create(completions.entries.map(completionEntryToCompletionItem));
 }
-
 
 function completionEntryToCompletionItem(completionsEntry: ts.CompletionEntry): CompletionItem {
     let insertText = completionsEntry.name;
@@ -61,8 +75,7 @@ function completionEntryToCompletionItem(completionsEntry: ts.CompletionEntry): 
     }
     if (insertText.match(/^@\w+-/)) {
         const match = insertText.match(/^@\w+-/);
-        insertText = insertText.replace(match?.at(0) || '', "");
-
+        insertText = insertText.replace(match?.at(0) || "", "");
     }
 
     // TODO: Fill the rest
@@ -71,8 +84,8 @@ function completionEntryToCompletionItem(completionsEntry: ts.CompletionEntry): 
         kind: elementKindToCompletionKind(completionsEntry.kind),
         documentation: {
             kind: "markdown",
-            value: completionsEntry.labelDetails?.description ?? ''
+            value: completionsEntry.labelDetails?.description ?? "",
         },
-        insertText: insertText
+        insertText: insertText,
     };
 }
