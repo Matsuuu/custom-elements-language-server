@@ -4,7 +4,7 @@ import { getLanguageService, getProjectBasePath, getProjectForCurrentFile } from
 import { documents } from "../text-documents";
 import { documentSpanToLocation, textDocumentDataToUsableData } from "../transformers";
 import { Handler, isJavascriptFile } from "./handler";
-import { createCustomElementsLanguageServiceRequest } from "../language-services/request";
+import { createCustomElementsLanguageServiceRequest, createCustomElementsLanguageServiceRequestFromQueryData } from "../language-services/request";
 import { generateLanguageServiceQueryData } from "./handler-helper";
 
 export const DefinitionHandler: Handler<DefinitionParams, Location[] | undefined> = {
@@ -19,11 +19,13 @@ export const DefinitionHandler: Handler<DefinitionParams, Location[] | undefined
         const usableData = textDocumentDataToUsableData(documents, definitionParams);
         const queryData = generateLanguageServiceQueryData(usableData, definitionParams);
         const languageService = getLanguageService(usableData.fileName, usableData.fileContent);
-        const definitions = languageService?.getDefinitionAtPosition(usableData.fileName, usableData.position);
+        let definitions = languageService?.getDefinitionAtPosition(usableData.fileName, usableData.position);
         if (definitions === undefined) {
             if (!queryData.isValid) {
                 return undefined;
             }
+            const request = createCustomElementsLanguageServiceRequestFromQueryData(queryData);
+            definitions = getGoToDefinitionEntries(request);
         }
 
         const definitionLocations = definitions?.map(documentSpanToLocation) ?? [];
@@ -31,18 +33,9 @@ export const DefinitionHandler: Handler<DefinitionParams, Location[] | undefined
     },
     onHTMLOrOtherFile: (definitionParams) => {
         const usableData = textDocumentDataToUsableData(documents, definitionParams);
-        const doc = documents.get(definitionParams.textDocument.uri);
-        if (!doc) {
-            return undefined;
-        }
-        // const node = htmlDoc.findNodeAt(usableData.position);
-        const project = getProjectForCurrentFile(usableData.fileName, usableData.fileContent);
-        const basePath = getProjectBasePath(usableData.fileName);
-        if (!project) {
-            return undefined;
-        }
+        const queryData = generateLanguageServiceQueryData(usableData, definitionParams);
 
-        const request = createCustomElementsLanguageServiceRequest(usableData.fileName, basePath, doc, definitionParams.position, project);
+        const request = createCustomElementsLanguageServiceRequestFromQueryData(queryData);
         const definitions = getGoToDefinitionEntries(request);
 
         const definitionLocations = definitions?.map(documentSpanToLocation) ?? [];
