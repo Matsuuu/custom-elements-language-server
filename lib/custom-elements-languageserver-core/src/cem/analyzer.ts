@@ -103,7 +103,7 @@ function cacheCurrentCEM(projectPath: string, manifest: Package) {
     const manifestAsString = JSON.stringify(manifest);
     fs.writeFileSync(savePath, manifestAsString, "utf8");
 
-    console.log(`Manifest built to ${savePath}. Filesize: `, manifestAsString.length);
+    // console.log(`Manifest built to ${savePath}. Filesize: `, manifestAsString.length);
 
     return savePath;
 }

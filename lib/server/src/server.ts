@@ -42,7 +42,6 @@ LanguageServerEventHost.getInstance().addEventListener("cem-updated", (event: Ev
         return;
     }
 
-    console.log("Cem updated");
     const docs = documents.all();
     docs.forEach((doc) => {
         runDiagnostics(doc.uri, doc);

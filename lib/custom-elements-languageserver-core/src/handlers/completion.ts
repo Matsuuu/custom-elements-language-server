@@ -1,10 +1,7 @@
-import * as HTMLLanguageService from "vscode-html-languageservice/lib/esm/htmlLanguageService.js";
-import { LanguageService as HtmlLanguageService } from "vscode-html-languageservice/lib/esm/htmlLanguageService.js";
 import tss from "typescript/lib/tsserverlibrary.js";
 import { isAttributeNameAction, isEndTagAction, isEventNameAction, isPropertyNameAction, isTagAction, resolveActionContext } from "../scanners/action-context.js";
 import { findCustomElementTagLike, findDeclarationForTagName } from "../cem/cem-helpers.js";
 import { getCEMData } from "../export.js";
-import { completionItemToCompletionEntry } from "../interop.js";
 // @ts-expect-error
 import { ClassField } from "custom-elements-manifest";
 import { CustomElementsLanguageServiceRequest } from "../request.js";
@@ -15,9 +12,6 @@ export function getCompletionEntries(request: CustomElementsLanguageServiceReque
 
     const actionContext = resolveActionContext(htmlLanguageService, document, position);
 
-    const htmlLSCompletions = getDefaultCompletionItems(document, position, htmlLanguageService);
-    // const defaultCompletionItems = htmlLSCompletions.items.map(completionItemToCompletionEntry);
-
     const cemCollection = getCEMData(project, projectBasePath);
     let cemCompletions: tss.CompletionEntry[] = [];
 
@@ -26,7 +20,6 @@ export function getCompletionEntries(request: CustomElementsLanguageServiceReque
             isGlobalCompletion: false,
             isMemberCompletion: false,
             isNewIdentifierLocation: false,
-            // entries: [...defaultCompletionItems],
             entries: [],
         };
     }
@@ -119,15 +112,7 @@ export function getCompletionEntries(request: CustomElementsLanguageServiceReque
         isGlobalCompletion: false,
         isMemberCompletion: false,
         isNewIdentifierLocation: false,
-        // entries: [...defaultCompletionItems, ...cemCompletions],
         entries: [...cemCompletions],
     };
 }
 
-function getDefaultCompletionItems(document: HTMLLanguageService.TextDocument, position: tss.LineAndCharacter, htmlLanguageService: HtmlLanguageService) {
-    const htmlDoc = htmlLanguageService.parseHTMLDocument(document);
-    const htmlCompletions = htmlLanguageService.doComplete(document, position, htmlDoc);
-    // TODO: Cache
-
-    return htmlCompletions;
-}

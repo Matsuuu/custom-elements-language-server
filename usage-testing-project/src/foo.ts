@@ -13,7 +13,7 @@ export const temp = html`
     ></example-project>
 
     <example-project>
-  
+
     <example-project .color="">
 
     <weird-element></weird-element>

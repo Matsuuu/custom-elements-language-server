@@ -8,13 +8,17 @@ let client: LanguageClient;
 const disposables: Disposable[] = [];
 
 const SUPPORTED_LANGUAGES = [
-    "html",
-    "typescript",
-    "javascript",
-    "php",
-    "vue"
-    // TODO: Need to add jsx etc.?
+    'javascript',
+    'javascriptreact',
+    'javascript.jsx',
+    'typescript',
+    'typescriptreact',
+    'typescript.tsx',
+    'html',
+    'vue',
+    'php'
 ]
+
 
 function registerCommands(context: ExtensionContext) {
     const restartCommandDisposable = commands.registerCommand('extension.restart', async () => {

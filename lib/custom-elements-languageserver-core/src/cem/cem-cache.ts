@@ -104,7 +104,6 @@ function setToCEMCache(project: tss.server.Project, cemCollection: CEMCollection
 }
 
 export function refreshCEMData(projectBasePath: string) {
-    console.log("CEM REFRESH");
     const existingCollection = getCEMFromCacheByPath(projectBasePath);
     if (!existingCollection) {
         console.warn("Tried to refresh a non-existant cache. Attempted " + projectBasePath + ", but the only ones available are: ", [...CEM_COLLECTION_CACHE.keys()]);

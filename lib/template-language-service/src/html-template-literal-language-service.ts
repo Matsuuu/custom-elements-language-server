@@ -51,6 +51,7 @@ export class HTMLTemplateLiteralLanguageService implements TemplateLanguageServi
     }
 
     public getCompletionsAtPosition(context: TemplateContext, position: tss.LineAndCharacter): tss.CompletionInfo {
+        console.log("LS: GetCompletionsAtPosition");
         const request = createCustomElementsLanguageServiceRequest(context, position, this.htmlLanguageService);
 
         return getCompletionEntries(request);

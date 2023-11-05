@@ -11,7 +11,6 @@ import { createCustomElementsLanguageServiceRequest } from "./language-services/
 import { documents } from "./text-documents";
 
 export async function runDiagnostics(uri: string, textDoc: TextDocument) {
-    console.log("Running diagnostics for ", uri);
     if (isJavascriptFile(uri)) {
         handleJavascriptDiagnostics(uri, textDoc);
     } else {
@@ -25,8 +24,9 @@ function handleJavascriptDiagnostics(uri: string, textDoc: TextDocument) {
 
     try {
         const diagnostics = languageService?.getSemanticDiagnostics(fileName);
-        const sendableDiagnostics: Array<Diagnostic> = diagnostics?.map((diag: ts.Diagnostic) => tsDiagnosticToDiagnostic(diag, textDoc))
-            .filter((diag: unknown): diag is Diagnostic => diag !== undefined) ?? []; // Stupid ts types
+        const sendableDiagnostics: Array<Diagnostic> = diagnostics
+            ?.map((diag: ts.Diagnostic) => tsDiagnosticToDiagnostic(diag, textDoc))
+            .filter((diag: unknown): diag is Diagnostic => diag !== undefined) ?? [];
 
         connection.sendDiagnostics({ uri: textDoc.uri, diagnostics: sendableDiagnostics });
     } catch (ex) {
