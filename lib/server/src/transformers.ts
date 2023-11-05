@@ -35,6 +35,14 @@ export function textDocumentDataToUsableData(documents: TextDocuments<TextDocume
     };
 }
 
+export function textDocumentToUsableData(textDocument: TextDocument, textDocumentData?: TextDocumentPositionParams): UsableTextDocumentData {
+    return {
+        fileName: url.fileURLToPath(textDocument.uri),
+        position: textDocumentData ? textDocument?.offsetAt(textDocumentData.position) : 0,
+        fileContent: textDocument.getText() ?? ""
+    };
+}
+
 export function textSpanToRange(textDocument: TextDocument, textSpan: ts.TextSpan): Range {
     const endOffset = textSpan.start + textSpan.length;
 

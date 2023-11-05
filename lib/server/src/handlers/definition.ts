@@ -1,10 +1,10 @@
 import { getGoToDefinitionEntries } from "custom-elements-languageserver-core";
 import { DefinitionParams, Location } from "vscode-languageserver";
-import { getLanguageService, getProjectBasePath, getProjectForCurrentFile } from "../language-services/language-services";
+import { getLanguageService } from "../language-services/language-services";
 import { documents } from "../text-documents";
 import { documentSpanToLocation, textDocumentDataToUsableData } from "../transformers";
 import { Handler, isJavascriptFile } from "./handler";
-import { createCustomElementsLanguageServiceRequest, createCustomElementsLanguageServiceRequestFromQueryData } from "../language-services/request";
+import { createCustomElementsLanguageServiceRequestFromQueryData } from "../language-services/request";
 import { generateLanguageServiceQueryData } from "./handler-helper";
 
 export const DefinitionHandler: Handler<DefinitionParams, Location[] | undefined> = {

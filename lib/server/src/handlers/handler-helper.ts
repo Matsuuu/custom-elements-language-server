@@ -30,3 +30,21 @@ export function generateLanguageServiceQueryData(usableData: UsableTextDocumentD
         isValid: doc !== undefined && project !== undefined
     };
 }
+
+// TODO: Make usabledata more vast and eliminate need for this function etc.
+export function generateLanguageServiceQueryDataForDiagnostics(usableData: UsableTextDocumentData, uri: string): QueryData {
+    const fileName = usableData.fileName;
+    const basePath = getProjectBasePath(usableData.fileName);
+    const project = getProjectForCurrentFile(usableData.fileName, usableData.fileContent);
+    const doc = documents.get(uri);
+    const position = { line: 0, character: 0 };
+
+    return {
+        fileName,
+        basePath,
+        project,
+        doc,
+        position,
+        isValid: doc !== undefined && project !== undefined
+    };
+}

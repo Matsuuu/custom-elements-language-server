@@ -9,6 +9,7 @@ const CountingComponent = () => {
 	);
 	onCleanup(() => clearInterval(interval));
   return <div>
+	<example-project></example-project>
     <p>Count value is {count()}</p>
   </div>;
 };
