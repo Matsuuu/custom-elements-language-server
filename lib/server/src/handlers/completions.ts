@@ -6,7 +6,7 @@ import { getLanguageService } from "../language-services/language-services";
 import { Handler, isJavascriptFile } from "./handler";
 import { wait } from "../wait";
 import { elementKindToCompletionKind, getCompletionEntries } from "custom-elements-languageserver-core";
-import { createCustomElementsLanguageServiceRequest } from "../language-services/request";
+import { createCustomElementsLanguageServiceRequest, createCustomElementsLanguageServiceRequestFromQueryData } from "../language-services/request";
 import { generateLanguageServiceQueryData } from "./handler-helper";
 
 export const CompletionsHandler: Handler<CompletionParams, CompletionList> = {
@@ -50,13 +50,7 @@ export const CompletionsHandler: Handler<CompletionParams, CompletionList> = {
             return CompletionList.create();
         }
 
-        const request = createCustomElementsLanguageServiceRequest(
-            queryData.fileName,
-            queryData.basePath,
-            queryData.doc!,
-            completionParams.position,
-            queryData.project!,
-        );
+        const request = createCustomElementsLanguageServiceRequestFromQueryData(queryData);
         const completions = getCompletionEntries(request);
 
         return completionsToList(completions);

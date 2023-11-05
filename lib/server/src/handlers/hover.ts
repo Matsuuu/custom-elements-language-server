@@ -4,7 +4,8 @@ import { documents } from "../text-documents";
 import { getLanguageService, getProjectBasePath, getProjectForCurrentFile } from "../language-services/language-services";
 import { Handler, isJavascriptFile } from "./handler";
 import { getQuickInfo } from "custom-elements-languageserver-core";
-import { createCustomElementsLanguageServiceRequest } from "../language-services/request";
+import { createCustomElementsLanguageServiceRequest, createCustomElementsLanguageServiceRequestFromQueryData } from "../language-services/request";
+import { generateLanguageServiceQueryData } from "./handler-helper";
 
 export const HoverHandler: Handler<HoverParams, Hover> = {
     handle: (hoverInfo: HoverParams) => {
@@ -16,27 +17,30 @@ export const HoverHandler: Handler<HoverParams, Hover> = {
     },
     onJavascriptFile: (hoverInfo: HoverParams) => {
         const usableData = textDocumentDataToUsableData(documents, hoverInfo);
+        const queryData = generateLanguageServiceQueryData(usableData, hoverInfo);
         const languageService = getLanguageService(usableData.fileName, usableData.fileContent);
 
-        const quickInfo = languageService?.getQuickInfoAtPosition(usableData.fileName, usableData.position);
+        let quickInfo = languageService?.getQuickInfoAtPosition(usableData.fileName, usableData.position);
+        if (quickInfo === undefined) {
+            if (!queryData.isValid) {
+                return undefined;
+            }
+
+            const request = createCustomElementsLanguageServiceRequestFromQueryData(queryData);
+            quickInfo = getQuickInfo(request);
+        }
 
         return quickInfoToHover(usableData.fileName, quickInfo);
     },
     onHTMLOrOtherFile: (hoverInfo: HoverParams) => {
         const usableData = textDocumentDataToUsableData(documents, hoverInfo);
-        const doc = documents.get(hoverInfo.textDocument.uri);
-        if (!doc) {
+        const queryData = generateLanguageServiceQueryData(usableData, hoverInfo);
+
+        if (!queryData.isValid) {
             return undefined;
         }
 
-        const project = getProjectForCurrentFile(usableData.fileName, usableData.fileContent);
-        const basePath = getProjectBasePath(usableData.fileName);
-        if (!project) {
-            return undefined;
-        }
-
-
-        const request = createCustomElementsLanguageServiceRequest(usableData.fileName, basePath, doc, hoverInfo.position, project);
+        const request = createCustomElementsLanguageServiceRequestFromQueryData(queryData);
         const quickInfo = getQuickInfo(request);
 
         return quickInfoToHover(usableData.fileName, quickInfo);
