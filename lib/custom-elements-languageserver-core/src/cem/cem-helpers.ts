@@ -98,8 +98,12 @@ function getModuleTagName(mod: JavaScriptModule) {
 export function findCustomElementDefinitionModule(cemCollection: CEMCollection, tagName: string): JavaScriptModuleWithRef | undefined {
     return cemCollection.modulesWithReferences?.filter(mod =>
         mod.kind === "javascript-module" &&
-        moduleHasTagDeclaration(mod, tagName)
+        moduleHasTagExportByName(mod, tagName)
     )?.[0] ?? undefined
+}
+
+export function moduleHasTagExportByName(mod: JavaScriptModule, tagName: string): boolean {
+    return mod.exports?.some(exp => exportHasCustomElementExportByName(exp, tagName)) ?? false;
 }
 
 export function moduleHasTagDeclaration(mod: JavaScriptModule, tagName: string): boolean {

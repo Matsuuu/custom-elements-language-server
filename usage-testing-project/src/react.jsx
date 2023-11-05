@@ -1,11 +1,12 @@
 import React from "react";
+import "./example-project.js";
 
 function MyButton() {
   return (
     <button>
       I'm a button
 
-      <example-project></example-project>
+      <example-project color=""></example-project>
 
     </button>
   );
