@@ -5,11 +5,11 @@ import { Diagnostic } from "vscode-languageserver";
 import { TextDocument } from "vscode-languageserver-textdocument";
 import { connection } from "./connection";
 import { isJavascriptFile } from "./handlers/handler";
-import { getLanguageService, getProjectBasePath, getProjectForCurrentFile } from "./language-services/language-services";
-import { textDocumentDataToUsableData, textDocumentDataToUsableDataFromUri, textDocumentToUsableData, tsDiagnosticToDiagnostic } from "./transformers";
-import { createCustomElementsLanguageServiceRequest, createCustomElementsLanguageServiceRequestFromQueryData } from "./language-services/request";
+import { getLanguageService } from "./language-services/language-services";
+import { textDocumentDataToUsableDataFromUri, textDocumentToUsableData, tsDiagnosticToDiagnostic } from "./transformers";
+import { createCustomElementsLanguageServiceRequestFromQueryData } from "./language-services/request";
 import { documents } from "./text-documents";
-import { generateLanguageServiceQueryData, generateLanguageServiceQueryDataForDiagnostics } from "./handlers/handler-helper";
+import { generateLanguageServiceQueryDataForDiagnostics } from "./handlers/handler-helper";
 
 export async function runDiagnostics(uri: string, textDoc: TextDocument) {
     if (isJavascriptFile(uri)) {

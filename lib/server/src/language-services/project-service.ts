@@ -8,7 +8,7 @@ const logger = new Logger();
 // TODO: Is it okay that this is a singleton?
 export function getProjectService(host: tss.server.ServerHost) {
     return ProjectService.getInstance({
-        host,
+        host: tss.sys as tss.server.ServerHost,
         logger,
         cancellationToken: tss.server.nullCancellationToken, // TODO: Figure out
         useSingleInferredProject: true,

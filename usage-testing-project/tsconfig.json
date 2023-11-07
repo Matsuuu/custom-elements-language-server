@@ -15,7 +15,8 @@
         "inlineSources": true,
         "rootDir": "./",
         "incremental": true,
-        "allowJs": true
+        "allowJs": true,
+        "jsx": "preserve"
     },
     "include": ["**/*.ts", "**/*.js", "/**/*.html"]
 }
