@@ -39,24 +39,12 @@ export class LanguageServiceManager {
         return languageService;
     }
 
-    public getLanguageServiceForCurrentFile(fileName: string, fileContent: string | undefined): tss.LanguageService | undefined {
+    public getLanguageServiceForCurrentFile(fileName: string, fileContent: string | undefined) {
         const project = projectService.openAndGetProjectForFile(fileName, fileContent);
         if (!project) {
-            return undefined;
+            // TODO: Do something?
+            return;
         }
-
-        const resolvedProjectIsConfiguredProject = isConfiguredProject(project);
-        if (!resolvedProjectIsConfiguredProject) {
-            // TODO: Send a notification to user, suggesting setting up a jsconfig/tsconfig
-            // TODO: Can we do anything with a project that's not configured?
-            return undefined;
-        }
-
-        const configFilePath = project.canonicalConfigFilePath;
-
-        const languageService = this.getOrCreateLanguageService(configFilePath, project);
-
-        return languageService;
     }
 
     public getProjectForCurrentFile(fileName: string, fileContent: string) {
@@ -74,9 +62,9 @@ export function getLanguageServiceManagerInstance() {
     return LanguageServiceManager._instance;
 }
 
-export function getLanguageService(fileName: string, fileContent: string) {
-    return getLanguageServiceManagerInstance().getLanguageServiceForCurrentFile(fileName, fileContent);
-}
+// export function getLanguageService(fileName: string, fileContent: string) {
+//     return getLanguageServiceManagerInstance().getLanguageServiceForCurrentFile(fileName, fileContent);
+// }
 
 export function getProjectBasePath(fileName: string) {
     const closestConfigurationFile = findClosestConfigurationFile(fileName);

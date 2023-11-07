@@ -4,7 +4,6 @@ import url from "url";
 import { Diagnostic } from "vscode-languageserver";
 import { TextDocument } from "vscode-languageserver-textdocument";
 import { connection } from "./connection";
-import { getLanguageService } from "./language-services/language-services";
 import { textDocumentToUsableData, tsDiagnosticToDiagnostic } from "./transformers";
 import { createCustomElementsLanguageServiceRequestFromQueryData } from "./language-services/request";
 import { generateLanguageServiceQueryDataForDiagnostics } from "./handlers/handler-helper";

@@ -6,7 +6,7 @@ const template = html`
 
   
   
-  <sl-card>
+  <sl-card></sl-card>
 `
 
 const CountingComponent = () => {
