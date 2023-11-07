@@ -36,23 +36,30 @@ export function getCodeActionsForParams(params: CodeActionParams, textDoc: TextD
     return codeActions;
 }
 
+// On the second line
+const IMPORT_FALLBACK_RANGE = Range.create({ line: 0, character: 99999999 }, { line: 0, character: 99999999 });
+
 function generateImportCodeAction(diagnostic: Diagnostic, params: CodeActionParams, textDoc: TextDocument) {
     // TODO: Make type safe
     const diagnosticData = diagnostic.data[0] as tss.DiagnosticRelatedInformation;
 
     const importPositionOffset = diagnosticData.start ?? 0;
     const messageText = diagnosticData.messageText as string;
+    const importRange = importPositionOffset > 0
+        ? Range.create(offsetToPosition(textDoc, importPositionOffset), offsetToPosition(textDoc, importPositionOffset))
+        : IMPORT_FALLBACK_RANGE
 
     const workSpaceEdit: WorkspaceEdit = {
         changes: {
             [params.textDocument.uri]: [
                 {
-                    range: Range.create(offsetToPosition(textDoc, importPositionOffset), offsetToPosition(textDoc, importPositionOffset)),
+                    range: importRange,
                     newText: messageText
                 }
             ]
         }
-    }
+    };
+
     const packagePath = messageText.match(/\".*\"/);
 
     return {
