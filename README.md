@@ -14,11 +14,25 @@ Generating a CEM in watch mode will provide you with the best user experience. I
 
 The current featureset is as follows:
 
-- Support HTML files and html`` -template literals
-- Provides Completions for custom elements defined in the local Custom Elements Manifest and ones in node_modules
-- Provides type hints for attributes and properties on html tages
-- Provides Go To Definition -functionality for Custom Elements defined in the Custom Elements Manifest
-- Provides diagnostics on missing imports and unclosed custom element tags
+-   Support HTML files and html`` -template literals
+-   Provides Completions for custom elements defined in the local Custom Elements Manifest and ones in node_modules
+-   Provides type hints for attributes and properties on html tages
+-   Provides Go To Definition -functionality for Custom Elements defined in the Custom Elements Manifest
+-   Provides diagnostics on missing imports and unclosed custom element tags
+
+### Disabling diagnostics
+
+Sometimes CELS might catch some diagnostics that might not be useful for your usecase.
+
+Adding a comment anywhere in your code with the given code, will disable diagnostics for said file.
+
+These diagnostics can be disbled with the following flags:
+
+| Command                     | Action                                                 |
+| --------------------------- | ------------------------------------------------------ |
+| cels-disable-diagnostics    | Disable all diagnostics                                |
+| cels-disable-missing-closed | Disable diagnostics for non-closed custom element tags |
+| cels-disable-import-check   | Disable checks for non-imported custom elements        |
 
 ## Installing
 
@@ -62,6 +76,5 @@ These operations include but are not limited to
 -   Attribute autocompletion
 -   Slot name autocompletions
 -   Event binding completions
-
 
 Via installing a plugin to your favorite editor to support LSP actions, you are able to enable all of these Language Service functionalities.

@@ -8,6 +8,12 @@ import { textDocumentToUsableData, tsDiagnosticToDiagnostic } from "./transforme
 import { createCustomElementsLanguageServiceRequestFromQueryData } from "./language-services/request";
 import { generateLanguageServiceQueryDataForDiagnostics } from "./handlers/handler-helper";
 
+const DISABLE_FLAGS = {
+    DISABLE_ALL: "cels-disable-diagnostics",
+    DISABLE_MISSING_CLOSED: "cels-disable-missing-closed",
+    DISABLE_IMPORT_CHECK: "cels-disable-import-check"
+}
+
 export async function runDiagnostics(uri: string, textDoc: TextDocument) {
     handleDiagnostics(uri, textDoc);
 }
@@ -16,6 +22,14 @@ function handleDiagnostics(uri: string, textDoc: TextDocument) {
     const fileName = url.fileURLToPath(uri);
     const usableData = textDocumentToUsableData(textDoc);
     const queryData = generateLanguageServiceQueryDataForDiagnostics(usableData, textDoc.uri);
+    const text = textDoc.getText();
+    const disableDiagnostics = text.includes(DISABLE_FLAGS.DISABLE_ALL);
+
+
+    if (disableDiagnostics) {
+        connection.sendDiagnostics({ uri: textDoc.uri, diagnostics: [] });
+        return;
+    }
 
     if (!queryData.isValid) {
         return;
@@ -23,13 +37,14 @@ function handleDiagnostics(uri: string, textDoc: TextDocument) {
 
     const request = createCustomElementsLanguageServiceRequestFromQueryData(queryData);
 
-    // TODO: We need to make importdiagnostics disableable since all file format's can't and won't set this.
-    // Maybe a flag? if file.includes("cels-disable-import-check")
-    const importDiagnostics = getImportDiagnostics(request);
-    const nonClosedTagDiagnostics = getMissingCloseTagDiagnostics(0, request);
+    let diagnostics: ts.Diagnostic[] = [];
 
-    // TODO: Filter diagnostics calls by filetype. No need for imports for md etc.? Or is there?
-    const diagnostics = [...importDiagnostics, ...nonClosedTagDiagnostics];
+    if (!text.includes(DISABLE_FLAGS.DISABLE_MISSING_CLOSED)) {
+        diagnostics = [...getMissingCloseTagDiagnostics(0, request)];
+    }
+    if (!text.includes(DISABLE_FLAGS.DISABLE_IMPORT_CHECK)) {
+        diagnostics = [...getImportDiagnostics(request)];
+    }
 
     try {
         const sendableDiagnostics: Array<Diagnostic> = diagnostics
