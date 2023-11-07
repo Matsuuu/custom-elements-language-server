@@ -5,7 +5,8 @@ import { getSourceFile } from "../../ts/sourcefile.js";
 import { CODE_ACTIONS } from "../enum/code-actions.js";
 import { CustomElementsLanguageServiceRequest } from "../../request.js";
 
-export function getMissingCloseTagDiagnostics(nodeOffset: number, request: CustomElementsLanguageServiceRequest): tss.Diagnostic[] {
+export function getMissingCloseTagDiagnostics(request: CustomElementsLanguageServiceRequest): tss.Diagnostic[] {
+    const nodeOffset = 0;
     const { document, htmlLanguageService, filePath, project } = request;
     const customElementTagNodes = getCustomElementTagsInContext(htmlLanguageService, document);
     const sourceFile = getSourceFile(filePath, undefined, project);

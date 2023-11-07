@@ -1,5 +1,7 @@
 
 <script setup>
+import "@shoelace-style/shoelace/dist/components/button/button.js";
+
 import "./example-project.js";
 import { ref } from 'vue'
 const greeting = ref('Hello World!')

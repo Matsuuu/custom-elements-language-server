@@ -1,5 +1,5 @@
 
 
 ```html
-<example-project>
+<example-project></example-project>
 ```

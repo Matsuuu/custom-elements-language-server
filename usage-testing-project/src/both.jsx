@@ -1,8 +1,13 @@
 import { createSignal, onCleanup } from "solid-js";
 import { render } from "solid-js/web";
+import "./example-project.js";
+import "@shoelace-style/shoelace/dist/components/button/button.js";
+import "./importing-element.js";
 
 const template = html`
   <example-project></example-project>
+
+  <sl-button type="button"></sl-button>
 
   <importing-element>
 
@@ -17,6 +22,7 @@ const CountingComponent = () => {
 	);
 	onCleanup(() => clearInterval(interval));
   return <div>
+    <importing-element></importing-element>
 	<example-project></example-project>
     <p>Count value is {count()}</p>
   </div>;

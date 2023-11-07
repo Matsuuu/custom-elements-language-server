@@ -40,10 +40,10 @@ function handleDiagnostics(uri: string, textDoc: TextDocument) {
     let diagnostics: ts.Diagnostic[] = [];
 
     if (!text.includes(DISABLE_FLAGS.DISABLE_MISSING_CLOSED)) {
-        diagnostics = [...getMissingCloseTagDiagnostics(0, request)];
+        diagnostics = [...diagnostics, ...getMissingCloseTagDiagnostics(request)];
     }
     if (!text.includes(DISABLE_FLAGS.DISABLE_IMPORT_CHECK)) {
-        diagnostics = [...getImportDiagnostics(request)];
+        diagnostics = [...diagnostics, ...getImportDiagnostics(request)];
     }
 
     try {

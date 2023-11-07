@@ -1,18 +1,19 @@
 import { html } from "lit-html";
+import "./example-project.js";
 
 export const temp = html`
-  
-    <example-project
-      title="foo"
-      project-name="my-project"
-      ></example-project>
-    
+
+  <example-project
+      project-name="foo"
+      .color=""
+    ></example-project>
+
     <p>Foo</p>
 
     <img src="" />
 
     <input type="text" />
-    
+
     <textarea cols="40"></textarea>
 
     <div class="foo">
