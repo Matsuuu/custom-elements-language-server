@@ -3,7 +3,7 @@ import tss from "typescript/lib/tsserverlibrary.js";
 import url from "url";
 import { getCapabilities, getGlobalSettings, LanguageServerSettings } from "./settings.js";
 import { TextDocuments, _Connection } from "vscode-languageserver";
-import { getProjectForCurrentFile, refreshLanguageServiceForFile } from "./language-services/language-services.js";
+import { getProjectForCurrentContext, getProjectForCurrentFile, refreshLanguageServiceForFile } from "./language-services/language-services.js";
 import { runDiagnostics } from "./diagnostics.js";
 import { connection } from "./connection.js";
 import { textDocumentDataToUsableDataFromUri, UsableTextDocumentData } from "./transformers.js";
@@ -14,7 +14,7 @@ export let documents: TextDocuments<TextDocument> = new TextDocuments(TextDocume
 
 function refreshCEM(usableData: UsableTextDocumentData) {
     refreshLanguageServiceForFile(usableData.fileName, usableData.fileContent);
-    const project = getProjectForCurrentFile(usableData.fileName, usableData.fileContent);
+    const project = getProjectForCurrentContext(usableData.fileName, usableData.fileContent);
 
     if (project) {
         refreshCEMData(project.getCurrentDirectory());

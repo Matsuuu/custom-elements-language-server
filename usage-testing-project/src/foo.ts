@@ -1,6 +1,5 @@
 import { html } from "lit-html";
 import "@shoelace-style/shoelace/dist/components/input/input.js";
-import "./example-project.js";
 
 export const temp = html`
     <example-project my-attribute="f"

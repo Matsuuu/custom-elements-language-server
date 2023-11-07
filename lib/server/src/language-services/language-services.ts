@@ -4,19 +4,37 @@ import { getProjectService } from "./project-service.js";
 
 const projectService = getProjectService();
 
+export enum ProjectSpecificity {
+    FILE_LEVEL = "file_level",
+    PROJECT_LEVEL = "project_level"
+}
+
 export class LanguageServiceManager {
     static _instance?: LanguageServiceManager;
 
-    public refreshFileForLanguageService(fileName: string, fileContent: string | undefined) {
-        const project = projectService.openAndGetProjectForFile(fileName, fileContent);
-        if (!project) {
-            // TODO: Do something?
-            return;
-        }
+    public async refreshFileForLanguageService(fileName: string, fileContent: string | undefined) {
+        getProjectForCurrentFile(fileName, fileContent ?? '');
     }
 
-    public getProjectForCurrentFile(fileName: string, fileContent: string) {
-        return projectService.openAndGetProjectForFile(fileName, fileContent);
+    public getProjectForCurrentFile(fileName: string, fileContent: string, specificity: ProjectSpecificity) {
+        let project = projectService.openAndGetProjectForFile(fileName, fileContent);
+        // TODO: Okay so this hack doesn't really function as it breaks import checks. Either 
+        // Rewrite import checks or make this better
+        if (project && !isConfiguredProject(project) && specificity === ProjectSpecificity.PROJECT_LEVEL) {
+            const configuredProjects = [...projectService.configuredProjects.entries()];
+            // This is a hack to support other file formats, which don't automatically have a 
+            // configuredproject. The `projectService.configFileForOpenFiles` API is marked as internal
+            // and therefore shouldn't be accessed. Needs more research on this but this works for now.
+            // @ts-ignore
+            const configFileMap = projectService.configFileForOpenFiles;
+            const currentFileConfigFile = configFileMap.get(fileName);
+            const matchingProject = configuredProjects.find(entry => {
+                const configPath = entry[0];
+                return configPath === currentFileConfigFile
+            })
+            project = matchingProject?.[1];
+        }
+        return project;
     }
 
 }
@@ -67,7 +85,11 @@ export function refreshLanguageServiceForFile(fileName: string, fileContent: str
 }
 
 export function getProjectForCurrentFile(fileName: string, fileContent: string) {
-    return getLanguageServiceManagerInstance().getProjectForCurrentFile(fileName, fileContent);
+    return getLanguageServiceManagerInstance().getProjectForCurrentFile(fileName, fileContent, ProjectSpecificity.FILE_LEVEL);
+}
+
+export function getProjectForCurrentContext(fileName: string, fileContent: string) {
+    return getLanguageServiceManagerInstance().getProjectForCurrentFile(fileName, fileContent, ProjectSpecificity.PROJECT_LEVEL);
 }
 
 export function isConfiguredProject(project: tss.server.Project): project is tss.server.ConfiguredProject {
