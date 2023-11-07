@@ -1,8 +1,5 @@
-import TemplateLanguageServicePlugin from "template-language-service";
 import tss from "typescript/lib/tsserverlibrary.js";
 import fs from "fs";
-
-import { getPluginCreateInfo } from "./plugin-creation.js";
 import { getProjectService } from "./project-service.js";
 
 const projectService = getProjectService();
@@ -10,36 +7,7 @@ const projectService = getProjectService();
 export class LanguageServiceManager {
     static _instance?: LanguageServiceManager;
 
-    private _languageServiceCache: Map<string, tss.LanguageService> = new Map();
-
-    /**
-     * Try to get the plugged in language service instance of project
-     * using the config file path (e.g. /home/matsu/Project/foo/tsconfig.json).
-     * */
-    private getOrCreateLanguageService(projectConfigFilePath: string, project: tss.server.Project) {
-        if (this._languageServiceCache.has(projectConfigFilePath)) {
-            return this._languageServiceCache.get(projectConfigFilePath);
-        }
-
-        const pluginCreateInfo = getPluginCreateInfo(projectService, projectConfigFilePath);
-        if (!pluginCreateInfo) {
-            throw new Error("Failed to initialize Plugin Creation Info");
-        }
-
-        const templateLiteralTSServerPlugin = TemplateLanguageServicePlugin({ typescript: tss, project });
-        const languageService = templateLiteralTSServerPlugin.create(pluginCreateInfo);
-
-        if (!languageService) {
-            // TODO: Throw error?
-            console.error("Language service init failed");
-            return undefined;
-        }
-
-        this._languageServiceCache.set(projectConfigFilePath, languageService);
-        return languageService;
-    }
-
-    public getLanguageServiceForCurrentFile(fileName: string, fileContent: string | undefined) {
+    public refreshFileForLanguageService(fileName: string, fileContent: string | undefined) {
         const project = projectService.openAndGetProjectForFile(fileName, fileContent);
         if (!project) {
             // TODO: Do something?
@@ -61,10 +29,6 @@ export function getLanguageServiceManagerInstance() {
     }
     return LanguageServiceManager._instance;
 }
-
-// export function getLanguageService(fileName: string, fileContent: string) {
-//     return getLanguageServiceManagerInstance().getLanguageServiceForCurrentFile(fileName, fileContent);
-// }
 
 export function getProjectBasePath(fileName: string) {
     const closestConfigurationFile = findClosestConfigurationFile(fileName);
@@ -98,8 +62,8 @@ function findClosestConfigurationFile(path: string) {
     return undefined;
 }
 
-export function updateLanguageServiceForFile(fileName: string, fileContent: string | undefined) {
-    getLanguageServiceManagerInstance().getLanguageServiceForCurrentFile(fileName, fileContent);
+export function refreshLanguageServiceForFile(fileName: string, fileContent: string | undefined) {
+    getLanguageServiceManagerInstance().refreshFileForLanguageService(fileName, fileContent);
 }
 
 export function getProjectForCurrentFile(fileName: string, fileContent: string) {

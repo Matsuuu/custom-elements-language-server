@@ -18,5 +18,5 @@
         "allowJs": true,
         "jsx": "preserve"
     },
-    "include": ["**/*.ts", "**/*.js", "/**/*.html"]
+    "include": ["**/*.ts", "**/*.js", "/**/*.html", "**/*.jsx", "**/*.tsx"]
 }

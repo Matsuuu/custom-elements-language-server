@@ -4,7 +4,7 @@ import { documentSettings, initDocuments } from "./text-documents";
 import fs from "fs";
 import path from "path";
 import url from "url";
-import { updateLanguageServiceForFile } from "./language-services/language-services";
+import { refreshLanguageServiceForFile } from "./language-services/language-services";
 
 // @ts-ignore
 export let connection = createConnection(ProposedFeatures.all);
@@ -122,7 +122,7 @@ async function initializeProjectsInWorkSpaceFolders(workspaceFolders: WorkspaceF
                 const mainFileName = packageJson.main ?? packageJson.module;
                 if (mainFileName) {
                     const mainFilePath = path.resolve(fileName, mainFileName);
-                    updateLanguageServiceForFile(mainFilePath, undefined);
+                    refreshLanguageServiceForFile(mainFilePath, undefined);
                 } else {
                     console.warn("Could not find a main or module file");
                 }

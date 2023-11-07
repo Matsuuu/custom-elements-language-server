@@ -4,8 +4,8 @@ import { render } from "solid-js/web";
 const template = html`
   <example-project></example-project>
 
-  
-  
+  <importing-element>
+
   <sl-card></sl-card>
 `
 

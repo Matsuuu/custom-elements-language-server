@@ -27,7 +27,6 @@
     "homepage": "https://github.com/Matsuuu/custom-elements-language-server#readme",
     "devDependencies": {
         "custom-elements-languageserver-core": "file:../custom-elements-languageserver-core",
-        "template-language-service": "file:../template-language-service",
         "typescript": "^5.0.2",
         "vscode-html-languageservice": "^5.0.2",
         "vscode-languageserver": "^8.0.1",

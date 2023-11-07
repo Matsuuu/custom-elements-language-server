@@ -46,5 +46,4 @@ LanguageServerEventHost.getInstance().addEventListener("cem-updated", (event: Ev
     docs.forEach((doc) => {
         runDiagnostics(doc.uri, doc);
     });
-    // RUN DIAG
 });

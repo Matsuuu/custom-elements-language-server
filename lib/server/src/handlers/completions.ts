@@ -4,7 +4,7 @@ import { textDocumentDataToUsableData } from "../transformers";
 import { documents } from "../text-documents";
 import { wait } from "../wait";
 import { elementKindToCompletionKind, getCompletionEntries } from "custom-elements-languageserver-core";
-import { createCustomElementsLanguageServiceRequest, createCustomElementsLanguageServiceRequestFromQueryData } from "../language-services/request";
+import { createCustomElementsLanguageServiceRequestFromQueryData } from "../language-services/request";
 import { generateLanguageServiceQueryData } from "./handler-helper";
 
 export async function completionsHandler(completionParams: CompletionParams): Promise<CompletionList> {
@@ -17,13 +17,7 @@ export async function completionsHandler(completionParams: CompletionParams): Pr
         return CompletionList.create();
     }
 
-    const request = createCustomElementsLanguageServiceRequest(
-        queryData.fileName,
-        queryData.basePath,
-        queryData.doc!,
-        queryData.position,
-        queryData.project!,
-    );
+    const request = createCustomElementsLanguageServiceRequestFromQueryData(queryData);
     let completions = getCompletionEntries(request);
 
     return completionsToList(completions);
