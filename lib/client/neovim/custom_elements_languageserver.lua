@@ -11,17 +11,6 @@ return {
   default_config = {
     init_options = { hostInfo = 'neovim' },
     cmd = cmd,
-    filetypes = {
-      'javascript',
-      'javascriptreact',
-      'javascript.jsx',
-      'typescript',
-      'typescriptreact',
-      'typescript.tsx',
-      'html',
-      'vue',
-      'php'
-    },
     root_dir = function(fname)
       return util.root_pattern 'tsconfig.json'(fname)
         or util.root_pattern('package.json', 'jsconfig.json', '.git')(fname)

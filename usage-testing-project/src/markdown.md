@@ -1,6 +1,5 @@
 
 
 ```html
-
 <example-project>
 ```

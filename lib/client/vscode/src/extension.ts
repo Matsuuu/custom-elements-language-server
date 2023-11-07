@@ -7,19 +7,6 @@ let client: LanguageClient;
 
 const disposables: Disposable[] = [];
 
-const SUPPORTED_LANGUAGES = [
-    'javascript',
-    'javascriptreact',
-    'javascript.jsx',
-    'typescript',
-    'typescriptreact',
-    'typescript.tsx',
-    'html',
-    'vue',
-    'php'
-]
-
-
 function registerCommands(context: ExtensionContext) {
     const restartCommandDisposable = commands.registerCommand('extension.restart', async () => {
         client.stop();
@@ -54,10 +41,15 @@ export function activate(context: ExtensionContext) {
         },
     };
 
+    // TODO: Allow excluding filetypes
     // Options to control the language client
     let clientOptions: LanguageClientOptions = {
+        // documentSelector: [
+        //     ...SUPPORTED_LANGUAGES.map(lang => ({ scheme: "file", language: lang }))
+        // ],
+        //
         documentSelector: [
-            ...SUPPORTED_LANGUAGES.map(lang => ({ scheme: "file", language: lang }))
+            { scheme: "file" }
         ],
         synchronize: {
             // Notify the server about file changes to '.clientrc files contained in the workspace

@@ -9,40 +9,40 @@ const logo = new URL("../../assets/open-wc-logo.svg", import.meta.url).href;
  * user via a card-like UI component
  *
  * @augments LitElement
- * 
+ *
  * @attribute {string} my-attribute
- * 
+ *
  * @fires my-custom-event
  * */
 export class ExampleProject extends LitElement {
-    @property({ type: String }) title = "My app";
+  @property({ type: String }) title = "My app";
 
-    @property({ type: String, reflect: true, attribute: "project-name" })
-    projectName = "Example Project";
+  @property({ type: String, reflect: true, attribute: "project-name" })
+  projectName = "Example Project";
 
+  /**
+   * Color of project card background and general theme
+   * */
+  @property({ type: String, reflect: true }) color = "#000000";
+
+  /**
+   * Userdata for authentication and token purposes
+   * */
+  @property({ type: Object }) userData = {};
+
+  myAttribute = "bar";
+
+  matias = "BORK BORK";
+
+  constructor() {
+    super();
     /**
-     * Color of project card background and general theme
+     * My attribute is used to do stuff
      * */
-    @property({ type: String, reflect: true }) color = "#000000";
-
-    /**
-     * Userdata for authentication and token purposes
-     * */
-    @property({ type: Object }) userData = {};
-
-    myAttribute = "bar";
-
-    matias = "BORK BORK";
-
-    constructor() {
-        super();
-        /**
-         * My attribute is used to do stuff
-         * */
-        this.myAttribute = "foo";
-        this.setAttribute("my-attribute", this.myAttribute);
-    }
-    static styles = css`
+    this.myAttribute = "foo";
+    this.setAttribute("my-attribute", this.myAttribute);
+  }
+  static styles = css`
         :host {
             min-height: 100vh;
             display: flex;
@@ -85,12 +85,12 @@ export class ExampleProject extends LitElement {
         }
     `;
 
-    doEvent() {
-        this.dispatchEvent(new CustomEvent("my-custom-event"));
-    }
+  doEvent() {
+    this.dispatchEvent(new CustomEvent("my-custom-event"));
+  }
 
-    render() {
-        return html`
+  render() {
+    return html`
             <main>
                 <div class="logo"><img alt="open-wc logo" src=${logo} /></div>
                 <h1>${this.title}</h1>
@@ -106,5 +106,5 @@ export class ExampleProject extends LitElement {
                 <a target="_blank" rel="noopener noreferrer" href="https://github.com/open-wc">open-wc</a>.
             </p>
         `;
-    }
+  }
 }
