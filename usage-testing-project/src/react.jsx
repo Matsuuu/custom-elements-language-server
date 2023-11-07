@@ -5,7 +5,7 @@ function MyButton() {
     <button>
       I'm a button
 
-      <example-project></example-project>
+      <example-project color=""></example-project>
 
     </button>
   );
@@ -16,6 +16,8 @@ export default function MyApp() {
     <div>
       <h1>Welcome to my app</h1>
       <MyButton />
+
+      <importing-element>
     </div>
   );
 }

@@ -4,35 +4,15 @@ import { CodeAction, CodeActionParams, Diagnostic, Range, WorkspaceEdit } from "
 import { TextDocument } from "vscode-languageserver-textdocument";
 import { documents } from "../text-documents.js";
 import { offsetToPosition } from "../transformers.js";
-import { Handler, isJavascriptFile } from "./handler.js";
 
-export const CodeActionHandler: Handler<CodeActionParams, CodeAction[]> = {
-    handle: (params: CodeActionParams) => {
-        if (isJavascriptFile(params)) {
-            return CodeActionHandler.onJavascriptFile(params);
-        } else {
-            return CodeActionHandler.onHTMLOrOtherFile(params);
-        }
-    },
-    onJavascriptFile: (params: CodeActionParams) => {
-        const doc = params.textDocument;
-        const textDoc = documents.get(doc.uri);
-        if (!textDoc) {
-            return [];
-        }
-
-        return getCodeActionsForParams(params, textDoc);
-
-    },
-    onHTMLOrOtherFile: (params: CodeActionParams) => {
-        const doc = params.textDocument;
-        const textDoc = documents.get(doc.uri);
-        if (!textDoc) {
-            return [];
-        }
-
-        return getCodeActionsForParams(params, textDoc);
+export function codeActionHandler(codeActionParams: CodeActionParams): CodeAction[] {
+    const doc = codeActionParams.textDocument;
+    const textDoc = documents.get(doc.uri);
+    if (!textDoc) {
+        return [];
     }
+
+    return getCodeActionsForParams(codeActionParams, textDoc);
 }
 
 export function getCodeActionsForParams(params: CodeActionParams, textDoc: TextDocument) {

@@ -6,8 +6,8 @@ export const temp = html`
     .projectName="" 
     .color="#f00b44"
     @my-custom-event="">
-      
-    </example-project>
+
+    <sl-alert>
 
     <p>Foo</p>
 

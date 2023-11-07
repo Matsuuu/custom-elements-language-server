@@ -1,4 +1,6 @@
+
 <script setup>
+import "./example-project.js";
 import { ref } from 'vue'
 const greeting = ref('Hello World!')
 </script>
@@ -6,6 +8,7 @@ const greeting = ref('Hello World!')
 <template>
   <div>
     <sl-button variant="">
+
 
     <p class="greeting">{{ greeting }}</p>
   </div>

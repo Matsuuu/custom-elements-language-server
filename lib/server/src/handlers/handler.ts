@@ -4,6 +4,10 @@ const javascriptFileTypes = [
     "js", "ts", "jsx", "tsx", "mjs", "cjs"
 ];
 
+const filesThatArentJavascriptButWorkSomeHow = [
+    "vue"
+]
+
 type HandlerReturnType<P> = (P | undefined) | PromiseLike<P | undefined>;
 
 export interface Handler<T, P> {
@@ -17,5 +21,6 @@ export type HandlerFileTypeIdentifier = TextDocumentPositionParams | CodeActionP
 export function isJavascriptFile(params: HandlerFileTypeIdentifier) {
     const uri = typeof params === "string" ? params : params.textDocument.uri;
 
-    return javascriptFileTypes.some(fileType => uri.endsWith("." + fileType));
+    return javascriptFileTypes.some(fileType => uri.endsWith("." + fileType))
+        || filesThatArentJavascriptButWorkSomeHow.some(fileType => uri.endsWith("." + fileType));
 }

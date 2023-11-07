@@ -3,59 +3,32 @@ import { CompletionList, CompletionParams, CompletionItem } from "vscode-languag
 import { textDocumentDataToUsableData } from "../transformers";
 import { documents } from "../text-documents";
 import { getLanguageService } from "../language-services/language-services";
-import { Handler, isJavascriptFile } from "./handler";
 import { wait } from "../wait";
 import { elementKindToCompletionKind, getCompletionEntries } from "custom-elements-languageserver-core";
 import { createCustomElementsLanguageServiceRequest, createCustomElementsLanguageServiceRequestFromQueryData } from "../language-services/request";
 import { generateLanguageServiceQueryData } from "./handler-helper";
 
-export const CompletionsHandler: Handler<CompletionParams, CompletionList> = {
-    handle: (completionParams: CompletionParams) => {
-        return new Promise(async resolve => {
-            await wait(50);
-            if (isJavascriptFile(completionParams)) {
-                resolve(CompletionsHandler.onJavascriptFile(completionParams));
-            } else {
-                resolve(CompletionsHandler.onHTMLOrOtherFile(completionParams));
-            }
-        });
-    },
-    onJavascriptFile: (completionParams: CompletionParams) => {
-        const usableData = textDocumentDataToUsableData(documents, completionParams);
-        const languageService = getLanguageService(usableData.fileName, usableData.fileContent);
-        const queryData = generateLanguageServiceQueryData(usableData, completionParams);
+export async function completionsHandler(completionParams: CompletionParams): Promise<CompletionList> {
+    await wait(50); // TODO: Can we like. Not rely on this?
 
-        const completionsOpts: ts.GetCompletionsAtPositionOptions = {};
-        let completions = languageService?.getCompletionsAtPosition(queryData.fileName, usableData.position, completionsOpts);
-        if (completions === undefined) {
-            if (!queryData.isValid) {
-                return CompletionList.create();
-            }
-            const request = createCustomElementsLanguageServiceRequest(
-                queryData.fileName,
-                queryData.basePath,
-                queryData.doc!,
-                queryData.position,
-                queryData.project!,
-            );
-            completions = getCompletionEntries(request);
-        }
+    const usableData = textDocumentDataToUsableData(documents, completionParams);
+    const queryData = generateLanguageServiceQueryData(usableData, completionParams);
 
-        return completionsToList(completions);
-    },
-    onHTMLOrOtherFile: (completionParams: CompletionParams) => {
-        const usableData = textDocumentDataToUsableData(documents, completionParams);
-        const queryData = generateLanguageServiceQueryData(usableData, completionParams);
-        if (!queryData.isValid) {
-            return CompletionList.create();
-        }
+    if (!queryData.isValid) {
+        return CompletionList.create();
+    }
 
-        const request = createCustomElementsLanguageServiceRequestFromQueryData(queryData);
-        const completions = getCompletionEntries(request);
+    const request = createCustomElementsLanguageServiceRequest(
+        queryData.fileName,
+        queryData.basePath,
+        queryData.doc!,
+        queryData.position,
+        queryData.project!,
+    );
+    let completions = getCompletionEntries(request);
 
-        return completionsToList(completions);
-    },
-};
+    return completionsToList(completions);
+}
 
 function completionsToList(completions: ts.WithMetadata<ts.CompletionInfo> | undefined) {
     if (!completions) return CompletionList.create();

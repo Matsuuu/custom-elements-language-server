@@ -4,23 +4,10 @@ import { ReferenceParams, Location, Range } from "vscode-languageserver";
 import { getProjectForCurrentFile } from "../language-services/language-services.js";
 import { documents, scanDocument } from "../text-documents.js";
 import { offsetToPosition, positionToOffset, textDocumentDataToUsableData } from "../transformers.js";
-import { Handler, isJavascriptFile } from "./handler.js";
 import url from "url";
 
-export const ReferenceHandler: Handler<ReferenceParams, Location[]> = {
-    handle: (params: ReferenceParams) => {
-        if (isJavascriptFile(params)) {
-            return ReferenceHandler.onJavascriptFile(params);
-        } else {
-            return ReferenceHandler.onHTMLOrOtherFile(params);
-        }
-    },
-    onJavascriptFile: (params: ReferenceParams) => {
-        return getReferencesAtPosition(params);
-    },
-    onHTMLOrOtherFile: (params: ReferenceParams) => {
-        return [];
-    }
+export function referenceHandler(referenceParams: ReferenceParams): Location[] {
+    return getReferencesAtPosition(referenceParams);
 }
 
 // TODO: Make references work for HTML too

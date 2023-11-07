@@ -3,6 +3,10 @@ import { render } from "solid-js/web";
 
 const template = html`
   <example-project></example-project>
+
+  
+  
+  <sl-card>
 `
 
 const CountingComponent = () => {

@@ -7,24 +7,24 @@ console.log("Startup at ", new Date());
 
 import { TextDocument } from "vscode-languageserver-textdocument";
 import { documents } from "./text-documents.js";
-import { ReferenceHandler } from "./handlers/references.js";
-import { CodeActionHandler } from "./handlers/code-actions.js";
-import { HoverHandler } from "./handlers/hover.js";
-import { DefinitionHandler } from "./handlers/definition.js";
-import { CompletionsHandler } from "./handlers/completions.js";
-import { CodeActionResolveHandler } from "./handlers/code-action-resolve.js";
+import { referenceHandler } from "./handlers/references.js";
+import { definitionHandler } from "./handlers/definition.js";
 import { connection, initConnection } from "./connection.js";
 import { runDiagnostics } from "./diagnostics.js";
 import { CEMUpdatedEvent, LanguageServerEventHost } from "custom-elements-languageserver-core";
+import { completionsHandler } from "./handlers/completions.js";
+import { codeActionHandler } from "./handlers/code-actions.js";
+import { codeActionResolveHandler } from "./handlers/code-action-resolve.js";
+import { hoverHandler } from "./handlers/hover.js";
 
 initConnection();
 
-connection.onCompletion(CompletionsHandler.handle);
-connection.onHover(HoverHandler.handle);
-connection.onDefinition(DefinitionHandler.handle);
-connection.onReferences(ReferenceHandler.handle);
-connection.onCodeAction(CodeActionHandler.handle)
-connection.onCodeActionResolve(CodeActionResolveHandler.handle);
+connection.onCompletion(completionsHandler);
+connection.onHover(hoverHandler);
+connection.onDefinition(definitionHandler);
+connection.onReferences(referenceHandler);
+connection.onCodeAction(codeActionHandler)
+connection.onCodeActionResolve(codeActionResolveHandler);
 
 connection.onDidChangeTextDocument((params: DidChangeTextDocumentParams) => {
     const docRef = params.textDocument;
