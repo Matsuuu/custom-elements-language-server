@@ -23,6 +23,8 @@ function handleDiagnostics(uri: string, textDoc: TextDocument) {
 
     const request = createCustomElementsLanguageServiceRequestFromQueryData(queryData);
 
+    // TODO: We need to make importdiagnostics disableable since all file format's can't and won't set this.
+    // Maybe a flag? if file.includes("cels-disable-import-check")
     const importDiagnostics = getImportDiagnostics(request);
     const nonClosedTagDiagnostics = getMissingCloseTagDiagnostics(0, request);
 
