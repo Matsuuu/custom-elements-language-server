@@ -4,10 +4,8 @@ import fs from "fs";
 
 import { getPluginCreateInfo } from "./plugin-creation.js";
 import { getProjectService } from "./project-service.js";
-import { ServerHost } from "./server-host.js";
 
-const serverHost = new ServerHost();
-const projectService = getProjectService(serverHost);
+const projectService = getProjectService();
 
 export class LanguageServiceManager {
     static _instance?: LanguageServiceManager;

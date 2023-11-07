@@ -1,12 +1,11 @@
 import { Logger } from "./logger.js";
 import tss from "typescript/lib/tsserverlibrary.js";
-import path from "path";
 import { normalizePath } from "custom-elements-languageserver-core";
 
 const logger = new Logger();
 
 // TODO: Is it okay that this is a singleton?
-export function getProjectService(host: tss.server.ServerHost) {
+export function getProjectService() {
     return ProjectService.getInstance({
         host: tss.sys as tss.server.ServerHost,
         logger,
