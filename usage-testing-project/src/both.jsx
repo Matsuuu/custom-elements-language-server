@@ -1,6 +1,10 @@
 import { createSignal, onCleanup } from "solid-js";
 import { render } from "solid-js/web";
 
+const template = html`
+  <example-project></example-project>
+`
+
 const CountingComponent = () => {
 	const [count, setCount] = createSignal(0);
 	const interval = setInterval(
