@@ -2,7 +2,6 @@ import ts from "typescript";
 import { CompletionList, CompletionParams, CompletionItem } from "vscode-languageserver";
 import { textDocumentDataToUsableData } from "../transformers";
 import { documents } from "../text-documents";
-import { getLanguageService } from "../language-services/language-services";
 import { wait } from "../wait";
 import { elementKindToCompletionKind, getCompletionEntries } from "custom-elements-languageserver-core";
 import { createCustomElementsLanguageServiceRequest, createCustomElementsLanguageServiceRequestFromQueryData } from "../language-services/request";
