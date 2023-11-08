@@ -175,6 +175,10 @@ const DEFAULT_CONFIG = {
     dev: false,
     packagejson: true,
     litelement: true,
+    stencil: true,
+    fast: true,
+    catalyst: true,
+    'catalyst-major-2': true,
     plugins: [
 
     ]
