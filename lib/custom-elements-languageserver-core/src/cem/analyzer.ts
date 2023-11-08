@@ -52,7 +52,7 @@ export async function analyzeLocalProject(project: tss.server.Project): Promise<
 
     const modifiedSourceFiles: ts.SourceFile[] = filesWithAbsolutePaths.map(sf => ts.createSourceFile(
         sf,
-        readFileSync(sf, "utf8"),
+        readFileSync(sf, "utf8"), // TODO: Is there a need to make this not sync? For speed?
         ts.ScriptTarget.ES2015,
         true
     ));
