@@ -37,9 +37,6 @@ export interface AnalyzerOutput {
 
 export async function analyzeLocalProject(basePath: string): Promise<AnalyzerOutput> {
 
-    // console.log("Building manifest for project ", project.getCurrentDirectory());
-
-
     const pattern = `./**/*.(${FILE_TYPES_TO_MATCH.join("|")})`
     let filesForAnalyzer: string[] = [];
     try {
