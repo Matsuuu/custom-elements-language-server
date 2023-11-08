@@ -3,6 +3,6 @@
 ?>
 
 <div>
-  <sl-button variant="">
+  <sl-button variant=""></sl-button>
 
 </div>

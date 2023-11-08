@@ -13,7 +13,7 @@ export class CEMCollection {
     private _modules: Array<JavaScriptModule> | undefined;
     private _modulesWithRefs: Array<JavaScriptModuleWithRef> | undefined;
 
-    constructor(private project: tss.server.Project, private basePath: string) {
+    constructor(private basePath: string) {
         this.initializeCEMs();
     }
 
@@ -21,7 +21,7 @@ export class CEMCollection {
         console.log("Initializing CEM's");
         const dependencyPackages = getDependencyPackagesWithCEMs(this.basePath + "/node_modules");
 
-        const cemData = await CEMInstance.fromLocalPath(this.project, this.basePath);
+        const cemData = await CEMInstance.fromLocalPath(this.basePath);
         const dependencyCems = Object.values(dependencyPackages)
             .map(CEMInstance.fromDependency)
             .filter(cemIsNotUndefined)
@@ -86,7 +86,7 @@ export function getCEMData(project: tss.server.Project, projectBasePath: string)
         return existingCollection;
     }
 
-    const cemCollection = new CEMCollection(project, projectBasePath);
+    const cemCollection = new CEMCollection(projectBasePath);
     setToCEMCache(project, cemCollection);
     return cemCollection;
 }

@@ -1,8 +1,5 @@
 import { createSignal, onCleanup } from "solid-js";
 import { render } from "solid-js/web";
-import "./example-project.js";
-import "@shoelace-style/shoelace/dist/components/button/button.js";
-import "./importing-element.js";
 
 const template = html`
   <example-project></example-project>

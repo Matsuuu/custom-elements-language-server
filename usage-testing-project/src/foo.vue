@@ -6,7 +6,10 @@ const greeting = ref('Hello World!')
 
 <template>
   <div>
-    <sl-button variant="">
+    <sl-button variant=""></sl-button>
+    <example-project></example-project>
+
+    <sl-icon>
 
     <p class="greeting">{{ greeting }}</p>
   </div>

@@ -35,20 +35,23 @@ export interface AnalyzerOutput {
     manifest: Package;
 }
 
-export async function analyzeLocalProject(project: tss.server.Project): Promise<AnalyzerOutput> {
+export async function analyzeLocalProject(basePath: string): Promise<AnalyzerOutput> {
 
     // console.log("Building manifest for project ", project.getCurrentDirectory());
 
-    const basePath = project.getCurrentDirectory();
 
     const pattern = `./**/*.(${FILE_TYPES_TO_MATCH.join("|")})`
-    const filesForAnalyzer = await globby([pattern, "!node_modules"], {
-        gitignore: true,
-        cwd: basePath
-    });
+    let filesForAnalyzer: string[] = [];
+    try {
+        filesForAnalyzer = await globby([pattern, "!node_modules"], {
+            gitignore: true,
+            cwd: basePath
+        });
+    } catch (ex) {
+        console.error(ex);
+    }
 
     const filesWithAbsolutePaths = filesForAnalyzer.map(f => path.join(basePath, f));
-
 
     const modifiedSourceFiles: ts.SourceFile[] = filesWithAbsolutePaths.map(sf => ts.createSourceFile(
         sf,
@@ -75,7 +78,7 @@ export async function analyzeLocalProject(project: tss.server.Project): Promise<
     normalizeManifest(basePath, manifest);
 
     const savePath = cacheCurrentCEM(basePath, manifest);
-    // console.log("Manifest file written to ", savePath);
+    console.log("Manifest file written to ", savePath);
 
     return {
         manifest,

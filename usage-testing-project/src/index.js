@@ -1,5 +1,4 @@
 import { html } from "lit-html";
-import "./example-project.js";
 
 export const temp = html`
 

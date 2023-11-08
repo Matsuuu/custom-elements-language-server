@@ -84,7 +84,7 @@ export class CEMInstance {
         this.cem = JSON.parse(cemFile);
     }
 
-    static async fromLocalPath(project: tss.server.Project, projectPath: string): Promise<CEMInstance | undefined> {
+    static async fromLocalPath(projectPath: string): Promise<CEMInstance | undefined> {
 
         const packageJsonPath = projectPath + "/package.json";
         if (!fs.existsSync(packageJsonPath)) {
@@ -96,7 +96,7 @@ export class CEMInstance {
         const packageJson = JSON.parse(packageJsonFile);
         const packageName = packageJson.name;
 
-        const analyzerOutput = await analyzeLocalProject(project);
+        const analyzerOutput = await analyzeLocalProject(projectPath);
         const cemSourcePath = packageJson.customElements
             ? `${projectPath}/${packageJson.customElements}`
             : `${projectPath}`;
@@ -109,7 +109,7 @@ export class CEMInstance {
             packageJsonPath,
             packageName,
             refresher: async (_this: CEMInstance) => {
-                await analyzeLocalProject(project);
+                await analyzeLocalProject(projectPath);
             }
         })
     }
