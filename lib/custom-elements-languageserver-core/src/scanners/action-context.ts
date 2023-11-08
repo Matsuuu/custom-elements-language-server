@@ -88,7 +88,7 @@ function resolveAttributeKind(attributeName: string, currentTag: string, textSpa
         } as EventActionContext;
     }
 
-    if (attributeName.startsWith(".")) {
+    if (attributeName.startsWith(".") || attributeName.startsWith(":")) {
         return {
             kind: ActionContextKind.PropertyName,
             propertyName: attributeName.substring(1),
