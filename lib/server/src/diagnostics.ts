@@ -14,8 +14,22 @@ const DISABLE_FLAGS = {
     DISABLE_IMPORT_CHECK: "cels-disable-import-check"
 }
 
+const DEFAULT_DISABLE_IMPORT_CHECKS_FILETYPES = ["md", "html", "php"];
+
 export async function runDiagnostics(uri: string, textDoc: TextDocument) {
     handleDiagnostics(uri, textDoc);
+}
+
+function shouldIgnoreImportDiagnostics(fileName: string) {
+    const fileExtension = fileName.split(".").at(-1) ?? "__CELS_NO_ENDING";
+    if (DEFAULT_DISABLE_IMPORT_CHECKS_FILETYPES.includes(fileExtension)) {
+        return true;
+    }
+    if (!fileName.endsWith(fileExtension)) {
+        return true;
+    }
+
+    return false;
 }
 
 function handleDiagnostics(uri: string, textDoc: TextDocument) {
@@ -24,7 +38,6 @@ function handleDiagnostics(uri: string, textDoc: TextDocument) {
     const queryData = generateLanguageServiceQueryDataForDiagnostics(usableData, textDoc.uri);
     const text = textDoc.getText();
     const disableDiagnostics = text.includes(DISABLE_FLAGS.DISABLE_ALL);
-
 
     if (disableDiagnostics) {
         connection.sendDiagnostics({ uri: textDoc.uri, diagnostics: [] });
@@ -42,7 +55,7 @@ function handleDiagnostics(uri: string, textDoc: TextDocument) {
     if (!text.includes(DISABLE_FLAGS.DISABLE_MISSING_CLOSED)) {
         diagnostics = [...diagnostics, ...getMissingCloseTagDiagnostics(request)];
     }
-    if (!text.includes(DISABLE_FLAGS.DISABLE_IMPORT_CHECK)) {
+    if (!text.includes(DISABLE_FLAGS.DISABLE_IMPORT_CHECK) && !shouldIgnoreImportDiagnostics(fileName)) {
         diagnostics = [...diagnostics, ...getImportDiagnostics(request)];
     }
 
