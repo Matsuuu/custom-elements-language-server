@@ -16,15 +16,19 @@ import { catalystPlugin2 } from "@custom-elements-manifest/analyzer/src/features
 import { JavaScriptExport, Package } from "custom-elements-manifest";
 // TODO: Can we fix these imports?
 import tss from "typescript/lib/tsserverlibrary.js";
-import fs from "fs";
+import fs, { readFileSync } from "fs";
 import path from "path";
 import url from "url";
+// @ts-expect-error
+import { globby } from "globby";
 import { LogLevel, Logger } from "../logger/logger";
 
 // Pathing to ${projectPath}/node_modules/.cache/custom-elements-language-server
 const CEM_CACHE_DIR = "/node_modules/.cache/custom-elements-language-server";
 const CEM_CACHE_NAME = "custom-elements.json";
 const CEM_CONFIG_FILE_NAME = "custom-elements-manifest.config";
+
+const FILE_TYPES_TO_MATCH = ["js", "ts", "jsx", "tsx", "cjs", "mjs", "cjsx", "mjsx"];
 
 export interface AnalyzerOutput {
     filePath: string;
@@ -36,22 +40,22 @@ export async function analyzeLocalProject(project: tss.server.Project): Promise<
     // console.log("Building manifest for project ", project.getCurrentDirectory());
 
     const basePath = project.getCurrentDirectory();
-    const rootFiles = project.getRootFiles();
-    const sourceFiles = rootFiles
-        // @ts-ignore
-        .map(rf => project.getSourceFile(rf as tss.Path))
-        .filter(sf => sf !== undefined) as tss.SourceFile[];
 
-
-    // TODO: Is this step necessary? Might be to hold analyzer ts version mismatch errors from happening.
-    const modifiedSourceFiles: ts.SourceFile[] = sourceFiles.map(sf => {
-        return ts.createSourceFile(
-            sf.fileName,
-            sf.getFullText(),
-            ts.ScriptTarget.ES2015,
-            true
-        )
+    const pattern = `./**/*.(${FILE_TYPES_TO_MATCH.join("|")})`
+    const filesForAnalyzer = await globby([pattern, "!node_modules"], {
+        gitignore: true,
+        cwd: basePath
     });
+
+    const filesWithAbsolutePaths = filesForAnalyzer.map(f => path.join(basePath, f));
+
+
+    const modifiedSourceFiles: ts.SourceFile[] = filesWithAbsolutePaths.map(sf => ts.createSourceFile(
+        sf,
+        readFileSync(sf, "utf8"),
+        ts.ScriptTarget.ES2015,
+        true
+    ));
 
     // console.log("Analyzing " + modifiedSourceFiles.length + " files.");
 

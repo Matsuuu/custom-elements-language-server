@@ -17,5 +17,8 @@
         "typescript": "^5.0.2",
         "typescript-template-language-service-decorator": "^2.3.1",
         "vscode-html-languageservice": "^5.0.2"
+    },
+    "dependencies": {
+        "globby": "^13.2.2"
     }
 }
