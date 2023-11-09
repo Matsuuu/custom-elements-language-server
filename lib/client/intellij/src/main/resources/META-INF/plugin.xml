@@ -1,0 +1,18 @@
+<!-- Plugin Configuration File. Read more: https://plugins.jetbrains.com/docs/intellij/plugin-configuration-file.html -->
+<idea-plugin>
+    <id>com.github.matsuuu.ideacelsplugin</id>
+    <name>idea-cels-plugin Template</name>
+    <vendor>matsuuu</vendor>
+
+    <depends>com.intellij.modules.platform</depends>
+
+    <resource-bundle>messages.MyBundle</resource-bundle>
+
+    <extensions defaultExtensionNs="com.intellij">
+        <toolWindow factoryClass="com.github.matsuuu.ideacelsplugin.toolWindow.MyToolWindowFactory" id="MyToolWindow"/>
+    </extensions>
+
+    <applicationListeners>
+        <listener class="com.github.matsuuu.ideacelsplugin.listeners.MyApplicationActivationListener" topic="com.intellij.openapi.application.ApplicationActivationListener"/>
+    </applicationListeners>
+</idea-plugin>
