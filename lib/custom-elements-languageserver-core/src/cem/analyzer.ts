@@ -36,34 +36,45 @@ export interface AnalyzerOutput {
     manifest: Package;
 }
 
+const EMPTY_OUTPUT = {
+    schemaVersion: "1",
+    modules: []
+}
+
 export async function analyzeLocalProject(basePath: string): Promise<AnalyzerOutput> {
 
 
     const projectConfig = await getPossibleProjectConfig(basePath);
     const frameworkPlugins = await getFrameworkPlugins(projectConfig);
     const globs = projectConfig.globs ?? [];
-    const globExcludes = projectConfig.exclude ??
-        console.log("Project config: ", projectConfig);
+    const globExcludes = projectConfig.exclude ?? [];
 
     const plugins = [...(projectConfig?.plugins || []), ...frameworkPlugins]
     const sourceFiles = await getFilesForGlobs(globs, globExcludes, basePath);
 
-    console.log("Sourcefile count ", sourceFiles.length);
 
-    const manifest: Package = create({
-        modules: sourceFiles,
-        plugins: plugins,
-        context: { dev: false }
-    });
+    try {
+        const manifest: Package = create({
+            modules: sourceFiles,
+            plugins: plugins,
+            context: { dev: false }
+        });
 
-    normalizeManifest(basePath, manifest);
+        normalizeManifest(basePath, manifest);
 
-    const savePath = cacheCurrentCEM(basePath, manifest);
-    console.log("Manifest file written to ", savePath);
+        const savePath = cacheCurrentCEM(basePath, manifest);
+        console.log("Manifest file written to ", savePath);
 
-    return {
-        manifest,
-        filePath: savePath
+        return {
+            manifest,
+            filePath: savePath
+        }
+    } catch (ex) {
+        console.warn("Parsing through manifest failed. ", ex);
+        return {
+            manifest: EMPTY_OUTPUT,
+            filePath: ""
+        }
     }
 }
 
@@ -78,7 +89,6 @@ async function getFilesForGlobs(globs: string[], globExcludes: string[], basePat
 
     let filesForAnalyzer: string[] = [];
     try {
-        console.log("Using globs ", globsToUse)
         filesForAnalyzer = await globby([...globsToUse, "!node_modules"], {
             gitignore: true,
             cwd: basePath
@@ -161,7 +171,12 @@ async function getPossibleProjectConfig(basePath: string) {
     const cachedManifestPath = cacheManifestConfigAsModule(basePath, configFileContent);
 
     // Now we have our config locally setup in a `mjs` file and can import it.
-    const importedConfig = await import(cachedManifestPath + `?cachebust=${Date.now().toString()}`);
+    let importedConfig;
+    try {
+        importedConfig = await import(cachedManifestPath + `?cachebust=${Date.now().toString()}`);
+    } catch (ex) {
+        console.warn("Could not import custom-elements-manifest.config. ", ex);
+    }
 
     if (!importedConfig) {
         return DEFAULT_CONFIG;

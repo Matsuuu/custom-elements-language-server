@@ -52,7 +52,7 @@ export class CEMInstance {
 
 
         if (!fs.existsSync(builderData.cemPath)) {
-            console.log("Could not find 'customElements' entry in package.json at " + builderData.packageJsonPath);
+            // console.log("Could not find 'customElements' entry in package.json at " + builderData.packageJsonPath);
             return;
         }
         const cemFile = fs.readFileSync(builderData.cemPath, "utf8");
