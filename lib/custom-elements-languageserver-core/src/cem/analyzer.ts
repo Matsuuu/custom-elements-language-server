@@ -185,11 +185,11 @@ async function getPossibleProjectConfig(basePath: string) {
     let importedConfig;
     try {
         importedConfig = await import(configPath + `?cachebust=${Date.now().toString()}`);
+        cleanUpCallback();
     } catch (ex) {
         console.warn("Could not import custom-elements-manifest.config. ", ex);
     }
 
-    cleanUpCallback();
 
     if (!importedConfig) {
         return DEFAULT_CONFIG;

@@ -2,6 +2,7 @@ import * as HTMLLanguageService from "vscode-html-languageservice/lib/esm/htmlLa
 import ts from "typescript";
 import tss from "typescript/lib/tsserverlibrary.js";
 import url from "url";
+import fs from "fs";
 import {
     AttributeActionContext,
     EventActionContext,
@@ -68,10 +69,18 @@ export function getGoToDefinitionEntries(request: CustomElementsLanguageServiceR
     return [...definitionInfos];
 }
 
+function determineTargetFileExtension(path: string) {
+    const tsVariant = path.replace(new RegExp(/\..*js$/), ".ts");
+    if (fs.existsSync(tsVariant.replace("file://", ""))) {
+        return tsVariant;
+    }
+    return path;
+}
+
 function getTagDefinitionsEntries(basePath: string, matchingClass: JavaScriptModuleWithRef, classDeclaration: CustomElement, fileName: string, project: tss.server.Project) {
     const classDefinitionTextSpan = getClassDefinitionTextSpan(matchingClass, classDeclaration?.name ?? "", basePath, project);
-    const packagePath = url.pathToFileURL(matchingClass.cem.cemSourceFolderPath + "/" + matchingClass.path).href;
-    // TODO: Point to the .d.ts file ? Let's try it out
+    let packagePath = url.pathToFileURL(matchingClass.cem.cemSourceFolderPath + "/" + matchingClass.path).href;
+    packagePath = determineTargetFileExtension(packagePath);
 
     return [
         {
