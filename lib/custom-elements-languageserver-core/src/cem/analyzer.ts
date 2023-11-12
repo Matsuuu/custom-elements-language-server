@@ -42,10 +42,11 @@ export async function analyzeLocalProject(basePath: string): Promise<AnalyzerOut
     const projectConfig = await getPossibleProjectConfig(basePath);
     const frameworkPlugins = await getFrameworkPlugins(projectConfig);
     const globs = projectConfig.globs ?? [];
-    console.log("Project config: ", projectConfig);
+    const globExcludes = projectConfig.exclude ??
+        console.log("Project config: ", projectConfig);
 
     const plugins = [...(projectConfig?.plugins || []), ...frameworkPlugins]
-    const sourceFiles = await getFilesForGlobs(globs, basePath);
+    const sourceFiles = await getFilesForGlobs(globs, globExcludes, basePath);
 
     console.log("Sourcefile count ", sourceFiles.length);
 
@@ -66,15 +67,19 @@ export async function analyzeLocalProject(basePath: string): Promise<AnalyzerOut
     }
 }
 
-async function getFilesForGlobs(globs: string[], basePath: string) {
+async function getFilesForGlobs(globs: string[], globExcludes: string[], basePath: string) {
+    let globsToUse = [...globs];
     if (!globs || globs.length === 0) {
         const pattern = `./**/*.(${FILE_TYPES_TO_MATCH.join("|")})`
-        globs = [pattern];
+        globsToUse = [pattern];
     }
+
+    globsToUse = [...globsToUse, ...globExcludes.map(g => "!" + g)];
 
     let filesForAnalyzer: string[] = [];
     try {
-        filesForAnalyzer = await globby([...globs, "!node_modules"], {
+        console.log("Using globs ", globsToUse)
+        filesForAnalyzer = await globby([...globsToUse, "!node_modules"], {
             gitignore: true,
             cwd: basePath
         });

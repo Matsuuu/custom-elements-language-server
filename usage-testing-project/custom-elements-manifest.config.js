@@ -1,5 +1,6 @@
 export default {
-  exclude: [],
+  // globs: ["./**/*.(js|ts|jsx)"],
+  exclude: ["node_modules", "html"],
   dependencies: true,
   dev: false,
   packagejson: true,
@@ -8,13 +9,3 @@ export default {
      
   ]
 }
-
-/*module.exports = {
-  exclude: [],
-  dependencies: true,
-  dev: false,
-  packagejson: true,
-  plugins: [
-    
-  ]
-};*/
