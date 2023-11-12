@@ -41,7 +41,7 @@ export function getGoToDefinitionEntries(request: CustomElementsLanguageServiceR
     if (matchingClass.cem.isDependency) {
         matchingClass.path = matchingClass.path.replace(/\.(js|ts)$/, ".d.ts");
     }
-    const basePath = matchingClass.cem.cemSourcePath ?? projectBasePath;
+    const basePath = matchingClass.cem.cemSourceFolderPath ?? projectBasePath;
 
     const fileName = getFileNameFromPath(matchingClass?.path);
     const classDeclaration = findCustomElementDeclarationFromModule(matchingClass);
@@ -70,7 +70,7 @@ export function getGoToDefinitionEntries(request: CustomElementsLanguageServiceR
 
 function getTagDefinitionsEntries(basePath: string, matchingClass: JavaScriptModuleWithRef, classDeclaration: CustomElement, fileName: string, project: tss.server.Project) {
     const classDefinitionTextSpan = getClassDefinitionTextSpan(matchingClass, classDeclaration?.name ?? "", basePath, project);
-    const packagePath = url.pathToFileURL(matchingClass.cem.cemSourcePath + "/" + matchingClass.path).href;
+    const packagePath = url.pathToFileURL(matchingClass.cem.cemSourceFolderPath + "/" + matchingClass.path).href;
     // TODO: Point to the .d.ts file ? Let's try it out
 
     return [
@@ -95,7 +95,7 @@ function getAttributeDefinitionEntries(
     project: tss.server.Project
 ) {
     const attributeDefinitionTextSpan = getAttributeDefinitionTextSpan(matchingClass, actionContext.attributeName ?? "", basePath, project);
-    const packagePath = url.pathToFileURL(matchingClass.cem.cemSourcePath + "/" + matchingClass.path).href;
+    const packagePath = url.pathToFileURL(matchingClass.cem.cemSourceFolderPath + "/" + matchingClass.path).href;
 
     return [
         {
@@ -119,7 +119,7 @@ function getPropertyDefinitionEntries(
     project: tss.server.Project
 ) {
     const propertyDefinitionTextSpan = getPropertyDefinitionTextSpan(matchingClass, actionContext.propertyName ?? "", basePath, project);
-    const packagePath = url.pathToFileURL(matchingClass.cem.cemSourcePath + "/" + matchingClass.path).href;
+    const packagePath = url.pathToFileURL(matchingClass.cem.cemSourceFolderPath + "/" + matchingClass.path).href;
 
     return [
         {
@@ -143,7 +143,7 @@ function getEventDefinitionEntries(
     project: tss.server.Project
 ) {
     const eventDefinitionTextSpan = getEventDefinitionTextSpan(matchingClass, actionContext.eventName ?? "", basePath, project);
-    const packagePath = url.pathToFileURL(matchingClass.cem.cemSourcePath + "/" + matchingClass.path).href;
+    const packagePath = url.pathToFileURL(matchingClass.cem.cemSourceFolderPath + "/" + matchingClass.path).href;
 
     return [
         {

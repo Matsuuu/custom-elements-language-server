@@ -51,7 +51,7 @@ export function getImportDiagnostics(request: CustomElementsLanguageServiceReque
         }
 
         const cemInstanceRef = definition.cem;
-        const fullImportPath = normalizePath(`${cemInstanceRef.cemSourcePath}/${definition.path}`);
+        const fullImportPath = normalizePath(`${cemInstanceRef.cemSourceFolderPath}/${definition.path}`);
         const moduleResolution = resolveModule(`${cemInstanceRef.cemSourceFolderPath}/${definition.path}`, filePath, project);
         const resolvedModuleFileName = moduleResolution.resolvedModule?.resolvedFileName;
 
