@@ -16,6 +16,9 @@ export function getImportDiagnostics(request: CustomElementsLanguageServiceReque
     const { filePath, document, htmlLanguageService, projectBasePath, project } = request;
     const filePathWithoutFile = getFilePathFolder(filePath);
     const sourceFile = getSourceFile(filePath, undefined, project);
+    // Gather aliases and remove wildcards
+    const compilerPaths = Object.keys(project.getCompilerOptions().paths ?? new Map())
+        .map(alias => alias.endsWith("/*") ? alias.substring(0, alias.lastIndexOf("/*")) : alias);
 
     if (!sourceFile) {
         return [];
@@ -54,7 +57,12 @@ export function getImportDiagnostics(request: CustomElementsLanguageServiceReque
 
         if (!resolvedModuleFileName || !associatedFiles.includes(resolvedModuleFileName)) {
 
-            const relativeImportPath = resolveImportPath(fullImportPath, filePathWithoutFile);
+            let relativeImportPath;
+            if (compilerPaths.includes(cemInstanceRef.packageName ?? '')) {
+                relativeImportPath = cemInstanceRef.packageName + "/" + definition.path;
+            } else {
+                relativeImportPath = resolveImportPath(fullImportPath, filePathWithoutFile);
+            }
 
             notDefinedTags.push({
                 node: customElementTag,
