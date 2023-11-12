@@ -5,6 +5,7 @@ import * as path from "path";
 import * as fs from "fs";
 import { getPathAsDtsFile, getPathAsJsFile, getPathAsTsFile } from "./filepath-transformers.js";
 import { normalizePath } from "../interop.js";
+import { resolveModule } from "./modules.js";
 
 export function getSourceFile(baseOrFullPath: string, classPath: string | undefined, project: tss.server.Project) {
     const fullClassPath = classPath === undefined ?
@@ -43,7 +44,7 @@ export function getAllFilesAssociatedWithSourceFile(sourceFile: ts.SourceFile, b
         const imports = fileInfo.importedFiles;
 
         for (const importReference of imports) {
-            const moduleResolution = ts.resolveModuleName(importReference.fileName, currentSourceFile.fileName, project.getCompilerOptions(), project.projectService.host);
+            const moduleResolution = resolveModule(importReference.fileName, currentSourceFile.fileName, project);
             // TODO: for node modules, cache the found connections
             const importFilePath = moduleResolution.resolvedModule?.resolvedFileName ?? importReference.fileName
             // No need for this anymore?

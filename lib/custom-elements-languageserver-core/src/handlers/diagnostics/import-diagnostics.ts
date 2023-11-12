@@ -10,6 +10,7 @@ import { CODE_ACTIONS } from "../enum/code-actions.js";
 import { getPathAsDtsFile, getPathAsJsFile, getPathAsTsFile } from "../../ts/filepath-transformers.js";
 import { CustomElementsLanguageServiceRequest } from "../../request.js";
 import { normalizePath } from "../../interop.js";
+import { resolveModule } from "../../ts/modules.js";
 
 export function getImportDiagnostics(request: CustomElementsLanguageServiceRequest): tss.Diagnostic[] {
     const { filePath, document, htmlLanguageService, projectBasePath, project } = request;
@@ -48,7 +49,7 @@ export function getImportDiagnostics(request: CustomElementsLanguageServiceReque
 
         const cemInstanceRef = definition.cem;
         const fullImportPath = normalizePath(`${cemInstanceRef.cemSourcePath}/${definition.path}`);
-        const moduleResolution = ts.resolveModuleName(`${cemInstanceRef.cemSourceFolderPath}/${definition.path}`, filePath, project.getCompilerOptions(), project.projectService.host);
+        const moduleResolution = resolveModule(`${cemInstanceRef.cemSourceFolderPath}/${definition.path}`, filePath, project);
         const resolvedModuleFileName = moduleResolution.resolvedModule?.resolvedFileName;
 
         if (!resolvedModuleFileName || !associatedFiles.includes(resolvedModuleFileName)) {
