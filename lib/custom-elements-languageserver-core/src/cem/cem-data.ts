@@ -24,6 +24,7 @@ export class CEMInstance {
     // This is done due to the caching that we do with some CEM's. Currently needed only for local
     // CEM. Dependency CEM is resolved as is.
     public cemSourcePath: string | undefined;
+    public cemSourceFolderPath: string | undefined;
     public cemFolderPath: string | undefined;
     public cemPath: string | undefined;
     public packagePath: string | undefined;
@@ -69,6 +70,11 @@ export class CEMInstance {
         this.cemPath = builderData.cemPath;
         this.cemFolderPath = this.cemPath.substring(0, this.cemPath.lastIndexOf("/"));
         this.cemSourcePath = builderData.cemSourcePath || this.cemFolderPath;
+        // From aa/bb/custom-elements.json to aa/bb in cases where the json is appended. Ignore otherwise
+        // TODO: We really need to clean up these vars to a more clear format.
+        this.cemSourceFolderPath = this.cemSourcePath.endsWith(".json")
+            ? this.cemSourcePath.substring(0, this.cemSourcePath.lastIndexOf("/"))
+            : this.cemSourcePath;
         this.packagePath = builderData.packagePath;
         this.packageName = builderData.packageName;
         this.packageJsonPath = builderData.packageJsonPath;

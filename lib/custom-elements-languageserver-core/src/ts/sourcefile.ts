@@ -29,20 +29,26 @@ export function getSourceFile(baseOrFullPath: string, classPath: string | undefi
 
 export function getAllFilesAssociatedWithSourceFile(sourceFile: ts.SourceFile, basePath: string, project: tss.server.Project) {
 
-    const analyzedFiles: Record<string, ts.SourceFile> = {};
+    const analyzedFiles: Record<string, string[]> = {};
 
-    function processFileAndAddImports(currentSourceFile: ts.SourceFile) {
+    function processFileAndAddImports(currentSourceFile: ts.SourceFile, importAlias?: string) {
         if (analyzedFiles[currentSourceFile.fileName]) {
             return;
         }
-        analyzedFiles[currentSourceFile.fileName] = currentSourceFile;
+        analyzedFiles[currentSourceFile.fileName] = [currentSourceFile.fileName];
+        if (importAlias) {
+            analyzedFiles[currentSourceFile.fileName].push(importAlias);
+        }
         const fileInfo = ts.preProcessFile(currentSourceFile.getFullText());
         const imports = fileInfo.importedFiles;
 
         for (const importReference of imports) {
+            const moduleResolution = ts.resolveModuleName(importReference.fileName, currentSourceFile.fileName, project.getCompilerOptions(), project.projectService.host);
             // TODO: for node modules, cache the found connections
-            const importFilePath = importReference.fileName
+            const importFilePath = moduleResolution.resolvedModule?.resolvedFileName ?? importReference.fileName
+            // No need for this anymore?
             const absoluteImportPath = resolveAbsoluteFileToImport(importFilePath, basePath, currentSourceFile);
+
             if (!absoluteImportPath) {
                 continue;
             }
@@ -50,18 +56,20 @@ export function getAllFilesAssociatedWithSourceFile(sourceFile: ts.SourceFile, b
                 continue;
             }
 
+            // Need for this anymore?
             const importSourceFile = tryGetSourceFileForImport(absoluteImportPath, project);
             if (!importSourceFile) {
                 continue;
             }
 
-            processFileAndAddImports(importSourceFile);
+            const alias = importReference.fileName !== importSourceFile.fileName ? importReference.fileName : undefined;
+            processFileAndAddImports(importSourceFile, alias);
         }
     }
 
     processFileAndAddImports(sourceFile);
 
-    return Object.keys(analyzedFiles);
+    return Object.values(analyzedFiles).flatMap(x => x);
 }
 
 function tryGetSourceFileForImport(absoluteImportPath: string, project: tss.server.Project) {

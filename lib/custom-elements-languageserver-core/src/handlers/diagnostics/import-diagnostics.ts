@@ -4,7 +4,7 @@ import { getCEMData } from "../../cem/cem-cache.js";
 import { findCustomElementDefinitionModule } from "../../cem/cem-helpers.js";
 import { getCustomElementTagsInContext } from "../../scanners/tag-scanner.js";
 import { getAllFilesAssociatedWithSourceFile, getSourceFile } from "../../ts/sourcefile.js";
-import { SourceFile } from "typescript";
+import ts, { SourceFile } from "typescript";
 import { getFilePathFolder, resolveImportPath } from "./imports.js";
 import { CODE_ACTIONS } from "../enum/code-actions.js";
 import { getPathAsDtsFile, getPathAsJsFile, getPathAsTsFile } from "../../ts/filepath-transformers.js";
@@ -45,10 +45,13 @@ export function getImportDiagnostics(request: CustomElementsLanguageServiceReque
         if (!definition) {
             continue;
         }
+
         const cemInstanceRef = definition.cem;
         const fullImportPath = normalizePath(`${cemInstanceRef.cemSourcePath}/${definition.path}`);
+        const moduleResolution = ts.resolveModuleName(`${cemInstanceRef.cemSourceFolderPath}/${definition.path}`, filePath, project.getCompilerOptions(), project.projectService.host);
+        const resolvedModuleFileName = moduleResolution.resolvedModule?.resolvedFileName;
 
-        if (!sourceFilesContainFilePath(sourceFileNames, fullImportPath)) {
+        if (!resolvedModuleFileName || !associatedFiles.includes(resolvedModuleFileName)) {
 
             const relativeImportPath = resolveImportPath(fullImportPath, filePathWithoutFile);
 
