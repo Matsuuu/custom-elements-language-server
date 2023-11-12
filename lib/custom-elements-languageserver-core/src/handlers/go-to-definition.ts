@@ -104,7 +104,8 @@ function getAttributeDefinitionEntries(
     project: tss.server.Project
 ) {
     const attributeDefinitionTextSpan = getAttributeDefinitionTextSpan(matchingClass, actionContext.attributeName ?? "", basePath, project);
-    const packagePath = url.pathToFileURL(matchingClass.cem.cemSourceFolderPath + "/" + matchingClass.path).href;
+    let packagePath = url.pathToFileURL(matchingClass.cem.cemSourceFolderPath + "/" + matchingClass.path).href;
+    packagePath = determineTargetFileExtension(packagePath);
 
     return [
         {
@@ -128,7 +129,8 @@ function getPropertyDefinitionEntries(
     project: tss.server.Project
 ) {
     const propertyDefinitionTextSpan = getPropertyDefinitionTextSpan(matchingClass, actionContext.propertyName ?? "", basePath, project);
-    const packagePath = url.pathToFileURL(matchingClass.cem.cemSourceFolderPath + "/" + matchingClass.path).href;
+    let packagePath = url.pathToFileURL(matchingClass.cem.cemSourceFolderPath + "/" + matchingClass.path).href;
+    packagePath = determineTargetFileExtension(packagePath);
 
     return [
         {
@@ -152,7 +154,8 @@ function getEventDefinitionEntries(
     project: tss.server.Project
 ) {
     const eventDefinitionTextSpan = getEventDefinitionTextSpan(matchingClass, actionContext.eventName ?? "", basePath, project);
-    const packagePath = url.pathToFileURL(matchingClass.cem.cemSourceFolderPath + "/" + matchingClass.path).href;
+    let packagePath = url.pathToFileURL(matchingClass.cem.cemSourceFolderPath + "/" + matchingClass.path).href;
+    packagePath = determineTargetFileExtension(packagePath);
 
     return [
         {
