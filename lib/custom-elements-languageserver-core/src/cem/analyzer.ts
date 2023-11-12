@@ -26,6 +26,7 @@ import { LogLevel, Logger } from "../logger/logger";
 // Pathing to ${projectPath}/node_modules/.cache/custom-elements-language-server
 const CEM_CACHE_DIR = "/node_modules/.cache/custom-elements-language-server";
 const CEM_CACHE_NAME = "custom-elements.json";
+const CEM_CACHED_CONFIG_FILE_NAME = "custom-elements-manifest.config.mjs";
 const CEM_CONFIG_FILE_NAME = "custom-elements-manifest.config";
 
 const FILE_TYPES_TO_MATCH = ["js", "ts", "jsx", "tsx", "cjs", "mjs", "cjsx", "mjsx"];
@@ -37,37 +38,19 @@ export interface AnalyzerOutput {
 
 export async function analyzeLocalProject(basePath: string): Promise<AnalyzerOutput> {
 
-    const pattern = `./**/*.(${FILE_TYPES_TO_MATCH.join("|")})`
-    let filesForAnalyzer: string[] = [];
-    try {
-        filesForAnalyzer = await globby([pattern, "!node_modules"], {
-            gitignore: true,
-            cwd: basePath
-        });
-    } catch (ex) {
-        console.error(ex);
-    }
-
-    const filesWithAbsolutePaths = filesForAnalyzer.map(f => path.join(basePath, f));
-
-    const modifiedSourceFiles: ts.SourceFile[] = filesWithAbsolutePaths.map(sf => ts.createSourceFile(
-        sf,
-        readFileSync(sf, "utf8"), // TODO: Is there a need to make this not sync? For speed?
-        ts.ScriptTarget.ES2015,
-        true
-    ));
-
-    // console.log("Analyzing " + modifiedSourceFiles.length + " files.");
 
     const projectConfig = await getPossibleProjectConfig(basePath);
     const frameworkPlugins = await getFrameworkPlugins(projectConfig);
+    const globs = projectConfig.globs ?? [];
+    console.log("Project config: ", projectConfig);
 
     const plugins = [...(projectConfig?.plugins || []), ...frameworkPlugins]
+    const sourceFiles = await getFilesForGlobs(globs, basePath);
 
-    // console.log(plugins.length + " plugins enabled in CEM generation.");
+    console.log("Sourcefile count ", sourceFiles.length);
 
     const manifest: Package = create({
-        modules: modifiedSourceFiles,
+        modules: sourceFiles,
         plugins: plugins,
         context: { dev: false }
     });
@@ -81,6 +64,34 @@ export async function analyzeLocalProject(basePath: string): Promise<AnalyzerOut
         manifest,
         filePath: savePath
     }
+}
+
+async function getFilesForGlobs(globs: string[], basePath: string) {
+    if (!globs || globs.length === 0) {
+        const pattern = `./**/*.(${FILE_TYPES_TO_MATCH.join("|")})`
+        globs = [pattern];
+    }
+
+    let filesForAnalyzer: string[] = [];
+    try {
+        filesForAnalyzer = await globby([...globs, "!node_modules"], {
+            gitignore: true,
+            cwd: basePath
+        });
+    } catch (ex) {
+        console.error(ex);
+    }
+
+    const filesWithAbsolutePaths = filesForAnalyzer.map(f => path.join(basePath, f));
+
+    const sourceFiles: ts.SourceFile[] = filesWithAbsolutePaths.map(sf => ts.createSourceFile(
+        sf,
+        readFileSync(sf, "utf8"), // TODO: Is there a need to make this not sync? For speed?
+        ts.ScriptTarget.ES2015,
+        true
+    ));
+
+    return sourceFiles;
 }
 
 function normalizeManifest(basePath: string, manifest: Package) {
@@ -97,39 +108,55 @@ function normalizeManifest(basePath: string, manifest: Package) {
 
 function cacheCurrentCEM(projectPath: string, manifest: Package) {
     const cachePath = path.join(projectPath, CEM_CACHE_DIR);
-    // console.log("Checking for cache path at " + cachePath);
-    if (!fs.existsSync(cachePath)) {
-        // console.log("Creating cache path ", cachePath);
-        fs.mkdirSync(cachePath, { recursive: true });
-    }
+    createCachePath(cachePath);
 
     const savePath = path.resolve(cachePath, CEM_CACHE_NAME);
-    // console.log("Building manifest done, writing to file. at " + savePath);
     const manifestAsString = JSON.stringify(manifest);
     fs.writeFileSync(savePath, manifestAsString, "utf8");
-
-    // console.log(`Manifest built to ${savePath}. Filesize: `, manifestAsString.length);
 
     return savePath;
 }
 
-async function getPossibleProjectConfig(basePath: string) {
-    // Comment out the other possible CEM config files for now since
-    // we can't support .js files with module syntax.
-    const possibleConfigPaths = [
-        //basePath + "/" + CEM_CONFIG_FILE_NAME + ".js",
-        url.pathToFileURL(basePath + "/" + CEM_CONFIG_FILE_NAME + ".mjs"),
-        url.pathToFileURL(basePath + "/" + CEM_CONFIG_FILE_NAME + ".cjs"),
-    ]
+function cacheManifestConfigAsModule(projectPath: string, manifestFileContent: string) {
+    const cachePath = path.join(projectPath, CEM_CACHE_DIR);
+    createCachePath(cachePath);
 
-    let importedConfig;
-    for (const possibleConfigPath of possibleConfigPaths) {
-        if (fs.existsSync(possibleConfigPath)) {
-            // console.log("Found CEM config at ", possibleConfigPath);
-            importedConfig = await import(possibleConfigPath.href);
-            break;
-        }
+    const savePath = path.resolve(cachePath, CEM_CACHED_CONFIG_FILE_NAME);
+    fs.writeFileSync(savePath, manifestFileContent, "utf8");
+
+    return savePath;
+}
+
+function createCachePath(cachePath: string) {
+    if (!fs.existsSync(cachePath)) {
+        // console.log("Creating cache path ", cachePath);
+        fs.mkdirSync(cachePath, { recursive: true });
     }
+}
+
+async function getPossibleProjectConfig(basePath: string) {
+
+    const pattern = `**/${CEM_CONFIG_FILE_NAME}.*`;
+    const configFiles = await globby(["!node_modules", pattern], {
+        gitignore: true,
+        cwd: "."
+    });
+
+    const configFileDistances = configFiles
+        .map(cf => ({ config: cf, distance: cf.split("/").length }))
+        .sort((a, b) => a.distance - b.distance);
+
+    const closestConfig = configFileDistances[0];
+
+    if (!closestConfig) {
+        return DEFAULT_CONFIG;
+    }
+
+    const configFileContent = fs.readFileSync(closestConfig.config, "utf8");
+    const cachedManifestPath = cacheManifestConfigAsModule(basePath, configFileContent);
+
+    // Now we have our config locally setup in a `mjs` file and can import it.
+    const importedConfig = await import(cachedManifestPath + `?cachebust=${Date.now().toString()}`);
 
     if (!importedConfig) {
         return DEFAULT_CONFIG;

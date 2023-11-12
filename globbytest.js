@@ -14,4 +14,18 @@ async function test() {
 
 }
 
-test();
+// test();
+
+async function cemTest() {
+    const pattern = `**/custom-elements-manifest.config.*`;
+    console.log(pattern)
+    const res = await globby(["!node_modules", pattern], {
+        gitignore: true,
+        cwd: "."
+    })
+
+    console.log(res);
+
+}
+
+cemTest();
