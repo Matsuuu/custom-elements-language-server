@@ -132,14 +132,23 @@ function cacheCurrentCEM(projectPath: string, manifest: Package) {
     return savePath;
 }
 
-function cacheManifestConfigAsModule(projectPath: string, manifestFileContent: string) {
-    const cachePath = path.join(projectPath, CEM_CACHE_DIR);
-    createCachePath(cachePath);
+/**
+ * For cases where we have a configuration but it's not in module file format, we 
+ * need to temporarily write a configuration file in the mjs format for us to parse
+ * throught in and resolve it.
+ *
+ * We then give a callable callback that cleans up that file from the filesystem.
+ * */
+function createTempManifestConfig(closestConfigPath: string, configFileContent: string) {
+    if (!closestConfigPath.endsWith("mjs") || !closestConfigPath.endsWith("cjs")) {
+        // Write a mjs equivalent
+        const tempManifestFilePath = closestConfigPath.replace(new RegExp(/\..*js$/), ".mjs");
+        fs.writeFileSync(tempManifestFilePath, configFileContent, "utf8");
 
-    const savePath = path.resolve(cachePath, CEM_CACHED_CONFIG_FILE_NAME);
-    fs.writeFileSync(savePath, manifestFileContent, "utf8");
+        return { configPath: tempManifestFilePath, cleanUpCallback: () => fs.rmSync(tempManifestFilePath) };
+    }
 
-    return savePath;
+    return { configPath: closestConfigPath, cleanUpCallback: () => { } }
 }
 
 function createCachePath(cachePath: string) {
@@ -154,7 +163,7 @@ async function getPossibleProjectConfig(basePath: string) {
     const pattern = `**/${CEM_CONFIG_FILE_NAME}.*`;
     const configFiles = await globby(["!node_modules", pattern], {
         gitignore: true,
-        cwd: "."
+        cwd: basePath
     });
 
     const configFileDistances = configFiles
@@ -167,24 +176,26 @@ async function getPossibleProjectConfig(basePath: string) {
         return DEFAULT_CONFIG;
     }
 
-    const configFileContent = fs.readFileSync(closestConfig.config, "utf8");
-    const cachedManifestPath = cacheManifestConfigAsModule(basePath, configFileContent);
+    let closestConfigPath = path.resolve(basePath, closestConfig.config);
+    const configFileContent = fs.readFileSync(closestConfigPath, "utf8");
+
+    const { configPath, cleanUpCallback } = createTempManifestConfig(closestConfigPath, configFileContent);
 
     // Now we have our config locally setup in a `mjs` file and can import it.
     let importedConfig;
     try {
-        importedConfig = await import(cachedManifestPath + `?cachebust=${Date.now().toString()}`);
+        importedConfig = await import(configPath + `?cachebust=${Date.now().toString()}`);
     } catch (ex) {
         console.warn("Could not import custom-elements-manifest.config. ", ex);
     }
+
+    cleanUpCallback();
 
     if (!importedConfig) {
         return DEFAULT_CONFIG;
     }
 
-    const config = importedConfig.default;
-
-    return config;
+    return importedConfig.default;
 }
 
 // https://github.com/open-wc/custom-elements-manifest/blob/master/packages/analyzer/src/utils/cli-helpers.js#L88
