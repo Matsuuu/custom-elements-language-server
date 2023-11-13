@@ -28,7 +28,7 @@ export function getGoToDefinitionEntries(request: CustomElementsLanguageServiceR
     const { document, position, htmlLanguageService, projectBasePath, project } = request;
 
     const actionContext = resolveActionContext(htmlLanguageService, document, position);
-    const cemCollection = getCEMData(project, projectBasePath);
+    const cemCollection = getCEMData(projectBasePath);
 
     if (!cemCollection.hasData()) {
         return [...definitionInfos];

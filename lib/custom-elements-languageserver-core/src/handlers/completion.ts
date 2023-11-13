@@ -12,7 +12,7 @@ export function getCompletionEntries(request: CustomElementsLanguageServiceReque
 
     const actionContext = resolveActionContext(htmlLanguageService, document, position);
 
-    const cemCollection = getCEMData(project, projectBasePath);
+    const cemCollection = getCEMData(projectBasePath);
     let cemCompletions: tss.CompletionEntry[] = [];
 
     if (!cemCollection) {

@@ -31,7 +31,7 @@ export function getImportDiagnostics(request: CustomElementsLanguageServiceReque
     // Might lead to some false negatives.
     const sourceFileNames = associatedFiles;
 
-    const cemCollection = getCEMData(project, projectBasePath);
+    const cemCollection = getCEMData(projectBasePath);
     if (!cemCollection.hasData()) {
         return [];
     }

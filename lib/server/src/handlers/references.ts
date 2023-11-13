@@ -23,7 +23,7 @@ export function getReferencesAtPosition(referenceParams: ReferenceParams) {
         return [];
     }
 
-    const cemCollection = getCEMData(project, basePath);
+    const cemCollection = getCEMData(basePath);
     if (!cemCollection.hasData()) {
         return [];
     }

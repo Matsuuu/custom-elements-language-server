@@ -80,27 +80,27 @@ export class CEMCollection {
 
 const CEM_COLLECTION_CACHE = new Map<string, CEMCollection>();
 
-export function getCEMData(project: tss.server.Project, projectBasePath: string): CEMCollection {
-    const existingCollection = getCEMFromCache(project);
+export function getCEMData(projectBasePath: string): CEMCollection {
+    const existingCollection = getCEMFromCache(projectBasePath);
     if (existingCollection) {
         return existingCollection;
     }
 
     const cemCollection = new CEMCollection(projectBasePath);
-    setToCEMCache(project, cemCollection);
+    setToCEMCache(projectBasePath, cemCollection);
     return cemCollection;
 }
 
-function getCEMFromCache(project: tss.server.Project) {
-    return CEM_COLLECTION_CACHE.get(project.getCurrentDirectory());
+function getCEMFromCache(projectBasePath: string) {
+    return CEM_COLLECTION_CACHE.get(projectBasePath);
 }
 
 function getCEMFromCacheByPath(projectDirectory: string) {
     return CEM_COLLECTION_CACHE.get(projectDirectory);
 }
 
-function setToCEMCache(project: tss.server.Project, cemCollection: CEMCollection) {
-    CEM_COLLECTION_CACHE.set(project.getCurrentDirectory(), cemCollection);
+function setToCEMCache(projectBasePath: string, cemCollection: CEMCollection) {
+    CEM_COLLECTION_CACHE.set(projectBasePath, cemCollection);
 }
 
 export function refreshCEMData(projectBasePath: string) {

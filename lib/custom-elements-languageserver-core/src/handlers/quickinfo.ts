@@ -14,7 +14,7 @@ import { CustomElementsLanguageServiceRequest } from "../request.js";
 export function getQuickInfo(request: CustomElementsLanguageServiceRequest): tss.QuickInfo | undefined {
     const { document, position, htmlLanguageService, projectBasePath, project } = request;
     const actionContext = resolveActionContext(htmlLanguageService, document, position);
-    const cemCollection = getCEMData(project, projectBasePath);
+    const cemCollection = getCEMData(projectBasePath);
 
     if (!cemCollection.hasData()) {
         return undefined;
