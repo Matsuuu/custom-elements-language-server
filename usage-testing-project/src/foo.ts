@@ -49,3 +49,6 @@ function doRender() {
     <example-project project-name=""></example-project>
     `;
 }
+
+
+doRender();

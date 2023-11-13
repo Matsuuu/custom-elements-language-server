@@ -1,0 +1,10 @@
+[
+    {
+        "caption": "Preferences: LSP-custom-elements Settings",
+        "command": "edit_settings",
+        "args": {
+            "base_file": "${packages}/LSP-custom-elements/LSP-custom-elements.sublime-settings",
+            "default": "// Settings in here override those in \"LSP-custom-elements/LSP-custom-elements.sublime-settings\"\n\n{\n\t$0\n}\n",
+        },
+    },
+]

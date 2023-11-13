@@ -1,0 +1,7 @@
+{
+  "name": "sublime-cels",
+  "version": "1.0.0",
+  "dependencies": {
+    "custom-elements-languageserver": "^1.0.4"
+  }
+}

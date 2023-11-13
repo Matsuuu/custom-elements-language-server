@@ -1,0 +1,46 @@
+{
+  "contributions": {
+    "settings": [
+      {
+        "file_patterns": ["/LSP-custom-elements.sublime-settings"],
+        "schema": {
+            "$id": "sublime://settings/LSP-custom-elements",
+            "definitions": {
+                "PluginConfig": {
+                    "properties": {
+
+                    }
+                }
+            },
+            "type": "object",
+            "allOf": [
+                {
+                    "$ref": "sublime://settings/LSP-plugin-base"
+                },
+                {
+                    "$ref": "sublime://settings/LSP-custom-elements#/defintions/PluginConfig"
+                }
+            ]
+        }
+      },
+      {
+        "file_patterns": ["/*.sublime-project"],
+        "schema": {
+          "properties": {
+            "settings": {
+              "properties": {
+                "LSP": {
+                  "properties": {
+                    "LSP-custom-elements": {
+                      "$ref": "sublime://settings/LSP-custom-elements#/definitions/PluginConfig"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    ]
+  }
+}
