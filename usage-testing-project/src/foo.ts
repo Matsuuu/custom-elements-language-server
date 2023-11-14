@@ -2,6 +2,7 @@ import { html } from "lit-html";
 import "@shoelace-style/shoelace/dist/components/input/input.js";
 
 export const temp = html`
+
     <example-project my-attribute="f"
     project-name="foo"
     .projectName=""

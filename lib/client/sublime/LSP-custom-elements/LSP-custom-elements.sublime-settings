@@ -1,16 +1,9 @@
 {
-  // General settings
-  "show_diagnostics_panel_on_save": 0,
 
-  // Language server configurations
   "clients": {
     "custom-elements-language-server": {
-      // enable this configuration
       "enabled": true,
-      // the startup command -- what you would type in a terminal
       "command": ["${node_bin}", "${server_path}", "--stdio"],
-      // the selector that selects which type of buffers this language server attaches to
-      "selector": "source.js, source.jsx, source.ts, source.tsx"
     }
   }
 }

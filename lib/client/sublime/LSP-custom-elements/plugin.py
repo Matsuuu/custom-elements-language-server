@@ -17,4 +17,5 @@ class LspCustomElementsPlugin(NpmClientHandler):
     server_directory = 'server'
     # TODO: Check if this path works ?
     server_binary_path = os.path.join(server_directory, 'node_modules', 'custom-elements-languageserver', 'bin', 'custom-elements-languageserver.js')
+    print("Path " + server_binary_path)
 
