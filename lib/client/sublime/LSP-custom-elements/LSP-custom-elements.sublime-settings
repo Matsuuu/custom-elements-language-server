@@ -1,10 +1,5 @@
 {
-
-  "clients": {
-    "custom-elements-language-server": {
-      "enabled": true,
-      "command": ["${node_bin}", "${server_path}", "--stdio"],
-    }
-  }
+    "command": ["${node_bin}", "${server_path}", "--stdio"],
+    "selector": "source.js, source.jsx, source.ts, source.tsx"
 }
 
