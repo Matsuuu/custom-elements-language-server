@@ -63,7 +63,7 @@ export async function analyzeLocalProject(basePath: string): Promise<AnalyzerOut
         normalizeManifest(basePath, manifest);
 
         const savePath = cacheCurrentCEM(basePath, manifest);
-        console.log("Manifest file written to ", savePath);
+        Logger.log({ message: `Manifest file written to ${savePath}`, level: LogLevel.WARN });
 
         return {
             manifest,

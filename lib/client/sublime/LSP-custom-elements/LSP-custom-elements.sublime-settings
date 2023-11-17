@@ -1,5 +1,5 @@
 {
     "command": ["${node_bin}", "${server_path}", "--stdio"],
-    "selector": "source.js, source.jsx, source.ts, source.tsx"
+    "selector": "text.html, source.js"
 }
 

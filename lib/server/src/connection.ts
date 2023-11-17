@@ -5,12 +5,13 @@ import fs from "fs";
 import path from "path";
 import url from "url";
 import { refreshLanguageServiceForFile } from "./language-services/language-services";
+import { Logger, LogLevel } from "custom-elements-languageserver-core/src/logger/logger";
 
 // @ts-ignore
 export let connection = createConnection(ProposedFeatures.all);
 
 export function initConnection() {
-    console.log("Initializing connection");
+    Logger.log({ message: "Initializing connection", level: LogLevel.DEBUG });
     // @ts-ignore
     connection = createConnection(ProposedFeatures.all);
 
@@ -81,7 +82,7 @@ function onInitialize(params: InitializeParams) {
 }
 
 function onInitialized() {
-    console.log("Connection initialized");
+    Logger.log({ message: "Connection initialized", level: LogLevel.DEBUG });
     if (hasConfigurationCapability) {
         // Register for all configuration changes.
         connection.client.register(DidChangeConfigurationNotification.type, undefined);
@@ -110,12 +111,12 @@ interface PackageJsonLike {
 }
 
 async function initializeProjectsInWorkSpaceFolders(workspaceFolders: WorkspaceFolder[]) {
-    console.log("Initializing workspaces.");
+    Logger.log({ message: "Initializing workspaces.", level: LogLevel.DEBUG });
     workspaceFolders?.forEach(workSpaceFolder => {
-        console.log("Initializing workspace " + workSpaceFolder.name + " @ " + decodeURI(workSpaceFolder.uri));
+        Logger.log({ message: "Initializing workspace " + workSpaceFolder.name + " @ " + decodeURI(workSpaceFolder.uri), level: LogLevel.DEBUG });
         let fileName = url.fileURLToPath(workSpaceFolder.uri);
         const packageJsonPath = path.resolve(fileName, "package.json");
-        console.log("Package JSON path ", packageJsonPath);
+        Logger.log({ message: "Package JSON path " + packageJsonPath, level: LogLevel.DEBUG });
         if (fs.existsSync(packageJsonPath)) {
             try {
                 const packageJson = JSON.parse(fs.readFileSync(packageJsonPath, "utf8")) as PackageJsonLike;
@@ -124,13 +125,13 @@ async function initializeProjectsInWorkSpaceFolders(workspaceFolders: WorkspaceF
                     const mainFilePath = path.resolve(fileName, mainFileName);
                     refreshLanguageServiceForFile(mainFilePath, undefined);
                 } else {
-                    console.warn("Could not find a main or module file");
+                    Logger.log({ message: "Could not find a main or module file", level: LogLevel.WARN });
                 }
             } catch (ex) {
-                console.warn("Couldn't open project " + fileName, ex);
+                Logger.log({ message: "Couldn't open project " + fileName + "\n" + ex, level: LogLevel.WARN });
             }
         } else {
-            console.warn("Did not find package.json for project");
+            Logger.log({ message: "Did not find package.json for project", level: LogLevel.WARN });
         }
     })
 }

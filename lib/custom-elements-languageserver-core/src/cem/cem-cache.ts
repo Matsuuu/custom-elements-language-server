@@ -5,6 +5,7 @@ import { JavaScriptModule } from "custom-elements-manifest";
 import { addReferenceToModule, JavaScriptModuleWithRef } from "./cem-helpers.js";
 import tss from "typescript/lib/tsserverlibrary.js";
 import { CEMUpdatedEvent, LanguageServerEventHost } from "../export.js";
+import { Logger, LogLevel } from "../logger/logger.js";
 
 export class CEMCollection {
     public id: number = Date.now() + Math.floor(Math.random() * 999);
@@ -18,7 +19,7 @@ export class CEMCollection {
     }
 
     private async initializeCEMs() {
-        console.log("Initializing CEM's");
+        Logger.log({ message: "Initializing CEM's", level: LogLevel.INFO });
         const dependencyPackages = getDependencyPackagesWithCEMs(this.basePath + "/node_modules");
 
         const cemData = await CEMInstance.fromLocalPath(this.basePath);
@@ -31,7 +32,8 @@ export class CEMCollection {
         this._cems = dependencyCems.filter(cemIsNotUndefined);
 
         this.refresh(); // Initialize modules
-        console.log(`CEM Cache initialized. LocalCEM Present: ${this._localCEM !== undefined}. Dependency CEM Count: ${dependencyCems.length}`);
+
+        Logger.log({ message: `CEM Cache initialized. LocalCEM Present: ${this._localCEM !== undefined}. Dependency CEM Count: ${dependencyCems.length}`, level: LogLevel.INFO });
     }
 
     public get modules(): Array<JavaScriptModule> {
@@ -106,7 +108,7 @@ function setToCEMCache(projectBasePath: string, cemCollection: CEMCollection) {
 export function refreshCEMData(projectBasePath: string) {
     const existingCollection = getCEMFromCacheByPath(projectBasePath);
     if (!existingCollection) {
-        console.warn("Tried to refresh a non-existant cache. Attempted " + projectBasePath + ", but the only ones available are: ", [...CEM_COLLECTION_CACHE.keys()]);
+        Logger.log({ message: `Tried to refresh a non-existant cache. Attempted ${projectBasePath}, but the only ones available are: ${[...CEM_COLLECTION_CACHE.keys()]}`, level: LogLevel.WARN });
         return;
     }
     existingCollection?.refreshLocal();

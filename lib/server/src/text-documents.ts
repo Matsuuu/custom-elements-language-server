@@ -8,6 +8,7 @@ import { runDiagnostics } from "./diagnostics.js";
 import { connection } from "./connection.js";
 import { textDocumentDataToUsableDataFromUri, UsableTextDocumentData } from "./transformers.js";
 import { refreshCEMData } from "custom-elements-languageserver-core";
+import { Logger, LogLevel } from "custom-elements-languageserver-core/src/logger/logger.js";
 
 export const documentSettings = new Map<string, LanguageServerSettings>();
 export let documents: TextDocuments<TextDocument> = new TextDocuments(TextDocument);
@@ -22,7 +23,7 @@ function refreshCEM(usableData: UsableTextDocumentData) {
 }
 
 export function initDocuments() {
-    console.log("Initializing documents");
+    Logger.log({ message: "Initializing documents", level: LogLevel.DEBUG });
     documents = new TextDocuments(TextDocument);
     // Only keep settings for open documents
     documents.listen(connection);

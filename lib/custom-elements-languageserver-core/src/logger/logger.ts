@@ -3,9 +3,11 @@ import fs from "fs";
 const DEBUG = true;
 
 export enum LogLevel {
-    INFO = 1,
+    OFF = 0,
+    ERROR = 1,
     WARN = 2,
-    ERROR = 3
+    INFO = 3,
+    DEBUG = 4
 }
 
 export interface LogMessage {
@@ -15,13 +17,17 @@ export interface LogMessage {
 
 export class Logger {
     private static _instance: Logger;
-    private level: LogLevel = LogLevel.INFO;
+    private level: LogLevel = LogLevel.OFF;
 
     public static getInstance(): Logger {
         if (!Logger._instance) {
             Logger._instance = new Logger();
         }
         return Logger._instance;
+    }
+
+    public static log(message: LogMessage) {
+        this.getInstance().log(message);
     }
 
     public async log(message: LogMessage) {

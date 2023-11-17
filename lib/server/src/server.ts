@@ -2,8 +2,8 @@ import {
     DidChangeTextDocumentParams,
 } from "vscode-languageserver";
 
-console.log("NODE VERSION: ", process.version);
-console.log("Startup at ", new Date());
+Logger.log({ message: "NODE VERSION: " + process.version, level: LogLevel.INFO });
+Logger.log({ message: "Startup at " + new Date(), level: LogLevel.INFO });
 
 import { TextDocument } from "vscode-languageserver-textdocument";
 import { documents } from "./text-documents.js";
@@ -16,6 +16,7 @@ import { completionsHandler } from "./handlers/completions.js";
 import { codeActionHandler } from "./handlers/code-actions.js";
 import { codeActionResolveHandler } from "./handlers/code-action-resolve.js";
 import { hoverHandler } from "./handlers/hover.js";
+import { LogLevel, Logger } from "custom-elements-languageserver-core/src/logger/logger.js";
 
 initConnection();
 
