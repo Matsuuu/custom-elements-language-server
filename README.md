@@ -67,6 +67,23 @@ These operations include but are not limited to
 
 Via installing a plugin to your favorite editor to support LSP actions, you are able to enable all of these Language Service functionalities.
 
+## FAQ
+
+#### Do I need to install anything?
+
+You should only have a `package.json`, and a `tsconfig.json` (or a `jsconfig.json`) file in your project. So pretty much any Javascript/Typescript project will do!
+
+#### Where does this plugin work?
+
+The Custom Elements Language Server should provide you with completions and diagnostics *anywhere* where you are using html and custom elements.
+
+#### How does the tool analyze my project?
+
+The Custom Elements Language Server utilizes the [Open WC CEM Analyzer](https://github.com/open-wc/custom-elements-manifest/tree/master/packages/analyzer) and a bunch of custom tools to go through your codebase and provide useful analytics on your code.
+
+##### Can I extend the analyzer?
+
+You sure can! By providing a `custom-elements-manifest.config.mjs` in your project root, you can extend the capability of the analyzer itself, and the Custom Elements Language Server will also utilize these changes while doing it's own scanning through your project.
 
 ### Disabling diagnostics
 
