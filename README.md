@@ -5,7 +5,7 @@
 
 ## Usage
 
-Just install the plugin to your preferred system, and it should plug into your project.
+Just [install the plugin to your preferred system](https://github.com/Matsuuu/custom-elements-language-server#installing), and it should plug into your project.
 
 ## Features
 
