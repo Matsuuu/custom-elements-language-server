@@ -46,7 +46,7 @@ NeoVim supports LSP actions through the built in LSP. You will just need to inst
 
 #### Install language server
 
-Install the server plugin from [NPM](https://www.npmjs.com/package/custom-elements-languageserver)
+Install the server plugin from [Npm](https://www.npmjs.com/package/custom-elements-languageserver)
 
 
 ```bash
@@ -55,7 +55,9 @@ npm install -g custom-elements-languageserver
 
 #### Set up your lsp client
 
-With a library like [nvim-lspconfig](https://github.com/neovim/nvim-lspconfig) the client setup should be as easy as
+Custom Elements Language Server is comes pre-configured with [Mason](https://github.com/williamboman/mason.nvim) and [Nvim-lspconfig](https://github.com/neovim/nvim-lspconfig).
+
+Configuration might change but at the moment it should look something like the following: 
 
 ```lua
 require'lspconfig'.custom_elements_ls.setup{}
