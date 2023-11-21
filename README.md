@@ -16,19 +16,6 @@ The current featureset is as follows:
 -   Provides Go To Definition -functionality for Custom Elements defined in the Custom Elements Manifest
 -   Provides diagnostics on missing imports and unclosed custom element tags
 
-### Disabling diagnostics
-
-Sometimes CELS might catch some diagnostics that might not be useful for your usecase.
-
-Adding a comment anywhere in your code with the given code, will disable diagnostics for said file.
-
-These diagnostics can be disbled with the following flags:
-
-| Command                     | Action                                                 |
-| --------------------------- | ------------------------------------------------------ |
-| cels-disable-diagnostics    | Disable all diagnostics                                |
-| cels-disable-missing-closed | Disable diagnostics for non-closed custom element tags |
-| cels-disable-import-check   | Disable checks for non-imported custom elements        |
 
 ## Installing
 
@@ -79,3 +66,18 @@ These operations include but are not limited to
 -   Event binding completions
 
 Via installing a plugin to your favorite editor to support LSP actions, you are able to enable all of these Language Service functionalities.
+
+
+### Disabling diagnostics
+
+Sometimes CELS might catch some diagnostics that might not be useful for your usecase.
+
+Adding a comment anywhere in your code with the given code, will disable diagnostics for said file.
+
+These diagnostics can be disbled with the following flags:
+
+| Command                     | Action                                                 |
+| --------------------------- | ------------------------------------------------------ |
+| cels-disable-diagnostics    | Disable all diagnostics                                |
+| cels-disable-missing-closed | Disable diagnostics for non-closed custom element tags |
+| cels-disable-import-check   | Disable checks for non-imported custom elements        |
